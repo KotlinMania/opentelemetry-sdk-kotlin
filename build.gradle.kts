@@ -209,10 +209,18 @@ kotlin {
         binaries.framework { baseName = "OpentelemetrySdk"; xcf.add(this) }
     }
     iosSimulatorArm64 {
-        binaries.framework { baseName = "OpentelemetrySdk"; xcf.add(this) }
+        binaries.framework {
+            baseName = "OpentelemetrySdk"
+            isStatic = true
+            xcf.add(this)
+        }
     }
     iosX64 {
-        binaries.framework { baseName = "OpentelemetrySdk"; xcf.add(this) }
+        binaries.framework {
+            baseName = "OpentelemetrySdk"
+            isStatic = true
+            xcf.add(this)
+        }
     }
 
     tvosArm64 {
