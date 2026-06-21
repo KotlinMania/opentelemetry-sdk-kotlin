@@ -12,7 +12,9 @@ package io.github.kotlinmania.opentelemetrysdk
  * Multiplatform analog: KMP does not expose a poison-aware mutex, so there is
  * no `PoisonError` type to convert from.
  */
-sealed class InMemoryExporterError(message: String) : Throwable(message) {
+sealed class InMemoryExporterError(
+    message: String,
+) : Throwable(message) {
     /**
      * Operation failed due to an internal error.
      *
@@ -21,6 +23,7 @@ sealed class InMemoryExporterError(message: String) : Throwable(message) {
      * and subject to change without notice. Consumers of this error should not
      * rely on its content beyond logging.
      */
-    data class InternalFailure(val reason: String) :
-        InMemoryExporterError("Unable to obtain telemetry. Reason: $reason")
+    data class InternalFailure(
+        val reason: String,
+    ) : InMemoryExporterError("Unable to obtain telemetry. Reason: $reason")
 }

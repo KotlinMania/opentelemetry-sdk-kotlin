@@ -109,3 +109,5 @@ package io.github.kotlinmania.opentelemetrysdk
 // in `Error.kt`, so the upstream root re-export is satisfied by package
 // placement. `Resource` is parceled out of the `resource` module; the
 // resource module is not yet ported.
+
+internal object LibModuleLedger

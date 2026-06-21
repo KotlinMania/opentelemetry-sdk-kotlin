@@ -12,7 +12,9 @@ interface ExportError {
 }
 
 /** Errors that can occur during SDK operations export(), forceFlush() and shutdown(). */
-sealed class OTelSdkError(message: String) : Throwable(message) {
+sealed class OTelSdkError(
+    message: String,
+) : Throwable(message) {
     /**
      * Shutdown has already been invoked.
      *
@@ -31,7 +33,9 @@ sealed class OTelSdkError(message: String) : Throwable(message) {
      * complete. If this occurs frequently, consider increasing the timeout
      * duration to allow more time for completion.
      */
-    data class Timeout(val duration: Duration) : OTelSdkError("Operation timed out after $duration")
+    data class Timeout(
+        val duration: Duration,
+    ) : OTelSdkError("Operation timed out after $duration")
 
     /**
      * Operation failed due to an internal error.
@@ -41,7 +45,9 @@ sealed class OTelSdkError(message: String) : Throwable(message) {
      * and subject to change without notice. Consumers of this error should not
      * rely on its content beyond logging.
      */
-    data class InternalFailure(val reason: String) : OTelSdkError("Operation failed: $reason")
+    data class InternalFailure(
+        val reason: String,
+    ) : OTelSdkError("Operation failed: $reason")
 }
 
 /** A specialized `Result` type for Shutdown operations. */

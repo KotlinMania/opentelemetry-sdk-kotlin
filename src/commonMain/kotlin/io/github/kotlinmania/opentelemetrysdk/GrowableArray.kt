@@ -108,8 +108,12 @@ internal class GrowableArray<T>(
 }
 
 /** Iterator for consuming a [GrowableArray]. */
-internal class GrowableArrayIntoIter<T>(source: GrowableArray<T>) : Iterator<T> {
+internal class GrowableArrayIntoIter<T>(
+    source: GrowableArray<T>,
+) : Iterator<T> {
     private val backing: Iterator<T> = source.iter().iterator()
+
     override fun hasNext(): Boolean = backing.hasNext()
+
     override fun next(): T = backing.next()
 }
