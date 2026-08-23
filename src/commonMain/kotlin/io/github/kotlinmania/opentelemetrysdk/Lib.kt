@@ -87,27 +87,4 @@ package io.github.kotlinmania.opentelemetrysdk
 // gated on the module graph; the runtime async-runtime hooks become explicit
 // coroutine-dispatcher parameters.
 
-// Module declarations (`pub mod ...`) carried by this ledger:
-//
-// pub(crate) mod growable_array;
-// #[cfg(feature = "logs")]      pub mod logs;
-// #[cfg(feature = "metrics")]   pub mod metrics;
-// #[cfg(feature = "trace")]     pub mod propagation;
-// pub mod resource;
-// #[cfg(feature = "experimental_async_runtime")] pub mod runtime;
-// #[cfg(any(feature = "testing", test))] pub mod testing;
-// #[cfg(feature = "trace")]     pub mod trace;
-// #[doc(hidden)]                pub mod util;
-// pub mod error;
-
-// Crate-root re-exports carried by this ledger (do not mint typealiases):
-//
-// pub use resource::Resource;
-// pub use error::ExportError;
-//
-// `ExportError` already lives at `io.github.kotlinmania.opentelemetrysdk.ExportError`
-// in `Error.kt`, so the upstream root re-export is satisfied by package
-// placement. `Resource` is parceled out of the `resource` module; the
-// resource module is not yet ported.
-
 internal object LibModuleLedger

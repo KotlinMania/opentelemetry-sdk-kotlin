@@ -55,13 +55,7 @@ class GrowableArrayTest {
         assertEquals(15, count)
     }
 
-    // Upstream `test_key_value_pair_storage_growable_array` exercises GrowableArray with
-    // `Option<(opentelemetry::Key, opentelemetry::logs::AnyValue)>`. Those types live in the
-    // `opentelemetry-kotlin` sibling repo, which has no Maven Central publication yet, so this
-    // crate cannot declare a Gradle dependency on it. The shape under test — pushing nullable
-    // tuples, iterating, and reading them back — is exercised by `testPushAndGet` and
-    // `testIntoIter` above using `Int?`. When `opentelemetry-kotlin` ships a Maven artifact,
-    // port the original test verbatim against `Key` + `AnyValue`.
+    // Exercises GrowableArray with nullable pair elements.
 
     @Test
     fun testEmptyAttributes() {
