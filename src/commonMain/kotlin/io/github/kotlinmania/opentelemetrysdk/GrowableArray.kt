@@ -115,5 +115,10 @@ internal class GrowableArrayIntoIter<T>(
 
     override fun hasNext(): Boolean = backing.hasNext()
 
-    override fun next(): T = backing.next()
+    override fun next(): T {
+        if (!hasNext()) {
+            throw NoSuchElementException("GrowableArrayIntoIter exhausted")
+        }
+        return backing.next()
+    }
 }
