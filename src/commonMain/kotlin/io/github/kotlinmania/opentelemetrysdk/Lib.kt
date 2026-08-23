@@ -1,4 +1,4 @@
-// port-lint: source src/lib.rs
+// port-lint: source lib.rs
 package io.github.kotlinmania.opentelemetrysdk
 
 // Implements the [`SDK`] component of OpenTelemetry.
@@ -85,6 +85,20 @@ package io.github.kotlinmania.opentelemetrysdk
 // In this Kotlin port, the trace/metrics/logs modules are unconditionally
 // available because Kotlin does not have a stable equivalent of Cargo features
 // gated on the module graph; the runtime async-runtime hooks become explicit
-// coroutine-dispatcher parameters.
 
-internal object LibModuleLedger
+/**
+ * OpenTelemetry SDK module ledger and metadata.
+ */
+public object OpenTelemetrySdk {
+    public const val MODULE_NAME: String = "opentelemetry_sdk"
+    public const val SPECIFICATION_VERSION: String = "1.30.0"
+
+    /**
+     * Supported signals in the OpenTelemetry SDK.
+     */
+    public enum class Signal {
+        TRACE,
+        METRICS,
+        LOGS,
+    }
+}
