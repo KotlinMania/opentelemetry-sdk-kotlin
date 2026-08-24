@@ -107,11 +107,6 @@ public data class Resource(
     public val attrs: Map<Key, Value>,
     public val schemaUrl: String? = null,
 ) {
-    /**
-     * Returns the schema URL of the resource, or `null` if not set.
-     */
-    public fun schemaUrl(): String? = schemaUrl
-
     /** Number of attributes in this resource. */
     public val size: Int get() = attrs.size
 
