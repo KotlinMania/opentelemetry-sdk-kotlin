@@ -1,4 +1,4 @@
-// port-lint: tests src/growable_array.rs
+// port-lint: tests growable_array.rs
 package io.github.kotlinmania.opentelemetrysdk
 
 import kotlin.test.Test
