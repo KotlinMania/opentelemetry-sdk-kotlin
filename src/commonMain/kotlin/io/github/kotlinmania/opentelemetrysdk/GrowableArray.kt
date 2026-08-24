@@ -1,4 +1,4 @@
-// port-lint: source src/growable_array.rs
+// port-lint: source growable_array.rs
 package io.github.kotlinmania.opentelemetrysdk
 
 /** The default max capacity for the stack portion of [GrowableArray]. */
