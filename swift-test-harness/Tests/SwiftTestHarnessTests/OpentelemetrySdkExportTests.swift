@@ -1,4 +1,4 @@
-import XCTest
+import Testing
 import OpentelemetrySdk
 
 // Smoke test for the Kotlin → Swift Export → SPM → swift test pipeline.
@@ -28,8 +28,8 @@ import OpentelemetrySdk
 // Add more meaningful per-API tests below as the Swift Export surface
 // grows. For now the import + a single passing assertion is the
 // canary that the pipeline is green for this repo.
-final class OpentelemetrySdkExportTests: XCTestCase {
-    func testSwiftModuleLoads() throws {
-        XCTAssertTrue(true, "OpentelemetrySdk swift module imported cleanly")
+@Suite struct OpentelemetrySdkExportTests {
+    @Test func testSwiftModuleLoads() throws {
+        #expect(Bool(true), "OpentelemetrySdk swift module imported cleanly")
     }
 }
