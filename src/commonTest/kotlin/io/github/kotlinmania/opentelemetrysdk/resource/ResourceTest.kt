@@ -81,7 +81,7 @@ class ResourceTest {
             val merged = resourceA.merge(resourceB)
             assertEquals(
                 expectedSchemaUrl,
-                merged.schemaUrl(),
+                merged.schemaUrl,
                 "Merging schemaUrlA $schemaUrlA with schemaUrlB $schemaUrlB failed",
             )
         }
@@ -129,7 +129,7 @@ class ResourceTest {
                     Resource.new(kvsB)
                 }
 
-            assertEquals(expectedSchema, resourceA.merge(resourceB).schemaUrl())
+            assertEquals(expectedSchema, resourceA.merge(resourceB).schemaUrl)
         }
     }
 
@@ -182,7 +182,7 @@ class ResourceTest {
 
             assertEquals(
                 expectedSchemaUrl,
-                resource.schemaUrl(),
+                resource.schemaUrl,
                 "Merging schemaUrlA $schemaUrlA with schemaUrlB $schemaUrlB failed",
             )
         }
