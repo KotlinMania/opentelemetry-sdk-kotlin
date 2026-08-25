@@ -204,6 +204,7 @@ public class SdkTracerProvider internal constructor(
 public class TracerProviderBuilder {
     private val processors = mutableListOf<SpanProcessor>()
     private var config: Config = Config.defaultConfig()
+    private var resource: Resource? = null
 
     public fun withSpanProcessor(processor: SpanProcessor): TracerProviderBuilder {
         processors.add(processor)
@@ -234,10 +235,7 @@ public class TracerProviderBuilder {
     }
 
     public fun withResource(resource: Resource): TracerProviderBuilder {
-        config = config.copy(resource = resource)
-        for (processor in processors) {
-            processor.setResource(resource)
-        }
+        this.resource = this.resource?.merge(resource) ?: resource
         return this
     }
 
@@ -252,10 +250,11 @@ public class TracerProviderBuilder {
     }
 
     public fun build(): SdkTracerProvider {
-        val resource = config.resource
+        val finalConfig = this.resource?.let { config.copy(resource = it) } ?: config
+        val finalResource = finalConfig.resource
         for (processor in processors) {
-            processor.setResource(resource)
+            processor.setResource(finalResource)
         }
-        return SdkTracerProvider(processors.toList(), config)
+        return SdkTracerProvider(processors.toList(), finalConfig)
     }
 }
