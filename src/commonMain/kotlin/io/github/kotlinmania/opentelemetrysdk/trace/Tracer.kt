@@ -12,6 +12,8 @@ public class SdkTracer internal constructor(
     public val instrumentationScope: InstrumentationScope,
     internal val provider: SdkTracerProvider,
 ) {
+    public fun provider(): SdkTracerProvider = provider
+
     public fun spanBuilder(name: String): SpanBuilder = SpanBuilder(name, this)
 
     public fun start(name: String): Span = spanBuilder(name).start()

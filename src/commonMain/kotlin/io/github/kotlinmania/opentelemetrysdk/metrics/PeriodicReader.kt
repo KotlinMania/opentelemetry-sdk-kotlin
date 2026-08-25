@@ -4,6 +4,7 @@ package io.github.kotlinmania.opentelemetrysdk.metrics
 import io.github.kotlinmania.opentelemetrysdk.OTelSdkError
 import io.github.kotlinmania.opentelemetrysdk.OTelSdkResult
 import io.github.kotlinmania.opentelemetrysdk.metrics.data.ResourceMetrics
+import io.github.kotlinmania.opentelemetrysdk.resource.Resource
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
@@ -39,7 +40,20 @@ public class PeriodicReader<E : PushMetricExporter> internal constructor(
         return producer.produce(rm)
     }
 
-    override fun forceFlush(): OTelSdkResult = exporter.forceFlush()
+    override fun forceFlush(): OTelSdkResult {
+        if (isShutdown) {
+            return Result.failure(OTelSdkError.InternalFailure("reader is shut down or not registered"))
+        }
+        val producer =
+            sdkProducer
+                ?: return Result.failure(OTelSdkError.InternalFailure("reader is shut down or not registered"))
+        val rm = ResourceMetrics(Resource.empty(), emptyList())
+        val collectRes = producer.produce(rm)
+        if (collectRes.isFailure) return collectRes
+        val expRes = exporter.export(rm)
+        if (expRes.isFailure) return expRes
+        return exporter.forceFlush()
+    }
 
     override fun shutdownWithTimeout(timeout: Duration): OTelSdkResult {
         isShutdown = true

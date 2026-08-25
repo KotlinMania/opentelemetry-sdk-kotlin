@@ -3,6 +3,7 @@ package io.github.kotlinmania.opentelemetrysdk.metrics
 
 import io.github.kotlinmania.opentelemetrysdk.OTelSdkError
 import io.github.kotlinmania.opentelemetrysdk.OTelSdkResult
+import io.github.kotlinmania.opentelemetrysdk.metrics.data.ResourceMetrics
 import io.github.kotlinmania.opentelemetrysdk.resource.Resource
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
@@ -20,6 +21,16 @@ public class SdkMeterProvider internal constructor(
     public val views: List<View>,
 ) {
     private var isShutdown: Boolean = false
+
+    init {
+        val producer =
+            object : SdkProducer {
+                override fun produce(rm: ResourceMetrics): OTelSdkResult = Result.success(Unit)
+            }
+        for (reader in readers) {
+            reader.registerPipeline(producer)
+        }
+    }
 
     /**
      * Flushes all pending telemetry.
