@@ -85,39 +85,43 @@ class RecordTest {
 
     @Test
     fun compareTraceContext() {
-        val traceContext = TraceContext(
-            traceId = TraceId(1u, 1u),
-            spanId = SpanId(1u),
-            traceFlags = TraceFlags.DEFAULT,
-        )
+        val traceContext =
+            TraceContext(
+                traceId = TraceId(1u, 1u),
+                spanId = SpanId(1u),
+                traceFlags = TraceFlags.DEFAULT,
+            )
         val traceContextCloned = traceContext.copy()
         assertEquals(traceContext, traceContextCloned)
 
-        val traceContextDifferent = TraceContext(
-            traceId = TraceId(2u, 2u),
-            spanId = SpanId(2u),
-            traceFlags = TraceFlags.DEFAULT,
-        )
+        val traceContextDifferent =
+            TraceContext(
+                traceId = TraceId(2u, 2u),
+                spanId = SpanId(2u),
+                traceFlags = TraceFlags.DEFAULT,
+            )
         assertNotEquals(traceContext, traceContextDifferent)
     }
 
     @Test
     fun compareLogRecord() {
         val now = Clock.System.now()
-        val logRecord = SdkLogRecord(
-            eventName = "test_event",
-            target = "foo::bar",
-            timestamp = now,
-            observedTimestamp = now,
-            severityText = "ERROR",
-            severityNumber = Severity.Error,
-            body = AnyValue.of("Test body"),
-            traceContext = TraceContext(
-                traceId = TraceId(1u, 1u),
-                spanId = SpanId(1u),
-                traceFlags = TraceFlags.DEFAULT,
-            ),
-        )
+        val logRecord =
+            SdkLogRecord(
+                eventName = "test_event",
+                target = "foo::bar",
+                timestamp = now,
+                observedTimestamp = now,
+                severityText = "ERROR",
+                severityNumber = Severity.Error,
+                body = AnyValue.of("Test body"),
+                traceContext =
+                    TraceContext(
+                        traceId = TraceId(1u, 1u),
+                        spanId = SpanId(1u),
+                        traceFlags = TraceFlags.DEFAULT,
+                    ),
+            )
         logRecord.addAttribute(Key("key"), AnyValue.of("value"))
 
         val logRecordCloned = logRecord.clone()

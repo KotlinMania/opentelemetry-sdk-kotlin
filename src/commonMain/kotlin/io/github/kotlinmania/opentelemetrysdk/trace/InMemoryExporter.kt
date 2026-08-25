@@ -52,6 +52,7 @@ public class InMemorySpanExporter internal constructor(
 
     public companion object {
         public fun builder(): InMemorySpanExporterBuilder = InMemorySpanExporterBuilder()
+
         public fun defaultExporter(): InMemorySpanExporter = builder().build()
     }
 }

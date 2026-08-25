@@ -10,13 +10,14 @@ import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 class TracePipelineTest {
-
     @Test
     fun testTracerInSpan() {
         val exporter = InMemorySpanExporter.defaultExporter()
-        val provider = SdkTracerProvider.builder()
-            .withSimpleExporter(exporter)
-            .build()
+        val provider =
+            SdkTracerProvider
+                .builder()
+                .withSimpleExporter(exporter)
+                .build()
 
         val tracer = provider.tracer("test_tracer")
         tracer.inSpan("span_name") { span ->
@@ -28,7 +29,7 @@ class TracePipelineTest {
                 SpanContext(
                     traceId = TraceId(0u, 47u),
                     spanId = SpanId(11u),
-                )
+                ),
             )
         }
 
@@ -41,8 +42,16 @@ class TracePipelineTest {
         assertEquals(1, span.events.events.size)
         assertEquals("test-event", span.events.events[0].name)
         assertEquals(1, span.links.links.size)
-        assertEquals(TraceId(0u, 47u), span.links.links[0].spanContext.traceId)
-        assertEquals(SpanId(11u), span.links.links[0].spanContext.spanId)
+        assertEquals(
+            TraceId(0u, 47u),
+            span.links.links[0]
+                .spanContext.traceId,
+        )
+        assertEquals(
+            SpanId(11u),
+            span.links.links[0]
+                .spanContext.spanId,
+        )
         assertTrue(span.spanContext.traceFlags.isSampled)
         assertFalse(span.spanContext.isRemote)
         assertEquals(Status.Unset, span.status)
@@ -51,9 +60,11 @@ class TracePipelineTest {
     @Test
     fun testTracerStartAndStatusOrdering() {
         val exporter = InMemorySpanExporter.defaultExporter()
-        val provider = SdkTracerProvider.builder()
-            .withSimpleExporter(exporter)
-            .build()
+        val provider =
+            SdkTracerProvider
+                .builder()
+                .withSimpleExporter(exporter)
+                .build()
 
         val tracer = provider.tracer("test_tracer")
         val span = tracer.start("span_name")
@@ -79,22 +90,27 @@ class TracePipelineTest {
     @Test
     fun testSpanBuilderWithKindAndParent() {
         val exporter = InMemorySpanExporter.defaultExporter()
-        val provider = SdkTracerProvider.builder()
-            .withSimpleExporter(exporter)
-            .build()
+        val provider =
+            SdkTracerProvider
+                .builder()
+                .withSimpleExporter(exporter)
+                .build()
 
-        val parentContext = SpanContext(
-            traceId = TraceId(1u, 2u),
-            spanId = SpanId(3u),
-            traceFlags = TraceFlags.SAMPLED,
-        )
+        val parentContext =
+            SpanContext(
+                traceId = TraceId(1u, 2u),
+                spanId = SpanId(3u),
+                traceFlags = TraceFlags.SAMPLED,
+            )
 
         val tracer = provider.tracer("test_tracer")
-        val span = tracer.spanBuilder("server_span")
-            .withKind(SpanKind.SERVER)
-            .withParent(parentContext)
-            .withAttribute(KeyValue(Key("k"), Value.of("v")))
-            .start()
+        val span =
+            tracer
+                .spanBuilder("server_span")
+                .withKind(SpanKind.SERVER)
+                .withParent(parentContext)
+                .withAttribute(KeyValue(Key("k"), Value.of("v")))
+                .start()
 
         span.end()
 
@@ -109,15 +125,18 @@ class TracePipelineTest {
     @Test
     fun testExceedSpanLimits() {
         val exporter = InMemorySpanExporter.defaultExporter()
-        val limits = SpanLimits(
-            maxAttributesPerSpan = 2u,
-            maxEventsPerSpan = 2u,
-            maxLinksPerSpan = 2u,
-        )
-        val provider = SdkTracerProvider.builder()
-            .withSpanLimits(limits)
-            .withSimpleExporter(exporter)
-            .build()
+        val limits =
+            SpanLimits(
+                maxAttributesPerSpan = 2u,
+                maxEventsPerSpan = 2u,
+                maxLinksPerSpan = 2u,
+            )
+        val provider =
+            SdkTracerProvider
+                .builder()
+                .withSpanLimits(limits)
+                .withSimpleExporter(exporter)
+                .build()
 
         val tracer = provider.tracer("limits_tracer")
         val span = tracer.start("limited_span")
@@ -153,13 +172,16 @@ class TracePipelineTest {
     @Test
     fun testBatchSpanProcessor() {
         val exporter = InMemorySpanExporter.defaultExporter()
-        val batchConfig = BatchConfig(
-            maxQueueSize = 100,
-            maxExportBatchSize = 2,
-        )
-        val provider = SdkTracerProvider.builder()
-            .withBatchExporter(exporter, batchConfig)
-            .build()
+        val batchConfig =
+            BatchConfig(
+                maxQueueSize = 100,
+                maxExportBatchSize = 2,
+            )
+        val provider =
+            SdkTracerProvider
+                .builder()
+                .withBatchExporter(exporter, batchConfig)
+                .build()
 
         val tracer = provider.tracer("batch_tracer")
         val span1 = tracer.start("span1")

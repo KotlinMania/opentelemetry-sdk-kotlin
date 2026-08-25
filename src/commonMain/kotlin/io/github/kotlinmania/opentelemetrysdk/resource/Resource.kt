@@ -161,6 +161,12 @@ public data class Resource(
         )
     }
 
+    /**
+     * Gets the service name from attributes if set.
+     */
+    public fun serviceName(): String? =
+        (get(SERVICE_NAME) as? Value.StringValue)?.value
+
     public companion object {
         /**
          * Creates a [ResourceBuilder] that includes default detectors.

@@ -7,7 +7,6 @@ import io.github.kotlinmania.opentelemetrysdk.OTelSdkResult
 import io.github.kotlinmania.opentelemetrysdk.resource.Key
 import io.github.kotlinmania.opentelemetrysdk.resource.KeyValue
 import io.github.kotlinmania.opentelemetrysdk.resource.Resource
-import io.github.kotlinmania.opentelemetrysdk.trace.SpanContext
 import io.github.kotlinmania.opentelemetrysdk.trace.SpanId
 import io.github.kotlinmania.opentelemetrysdk.trace.TraceFlags
 import io.github.kotlinmania.opentelemetrysdk.trace.TraceId
@@ -18,24 +17,26 @@ import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
 class ProcessorAndExporterTest {
-
     @Test
     fun loggingSdkTest() {
-        val resource = Resource.builderEmpty()
-            .withAttributes(
-                listOf(
-                    KeyValue("k1", "v1"),
-                    KeyValue("k2", "v2"),
-                    KeyValue("k3", "v3"),
-                    KeyValue("k4", "v4"),
-                ),
-            )
-            .build()
+        val resource =
+            Resource
+                .builderEmpty()
+                .withAttributes(
+                    listOf(
+                        KeyValue("k1", "v1"),
+                        KeyValue("k2", "v2"),
+                        KeyValue("k3", "v3"),
+                        KeyValue("k4", "v4"),
+                    ),
+                ).build()
         val exporter = InMemoryLogExporter.defaultExporter()
-        val loggerProvider = SdkLoggerProvider.builder()
-            .withResource(resource)
-            .withLogProcessor(SimpleLogProcessor.new(exporter))
-            .build()
+        val loggerProvider =
+            SdkLoggerProvider
+                .builder()
+                .withResource(resource)
+                .withLogProcessor(SimpleLogProcessor.new(exporter))
+                .build()
 
         val logger = loggerProvider.logger("test-logger")
         val logRecord = logger.createLogRecord()
@@ -77,14 +78,18 @@ class ProcessorAndExporterTest {
     @Test
     fun loggerAttributes() {
         val exporter = InMemoryLogExporter.defaultExporter()
-        val provider = SdkLoggerProvider.builder()
-            .withLogProcessor(SimpleLogProcessor.new(exporter))
-            .build()
+        val provider =
+            SdkLoggerProvider
+                .builder()
+                .withLogProcessor(SimpleLogProcessor.new(exporter))
+                .build()
 
-        val scope = InstrumentationScope.builder("test_logger")
-            .withSchemaUrl("https://opentelemetry.io/schema/1.0.0")
-            .withAttributes(listOf(KeyValue("test_k", "test_v")))
-            .build()
+        val scope =
+            InstrumentationScope
+                .builder("test_logger")
+                .withSchemaUrl("https://opentelemetry.io/schema/1.0.0")
+                .withAttributes(listOf(KeyValue("test_k", "test_v")))
+                .build()
 
         val logger = provider.loggerWithScope(scope)
         val logRecord = logger.createLogRecord()
@@ -116,10 +121,12 @@ class ProcessorAndExporterTest {
     @Test
     fun logAndBaggage() {
         val exporter = InMemoryLogExporter.defaultExporter()
-        val loggerProvider = SdkLoggerProvider.builder()
-            .withLogProcessor(EnrichWithBaggageProcessor())
-            .withLogProcessor(SimpleLogProcessor.new(exporter))
-            .build()
+        val loggerProvider =
+            SdkLoggerProvider
+                .builder()
+                .withLogProcessor(EnrichWithBaggageProcessor())
+                .withLogProcessor(SimpleLogProcessor.new(exporter))
+                .build()
 
         val logger = loggerProvider.logger("test-logger")
         val contextWithBaggage = Context.currentWithBaggage(listOf(KeyValue("key-from-bag", "value-from-bag")))
@@ -144,9 +151,11 @@ class ProcessorAndExporterTest {
     @Test
     fun logSuppression() {
         val exporter = InMemoryLogExporter.defaultExporter()
-        val loggerProvider = SdkLoggerProvider.builder()
-            .withSimpleExporter(exporter)
-            .build()
+        val loggerProvider =
+            SdkLoggerProvider
+                .builder()
+                .withSimpleExporter(exporter)
+                .build()
 
         val logger = loggerProvider.logger("test-logger")
         val logRecord = logger.createLogRecord()
@@ -188,9 +197,11 @@ class ProcessorAndExporterTest {
     @Test
     fun processorInternalLogDoesNotDeadlockWithSuppressionEnabled() {
         val processor = ReentrantLogProcessor()
-        val loggerProvider = SdkLoggerProvider.builder()
-            .withLogProcessor(processor)
-            .build()
+        val loggerProvider =
+            SdkLoggerProvider
+                .builder()
+                .withLogProcessor(processor)
+                .build()
         processor.setLogger(loggerProvider.logger("processor-logger"))
 
         val logger = loggerProvider.logger("test-logger")
@@ -204,30 +215,34 @@ class ProcessorAndExporterTest {
         val firstProcessorLogs = mutableListOf<OwnedLogData>()
         val secondProcessorLogs = mutableListOf<OwnedLogData>()
 
-        val firstProcessor = object : LogProcessor {
-            override fun emit(record: SdkLogRecord, instrumentation: InstrumentationScope) {
-                record.addAttribute(Key("processed_by"), AnyValue.of("FirstProcessor"))
-                record.setBody(AnyValue.of("Updated by FirstProcessor"))
-                firstProcessorLogs.add(OwnedLogData(record.clone(), instrumentation))
+        val firstProcessor =
+            object : LogProcessor {
+                override fun emit(record: SdkLogRecord, instrumentation: InstrumentationScope) {
+                    record.addAttribute(Key("processed_by"), AnyValue.of("FirstProcessor"))
+                    record.setBody(AnyValue.of("Updated by FirstProcessor"))
+                    firstProcessorLogs.add(OwnedLogData(record.clone(), instrumentation))
+                }
+
+                override fun forceFlush(): OTelSdkResult = Result.success(Unit)
             }
 
-            override fun forceFlush(): OTelSdkResult = Result.success(Unit)
-        }
+        val secondProcessor =
+            object : LogProcessor {
+                override fun emit(record: SdkLogRecord, instrumentation: InstrumentationScope) {
+                    assertTrue(record.attributesContains(Key("processed_by"), AnyValue.of("FirstProcessor")))
+                    assertEquals(AnyValue.of("Updated by FirstProcessor"), record.body)
+                    secondProcessorLogs.add(OwnedLogData(record.clone(), instrumentation))
+                }
 
-        val secondProcessor = object : LogProcessor {
-            override fun emit(record: SdkLogRecord, instrumentation: InstrumentationScope) {
-                assertTrue(record.attributesContains(Key("processed_by"), AnyValue.of("FirstProcessor")))
-                assertEquals(AnyValue.of("Updated by FirstProcessor"), record.body)
-                secondProcessorLogs.add(OwnedLogData(record.clone(), instrumentation))
+                override fun forceFlush(): OTelSdkResult = Result.success(Unit)
             }
 
-            override fun forceFlush(): OTelSdkResult = Result.success(Unit)
-        }
-
-        val loggerProvider = SdkLoggerProvider.builder()
-            .withLogProcessor(firstProcessor)
-            .withLogProcessor(secondProcessor)
-            .build()
+        val loggerProvider =
+            SdkLoggerProvider
+                .builder()
+                .withLogProcessor(firstProcessor)
+                .withLogProcessor(secondProcessor)
+                .build()
 
         val logger = loggerProvider.logger("test-logger")
         val logRecord = logger.createLogRecord()
@@ -249,17 +264,20 @@ class ProcessorAndExporterTest {
     @Test
     fun traceContextTest() {
         val exporter = InMemoryLogExporter.defaultExporter()
-        val loggerProvider = SdkLoggerProvider.builder()
-            .withSimpleExporter(exporter)
-            .build()
+        val loggerProvider =
+            SdkLoggerProvider
+                .builder()
+                .withSimpleExporter(exporter)
+                .build()
 
         val logger = loggerProvider.logger("test-logger")
 
-        val explicitCtxt = TraceContext(
-            traceId = TraceId(0u, 13u),
-            spanId = SpanId(14u),
-            traceFlags = TraceFlags.SAMPLED,
-        )
+        val explicitCtxt =
+            TraceContext(
+                traceId = TraceId(0u, 13u),
+                spanId = SpanId(14u),
+                traceFlags = TraceFlags.SAMPLED,
+            )
 
         val logRecord = logger.createLogRecord()
         logRecord.setBody(AnyValue.of("explicit"))
@@ -282,19 +300,22 @@ class ProcessorAndExporterTest {
     @Test
     fun shutdownIdempotentTest() {
         var count = 0
-        val processor = object : LogProcessor {
-            override fun emit(record: SdkLogRecord, instrumentation: InstrumentationScope) {
-                count += 1
+        val processor =
+            object : LogProcessor {
+                override fun emit(record: SdkLogRecord, instrumentation: InstrumentationScope) {
+                    count += 1
+                }
+
+                override fun forceFlush(): OTelSdkResult = Result.success(Unit)
+
+                override fun shutdown(): OTelSdkResult = Result.success(Unit)
             }
 
-            override fun forceFlush(): OTelSdkResult = Result.success(Unit)
-
-            override fun shutdown(): OTelSdkResult = Result.success(Unit)
-        }
-
-        val loggerProvider = SdkLoggerProvider.builder()
-            .withLogProcessor(processor)
-            .build()
+        val loggerProvider =
+            SdkLoggerProvider
+                .builder()
+                .withLogProcessor(processor)
+                .build()
 
         val logger = loggerProvider.logger("test-logger")
         logger.emit(logger.createLogRecord())
@@ -316,13 +337,17 @@ class ProcessorAndExporterTest {
     @Test
     fun batchLogProcessorTest() {
         val exporter = InMemoryLogExporter.defaultExporter()
-        val processor = BatchLogProcessor.builder(exporter)
-            .withBatchConfig(BatchConfig(maxExportBatchSize = 2))
-            .build()
+        val processor =
+            BatchLogProcessor
+                .builder(exporter)
+                .withBatchConfig(BatchConfig(maxExportBatchSize = 2))
+                .build()
 
-        val loggerProvider = SdkLoggerProvider.builder()
-            .withLogProcessor(processor)
-            .build()
+        val loggerProvider =
+            SdkLoggerProvider
+                .builder()
+                .withLogProcessor(processor)
+                .build()
 
         val logger = loggerProvider.logger("batch-logger")
         val r1 = logger.createLogRecord()

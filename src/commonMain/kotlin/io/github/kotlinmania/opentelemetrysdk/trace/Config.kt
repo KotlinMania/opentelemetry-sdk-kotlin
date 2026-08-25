@@ -35,21 +35,22 @@ public data class Config(
             }
 
             val samplerArg = getEnv(OTEL_TRACES_SAMPLER_ARG)
-            val sampler: ShouldSample = when (getEnv(OTEL_TRACES_SAMPLER)) {
-                "always_on" -> Sampler.AlwaysOn
-                "always_off" -> Sampler.AlwaysOff
-                "traceidratio" -> {
-                    val ratio = samplerArg?.toDoubleOrNull() ?: 1.0
-                    Sampler.TraceIdRatioBased(ratio)
+            val sampler: ShouldSample =
+                when (getEnv(OTEL_TRACES_SAMPLER)) {
+                    "always_on" -> Sampler.AlwaysOn
+                    "always_off" -> Sampler.AlwaysOff
+                    "traceidratio" -> {
+                        val ratio = samplerArg?.toDoubleOrNull() ?: 1.0
+                        Sampler.TraceIdRatioBased(ratio)
+                    }
+                    "parentbased_always_on" -> Sampler.ParentBased(Sampler.AlwaysOn)
+                    "parentbased_always_off" -> Sampler.ParentBased(Sampler.AlwaysOff)
+                    "parentbased_traceidratio" -> {
+                        val ratio = samplerArg?.toDoubleOrNull() ?: 1.0
+                        Sampler.ParentBased(Sampler.TraceIdRatioBased(ratio))
+                    }
+                    else -> Sampler.ParentBased(Sampler.AlwaysOn)
                 }
-                "parentbased_always_on" -> Sampler.ParentBased(Sampler.AlwaysOn)
-                "parentbased_always_off" -> Sampler.ParentBased(Sampler.AlwaysOff)
-                "parentbased_traceidratio" -> {
-                    val ratio = samplerArg?.toDoubleOrNull() ?: 1.0
-                    Sampler.ParentBased(Sampler.TraceIdRatioBased(ratio))
-                }
-                else -> Sampler.ParentBased(Sampler.AlwaysOn)
-            }
 
             return Config(
                 sampler = sampler,

@@ -42,13 +42,14 @@ public class InMemoryLogExporter internal constructor(
     public fun getEmittedLogs(): Result<List<LogDataWithResource>> {
         val currentLogs = logsRef.load()
         val currentResource = resourceRef.load()
-        val mapped = currentLogs.map { logData ->
-            LogDataWithResource(
-                record = logData.record.clone(),
-                instrumentation = logData.instrumentation,
-                resource = currentResource,
-            )
-        }
+        val mapped =
+            currentLogs.map { logData ->
+                LogDataWithResource(
+                    record = logData.record.clone(),
+                    instrumentation = logData.instrumentation,
+                    resource = currentResource,
+                )
+            }
         return Result.success(mapped)
     }
 
@@ -57,9 +58,10 @@ public class InMemoryLogExporter internal constructor(
     }
 
     override fun export(batch: LogBatch): OTelSdkResult {
-        val newEntries = batch.records.map { logData ->
-            OwnedLogData(logData.record.clone(), logData.instrumentation)
-        }
+        val newEntries =
+            batch.records.map { logData ->
+                OwnedLogData(logData.record.clone(), logData.instrumentation)
+            }
         while (true) {
             val current = logsRef.load()
             val next = current + newEntries
@@ -84,6 +86,7 @@ public class InMemoryLogExporter internal constructor(
 
     public companion object {
         public fun builder(): InMemoryLogExporterBuilder = InMemoryLogExporterBuilder()
+
         public fun defaultExporter(): InMemoryLogExporter = builder().build()
     }
 }

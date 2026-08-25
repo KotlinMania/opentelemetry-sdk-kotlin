@@ -9,14 +9,15 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNull
 
 class InstrumentationScopeTest {
-
     @Test
     fun testBuilder() {
-        val scope = InstrumentationScope.builder("test-scope")
-            .withVersion("1.0.0")
-            .withSchemaUrl("https://opentelemetry.io/schemas/1.0.0")
-            .withAttributes(listOf(KeyValue(Key("scope.attr"), Value.of("scope-val"))))
-            .build()
+        val scope =
+            InstrumentationScope
+                .builder("test-scope")
+                .withVersion("1.0.0")
+                .withSchemaUrl("https://opentelemetry.io/schemas/1.0.0")
+                .withAttributes(listOf(KeyValue(Key("scope.attr"), Value.of("scope-val"))))
+                .build()
 
         assertEquals("test-scope", scope.name)
         assertEquals("1.0.0", scope.version)
