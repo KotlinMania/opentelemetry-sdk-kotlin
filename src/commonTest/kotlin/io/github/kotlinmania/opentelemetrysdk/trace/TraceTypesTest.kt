@@ -3,11 +3,11 @@ package io.github.kotlinmania.opentelemetrysdk.trace
 import io.github.kotlinmania.opentelemetrysdk.resource.Key
 import io.github.kotlinmania.opentelemetrysdk.resource.KeyValue
 import io.github.kotlinmania.opentelemetrysdk.resource.Value
-import kotlin.time.Instant
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
+import kotlin.time.Instant
 
 class TraceTypesTest {
     @Test
@@ -22,13 +22,14 @@ class TraceTypesTest {
 
     @Test
     fun testSpanLimitsCustom() {
-        val limits = SpanLimits(
-            maxEventsPerSpan = 64u,
-            maxAttributesPerSpan = 32u,
-            maxLinksPerSpan = 16u,
-            maxAttributesPerEvent = 8u,
-            maxAttributesPerLink = 4u,
-        )
+        val limits =
+            SpanLimits(
+                maxEventsPerSpan = 64u,
+                maxAttributesPerSpan = 32u,
+                maxLinksPerSpan = 16u,
+                maxAttributesPerEvent = 8u,
+                maxAttributesPerLink = 4u,
+            )
         assertEquals(64u, limits.maxEventsPerSpan)
         assertEquals(32u, limits.maxAttributesPerSpan)
         assertEquals(16u, limits.maxLinksPerSpan)
@@ -54,11 +55,12 @@ class TraceTypesTest {
         assertTrue(emptyEvents.isEmpty)
         assertEquals(0, emptyEvents.size)
 
-        val event = Event(
-            name = "test-event",
-            timestamp = Instant.fromEpochMilliseconds(1000L),
-            attributes = listOf(KeyValue(Key("attr"), Value.of("val"))),
-        )
+        val event =
+            Event(
+                name = "test-event",
+                timestamp = Instant.fromEpochMilliseconds(1000L),
+                attributes = listOf(KeyValue(Key("attr"), Value.of("val"))),
+            )
         val withEvent = emptyEvents.withAddedEvent(event)
         assertFalse(withEvent.isEmpty)
         assertEquals(1, withEvent.size)

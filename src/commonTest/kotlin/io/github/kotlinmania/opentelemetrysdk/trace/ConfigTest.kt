@@ -6,7 +6,6 @@ import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 class ConfigTest {
-
     @Test
     fun testDefaultConfig() {
         val config = Config.defaultConfig()
@@ -18,12 +17,13 @@ class ConfigTest {
 
     @Test
     fun testConfigWithEnvOverrides() {
-        val fakeEnv = mapOf(
-            Config.OTEL_SPAN_ATTRIBUTE_COUNT_LIMIT to "64",
-            Config.OTEL_SPAN_EVENT_COUNT_LIMIT to "32",
-            Config.OTEL_SPAN_LINK_COUNT_LIMIT to "16",
-            Config.OTEL_TRACES_SAMPLER to "always_off",
-        )
+        val fakeEnv =
+            mapOf(
+                Config.OTEL_SPAN_ATTRIBUTE_COUNT_LIMIT to "64",
+                Config.OTEL_SPAN_EVENT_COUNT_LIMIT to "32",
+                Config.OTEL_SPAN_LINK_COUNT_LIMIT to "16",
+                Config.OTEL_TRACES_SAMPLER to "always_off",
+            )
         val config = Config.defaultConfig { fakeEnv[it] }
         assertEquals(64u, config.spanLimits.maxAttributesPerSpan)
         assertEquals(32u, config.spanLimits.maxEventsPerSpan)

@@ -36,15 +36,15 @@ public data class KeyValueMetadata(
  * Propagates name-value pairs in W3C Baggage format under `baggage` header.
  */
 public class BaggagePropagator : TextMapPropagator {
-
     override fun injectContext(context: Context, injector: Injector) {
         val baggage = context.baggage
         if (baggage.isNotEmpty()) {
-            val headerValue = baggage.joinToString(",") { kv ->
-                val name = percentEncode(kv.key.name.trim())
-                val valueStr = percentEncode(kv.value.toString().trim())
-                "$name=$valueStr"
-            }
+            val headerValue =
+                baggage.joinToString(",") { kv ->
+                    val name = percentEncode(kv.key.name.trim())
+                    val valueStr = percentEncode(kv.value.toString().trim())
+                    "$name=$valueStr"
+                }
             injector.set(BAGGAGE_HEADER, headerValue)
         }
     }

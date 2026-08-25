@@ -55,10 +55,11 @@ public sealed class Sampler : ShouldSample {
             spanKind: SpanKind,
             attributes: List<KeyValue>,
             links: List<Link>,
-        ): SamplingResult = SamplingResult(
-            decision = SamplingDecision.RECORD_AND_SAMPLE,
-            traceState = parentContext?.traceState ?: TraceState.DEFAULT,
-        )
+        ): SamplingResult =
+            SamplingResult(
+                decision = SamplingDecision.RECORD_AND_SAMPLE,
+                traceState = parentContext?.traceState ?: TraceState.DEFAULT,
+            )
     }
 
     /**
@@ -72,10 +73,11 @@ public sealed class Sampler : ShouldSample {
             spanKind: SpanKind,
             attributes: List<KeyValue>,
             links: List<Link>,
-        ): SamplingResult = SamplingResult(
-            decision = SamplingDecision.DROP,
-            traceState = parentContext?.traceState ?: TraceState.DEFAULT,
-        )
+        ): SamplingResult =
+            SamplingResult(
+                decision = SamplingDecision.DROP,
+                traceState = parentContext?.traceState ?: TraceState.DEFAULT,
+            )
     }
 
     /**
@@ -93,11 +95,12 @@ public sealed class Sampler : ShouldSample {
             links: List<Link>,
         ): SamplingResult {
             if (parentContext != null && parentContext.isValid) {
-                val decision = if (parentContext.traceFlags.isSampled) {
-                    SamplingDecision.RECORD_AND_SAMPLE
-                } else {
-                    SamplingDecision.DROP
-                }
+                val decision =
+                    if (parentContext.traceFlags.isSampled) {
+                        SamplingDecision.RECORD_AND_SAMPLE
+                    } else {
+                        SamplingDecision.DROP
+                    }
                 return SamplingResult(
                     decision = decision,
                     traceState = parentContext.traceState,

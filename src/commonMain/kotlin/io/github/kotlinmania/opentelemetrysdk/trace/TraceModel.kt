@@ -152,16 +152,21 @@ public sealed interface Status : Comparable<Status> {
 
     public data object Unset : Status {
         override val priority: Int = 0
+
         override fun compareTo(other: Status): Int = priority.compareTo(other.priority)
     }
 
-    public data class Error(public val message: String = "") : Status {
+    public data class Error(
+        public val message: String = "",
+    ) : Status {
         override val priority: Int = 1
+
         override fun compareTo(other: Status): Int = priority.compareTo(other.priority)
     }
 
     public data object Ok : Status {
         override val priority: Int = 2
+
         override fun compareTo(other: Status): Int = priority.compareTo(other.priority)
     }
 

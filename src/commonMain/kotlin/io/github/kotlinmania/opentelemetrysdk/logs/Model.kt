@@ -11,7 +11,10 @@ import kotlin.time.Instant
 /**
  * Severity levels for a log record.
  */
-public enum class Severity(public val severityNumber: Int, public val severityName: String) {
+public enum class Severity(
+    public val severityNumber: Int,
+    public val severityName: String,
+) {
     Trace(1, "TRACE"),
     Trace2(2, "TRACE2"),
     Trace3(3, "TRACE3"),
@@ -35,7 +38,8 @@ public enum class Severity(public val severityNumber: Int, public val severityNa
     Fatal(21, "FATAL"),
     Fatal2(22, "FATAL2"),
     Fatal3(23, "FATAL3"),
-    Fatal4(24, "FATAL4");
+    Fatal4(24, "FATAL4"),
+    ;
 
     public fun shortName(): String = severityName
 }
@@ -45,27 +49,37 @@ public enum class Severity(public val severityNumber: Int, public val severityNa
  */
 public sealed interface AnyValue {
     /** An integer value. */
-    public data class IntValue(public val value: Long) : AnyValue {
+    public data class IntValue(
+        public val value: Long,
+    ) : AnyValue {
         override fun toString(): String = value.toString()
     }
 
     /** A double value. */
-    public data class DoubleValue(public val value: Double) : AnyValue {
+    public data class DoubleValue(
+        public val value: Double,
+    ) : AnyValue {
         override fun toString(): String = value.toString()
     }
 
     /** A string value. */
-    public data class StringValue(public val value: String) : AnyValue {
+    public data class StringValue(
+        public val value: String,
+    ) : AnyValue {
         override fun toString(): String = value
     }
 
     /** A boolean value. */
-    public data class BooleanValue(public val value: Boolean) : AnyValue {
+    public data class BooleanValue(
+        public val value: Boolean,
+    ) : AnyValue {
         override fun toString(): String = value.toString()
     }
 
     /** A byte array value. */
-    public class BytesValue(public val value: ByteArray) : AnyValue {
+    public class BytesValue(
+        public val value: ByteArray,
+    ) : AnyValue {
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
             if (other !is BytesValue) return false
@@ -78,19 +92,30 @@ public sealed interface AnyValue {
     }
 
     /** An array of [AnyValue] values. */
-    public data class ListAny(public val value: List<AnyValue>) : AnyValue
+    public data class ListAny(
+        public val value: List<AnyValue>,
+    ) : AnyValue
 
     /** A map of string keys to [AnyValue] values, arbitrarily nested. */
-    public data class MapValue(public val value: Map<Key, AnyValue>) : AnyValue
+    public data class MapValue(
+        public val value: Map<Key, AnyValue>,
+    ) : AnyValue
 
     public companion object {
         public fun of(value: String): AnyValue = StringValue(value)
+
         public fun of(value: Long): AnyValue = IntValue(value)
+
         public fun of(value: Int): AnyValue = IntValue(value.toLong())
+
         public fun of(value: Double): AnyValue = DoubleValue(value)
+
         public fun of(value: Boolean): AnyValue = BooleanValue(value)
+
         public fun of(value: ByteArray): AnyValue = BytesValue(value)
+
         public fun of(value: List<AnyValue>): AnyValue = ListAny(value)
+
         public fun of(value: Map<Key, AnyValue>): AnyValue = MapValue(value)
     }
 }
@@ -115,17 +140,29 @@ public data class LogAttribute(
  */
 public interface LogRecord {
     public fun setEventName(name: String)
+
     public fun setTarget(target: String)
+
     public fun setTimestamp(timestamp: Instant)
+
     public fun setObservedTimestamp(timestamp: Instant)
+
     public fun setSeverityText(text: String)
+
     public fun setSeverityNumber(number: Severity)
+
     public fun setBody(body: AnyValue)
+
     public fun addAttributes(attributes: List<LogAttribute>)
+
     public fun addAttribute(key: Key, value: AnyValue)
+
     public fun addAttribute(key: String, value: String)
+
     public fun addAttribute(key: String, value: AnyValue)
+
     public fun addAttribute(attribute: LogAttribute)
+
     public fun setTraceContext(traceId: TraceId, spanId: SpanId, traceFlags: TraceFlags? = null)
 }
 
@@ -134,6 +171,7 @@ public interface LogRecord {
  */
 public interface Logger {
     public fun createLogRecord(): SdkLogRecord
+
     public fun emit(record: SdkLogRecord)
 }
 
@@ -142,5 +180,6 @@ public interface Logger {
  */
 public interface LoggerProvider {
     public fun logger(name: String): Logger
+
     public fun loggerWithScope(scope: InstrumentationScope): Logger
 }

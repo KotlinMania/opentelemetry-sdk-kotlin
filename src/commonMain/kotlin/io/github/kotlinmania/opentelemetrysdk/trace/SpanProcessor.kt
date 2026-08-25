@@ -106,13 +106,14 @@ public class BatchConfigBuilder {
         return this
     }
 
-    public fun build(): BatchConfig = BatchConfig(
-        maxQueueSize = maxQueueSize,
-        scheduledDelay = scheduledDelay,
-        maxExportBatchSize = maxExportBatchSize,
-        maxExportTimeout = maxExportTimeout,
-        maxConcurrentExports = maxConcurrentExports,
-    )
+    public fun build(): BatchConfig =
+        BatchConfig(
+            maxQueueSize = maxQueueSize,
+            scheduledDelay = scheduledDelay,
+            maxExportBatchSize = maxExportBatchSize,
+            maxExportTimeout = maxExportTimeout,
+            maxConcurrentExports = maxConcurrentExports,
+        )
 }
 
 /**

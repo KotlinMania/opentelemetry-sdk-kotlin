@@ -48,6 +48,7 @@ public data class InstrumentationScope(
 
     public companion object {
         public fun builder(name: String): Builder = Builder(name)
+
         public val EMPTY: InstrumentationScope = InstrumentationScope("")
     }
 }

@@ -15,6 +15,7 @@ import io.github.kotlinmania.opentelemetrysdk.trace.TraceStateEntry
  */
 public interface Extractor {
     public fun get(key: String): String?
+
     public fun keys(): List<String> = emptyList()
 }
 
@@ -59,7 +60,6 @@ public fun Context.withSpan(span: Span): Context =
  * Propagates `SpanContext`s in W3C TraceContext format under `traceparent` and `tracestate` headers.
  */
 public class TraceContextPropagator : TextMapPropagator {
-
     public fun extractSpanContext(extractor: Extractor): SpanContext? {
         val headerValue = extractor.get(TRACEPARENT_HEADER)?.trim() ?: return null
         val parts = headerValue.split('-')
@@ -89,11 +89,12 @@ public class TraceContextPropagator : TextMapPropagator {
         val traceFlags = if ((opts and 1) != 0) TraceFlags.SAMPLED else TraceFlags.DEFAULT
 
         val traceStateStr = extractor.get(TRACESTATE_HEADER)
-        val traceState = if (traceStateStr != null) {
-            parseTraceState(traceStateStr)
-        } else {
-            TraceState.DEFAULT
-        }
+        val traceState =
+            if (traceStateStr != null) {
+                parseTraceState(traceStateStr)
+            } else {
+                TraceState.DEFAULT
+            }
 
         val spanContext = SpanContext.new(traceId, spanId, traceFlags, isRemote = true, traceState = traceState)
         return if (spanContext.isValid) spanContext else null
@@ -132,15 +133,18 @@ public class TraceContextPropagator : TextMapPropagator {
 
         private fun parseTraceState(traceStateStr: String): TraceState {
             if (traceStateStr.isBlank()) return TraceState.DEFAULT
-            val entries = traceStateStr.split(',').mapNotNull { part ->
-                val trimmed = part.trim()
-                val eq = trimmed.indexOf('=')
-                if (eq > 0) {
-                    val key = trimmed.substring(0, eq).trim()
-                    val value = trimmed.substring(eq + 1).trim()
-                    TraceStateEntry(key, value)
-                } else null
-            }
+            val entries =
+                traceStateStr.split(',').mapNotNull { part ->
+                    val trimmed = part.trim()
+                    val eq = trimmed.indexOf('=')
+                    if (eq > 0) {
+                        val key = trimmed.substring(0, eq).trim()
+                        val value = trimmed.substring(eq + 1).trim()
+                        TraceStateEntry(key, value)
+                    } else {
+                        null
+                    }
+                }
             return TraceState(entries)
         }
     }

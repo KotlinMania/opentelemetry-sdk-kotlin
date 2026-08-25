@@ -4,14 +4,14 @@ Based on AST analysis, here are the concrete next steps.
 
 ## Summary
 
-- **Files Present:** 36/72 (50.0%)
-- **Function parity:** 194/857 matched (target 368) — 22.6%
-- **Class/type parity:** 56/222 matched (target 130) — 25.2%
-- **Combined symbol parity:** 250/1079 matched (target 498) — 23.2%
-- **Average inline-code cosine:** 0.28 (function body across 29 matched files)
-- **Average documentation cosine:** 0.55 (doc text across 29 matched files)
-- **Cheat-zeroed Files:** 8
-- **Critical Issues:** 33 files with <0.60 function similarity
+- **Files Present:** 49/72 (68.1%)
+- **Function parity:** 275/992 matched (target 480) — 27.7%
+- **Class/type parity:** 93/246 matched (target 190) — 37.8%
+- **Combined symbol parity:** 368/1238 matched (target 670) — 29.7%
+- **Average inline-code cosine:** 0.32 (function body across 40 matched files)
+- **Average documentation cosine:** 0.57 (doc text across 40 matched files)
+- **Cheat-zeroed Files:** 11
+- **Critical Issues:** 44 files with <0.60 function similarity
 
 ## Priority 1: Fix Incomplete High-Dependency Files
 
@@ -27,19 +27,7 @@ No missing high-value files detected.
 
 Every matched file is listed below with function and type symbol parity.
 
-### 1. trace.span
-
-- **Target:** `trace.Span`
-- **Similarity:** 0.16
-- **Dependents:** 3
-- **Priority Score:** 3253508.5
-- **Functions:** 9/33 matched (target 12)
-- **Missing functions:** `new`, `with_data`, `span_context`, `drop`, `build_export_data`, `init`, `create_span`, `create_span_without_data`, `create_span_with_data_mut`, `add_event`, `record_error`, `set_attributes`, `end`, `allows_to_get_span_context_after_end`, `end_only_once`, `noop_after_end`, `is_recording_true_when_not_ended`, `is_recording_false_after_end`, `exceed_span_attributes_limit`, `exceed_event_attributes_limit`, `exceed_link_attributes_limit`, `exceed_span_links_limit`, `exceed_span_events_limit`, `test_span_exported_data`
-- **Types:** 1/2 matched (target 1)
-- **Missing types:** `SpanData`
-- **Tests:** 0/17 matched
-
-### 2. logs.log_processor
+### 1. logs.log_processor
 
 - **Target:** `logs.LogProcessor`
 - **Similarity:** 0.27
@@ -51,6 +39,18 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing types:** `MockLogExporter`, `FirstProcessor`, `SecondProcessor`
 - **Tests:** 0/1 matched
 - **Lint issues:** 1
+
+### 2. trace.span
+
+- **Target:** `trace.Span`
+- **Similarity:** 0.64
+- **Dependents:** 3
+- **Priority Score:** 3053503.5
+- **Functions:** 29/33 matched (target 40)
+- **Missing functions:** `span_context`, `drop`, `build_export_data`, `init`
+- **Types:** 1/2 matched
+- **Missing types:** `SpanData`
+- **Tests:** 17/17 matched
 
 ### 3. resource.env
 
@@ -75,7 +75,19 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 3/3 matched (target 6)
 - **Missing types:** _none_
 
-### 5. propagation.trace_context
+### 5. metrics.meter_provider
+
+- **Target:** `metrics.MeterProvider`
+- **Similarity:** 0.37
+- **Dependents:** 2
+- **Priority Score:** 2092406.4
+- **Functions:** 13/21 matched (target 13)
+- **Missing functions:** `drop`, `meter`, `meter_with_scope`, `fmt`, `test_shutdown_invoked_on_last_drop`, `same_meter_reused_same_scope`, `same_meter_reused_same_scope_attributes`, `different_meter_different_attributes`
+- **Types:** 2/3 matched
+- **Missing types:** `SdkMeterProviderInner`
+- **Tests:** 3/7 matched
+
+### 6. propagation.trace_context
 
 - **Target:** `propagation.TraceContext`
 - **Similarity:** 0.33
@@ -87,7 +99,19 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing types:** _none_
 - **Tests:** 5/5 matched
 
-### 6. trace.span_processor
+### 7. metrics.periodic_reader
+
+- **Target:** `metrics.PeriodicReader`
+- **Similarity:** 0.11
+- **Dependents:** 1
+- **Priority Score:** 1405009.0
+- **Functions:** 8/44 matched (target 9)
+- **Missing functions:** `new`, `clone`, `collect_and_export`, `fmt`, `shutdown`, `default`, `get_count`, `export`, `collection_triggered_by_interval_multiple`, `shutdown_repeat`, `flush_after_shutdown`, `flush_repeat`, `periodic_reader_without_pipeline`, `exporter_failures_are_handled`, `shutdown_passed_to_exporter`, `collection`, `collection_from_tokio_multi_with_one_worker`, `collection_from_tokio_with_two_worker`, `collection_from_tokio_current`, `collection_triggered_by_interval_helper`, `collection_triggered_by_flush_helper`, `collection_triggered_by_shutdown_helper`, `collection_triggered_by_drop_helper`, `collection_helper`, `some_async_function`, `async_inside_observable_callback_from_tokio_multi_with_one_worker`, `async_inside_observable_callback_from_tokio_multi_with_two_worker`, `async_inside_observable_callback_from_tokio_current_thread`, `async_inside_observable_callback_from_regular_main`, `async_inside_observable_callback_helper`, `some_tokio_async_function`, `tokio_async_inside_observable_callback_from_tokio_multi_with_one_worker`, `tokio_async_inside_observable_callback_from_tokio_multi_with_two_worker`, `tokio_async_inside_observable_callback_from_tokio_current_thread`, `tokio_async_inside_observable_callback_from_regular_main`, `tokio_async_inside_observable_callback_helper`
+- **Types:** 2/6 matched (target 3)
+- **Missing types:** `PeriodicReaderInner`, `Message`, `MetricExporterThatFailsOnlyOnFirst`, `MockMetricExporter`
+- **Tests:** 0/10 matched
+
+### 8. trace.span_processor
 
 - **Target:** `trace.SpanProcessor`
 - **Similarity:** 0.28
@@ -100,7 +124,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Tests:** 0/15 matched
 - **Lint issues:** 5
 
-### 7. logs.batch_log_processor
+### 9. logs.batch_log_processor
 
 - **Target:** `logs.BatchLogProcessor`
 - **Similarity:** 0.26
@@ -112,7 +136,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing types:** `BatchMessage`, `LogsData`
 - **Tests:** 0/8 matched
 
-### 8. logs.simple_log_processor
+### 10. logs.simple_log_processor
 
 - **Target:** `logs.SimpleLogProcessor`
 - **Similarity:** 0.15
@@ -124,7 +148,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing types:** `LogExporterThatRequiresTokio`, `ReentrantLogExporter`
 - **Tests:** 0/5 matched
 
-### 9. trace.tracer
+### 11. trace.tracer
 
 - **Target:** `trace.Tracer`
 - **Similarity:** 0.00
@@ -136,7 +160,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing types:** `Span`, `TestSampler`
 - **Tests:** 0/3 matched
 
-### 10. growable_array
+### 12. growable_array
 
 - **Target:** `opentelemetrysdk.GrowableArray`
 - **Similarity:** 0.50
@@ -148,7 +172,19 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing types:** `Item`, `IntoIter`, `KeyValuePair`
 - **Tests:** 9/10 matched
 
-### 11. trace.config
+### 13. metrics.aggregation
+
+- **Target:** `metrics.Aggregation`
+- **Similarity:** 0.47
+- **Dependents:** 1
+- **Priority Score:** 1010505.3
+- **Functions:** 2/3 matched (target 8)
+- **Missing functions:** `fmt`
+- **Types:** 2/2 matched (target 9)
+- **Missing types:** _none_
+- **Tests:** 1/1 matched
+
+### 14. trace.config
 
 - **Target:** `trace.Config`
 - **Similarity:** 0.00
@@ -159,7 +195,46 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 1/1 matched (target 2)
 - **Missing types:** _none_
 
-### 12. trace.provider
+### 15. metrics.mod
+
+- **Target:** `metrics.Temporality [STUB]`
+- **Similarity:** 0.00
+- **Dependents:** 0
+- **Priority Score:** 969710.0
+- **Functions:** 0/95 matched (target 0)
+- **Missing functions:** `invalid_instrument_config_noops`, `valid_instrument_config_with_feature_experimental_metrics_disable_name_validation`, `counter_aggregation_delta`, `counter_aggregation_cumulative`, `counter_aggregation_no_attributes_cumulative`, `counter_aggregation_no_attributes_delta`, `counter_aggregation_overflow_delta`, `counter_aggregation_overflow_cumulative`, `counter_aggregation_attribute_order_sorted_first_delta`, `counter_aggregation_attribute_order_sorted_first_cumulative`, `counter_aggregation_attribute_order_unsorted_first_delta`, `counter_aggregation_attribute_order_unsorted_first_cumulative`, `histogram_aggregation_cumulative`, `histogram_aggregation_delta`, `histogram_aggregation_with_custom_bounds`, `histogram_aggregation_with_empty_bounds`, `updown_counter_aggregation_cumulative`, `updown_counter_aggregation_delta`, `gauge_aggregation`, `observable_gauge_aggregation`, `observable_counter_aggregation_cumulative_non_zero_increment`, `observable_counter_aggregation_cumulative_non_zero_increment_no_attrs`, `observable_counter_aggregation_delta_non_zero_increment`, `observable_counter_aggregation_delta_non_zero_increment_no_attrs`, `observable_counter_aggregation_cumulative_zero_increment`, `observable_counter_aggregation_cumulative_zero_increment_no_attrs`, `observable_counter_aggregation_delta_zero_increment`, `observable_counter_aggregation_delta_zero_increment_no_attrs`, `observable_counter_aggregation_helper`, `empty_meter_name_retained`, `meter_name_retained_helper`, `counter_duplicate_instrument_merge`, `counter_duplicate_instrument_different_meter_no_merge`, `instrumentation_scope_identity_test`, `histogram_aggregation_with_invalid_aggregation_should_proceed_as_if_view_not_exist`, `spatial_aggregation_when_view_drops_attributes_observable_counter`, `spatial_aggregation_when_view_drops_attributes_counter`, `no_attr_cumulative_up_down_counter`, `no_attr_up_down_counter_always_cumulative`, `no_attr_cumulative_counter_value_added_after_export`, `no_attr_delta_counter_value_reset_after_export`, `second_delta_export_does_not_give_no_attr_value_if_add_not_called`, `delta_memory_efficiency_test`, `counter_multithreaded`, `counter_f64_multithreaded`, `histogram_multithreaded`, `histogram_f64_multithreaded`, `synchronous_instruments_cumulative_with_gap_in_measurements`, `synchronous_instruments_cumulative_with_gap_in_measurements_helper`, `assert_correct_export`, `asynchronous_instruments_cumulative_data_points_only_from_last_measurement`, `view_test_rename`, `view_test_change_unit`, `view_test_change_description`, `view_test_change_name_unit`, `view_test_change_name_unit_desc`, `view_test_match_unit`, `view_test_match_none`, `view_test_match_multiple`, `test_view_customization`, `test_view_single_instrument_multiple_stream`, `test_view_multiple_instrument_single_stream`, `asynchronous_instruments_cumulative_data_points_only_from_last_measurement_helper`, `counter_multithreaded_aggregation_helper`, `counter_f64_multithreaded_aggregation_helper`, `histogram_multithreaded_aggregation_helper`, `histogram_f64_multithreaded_aggregation_helper`, `histogram_aggregation_helper`, `histogram_aggregation_with_custom_bounds_helper`, `histogram_aggregation_with_empty_bounds_helper`, `gauge_aggregation_helper`, `observable_gauge_aggregation_helper`, `counter_aggregation_helper`, `counter_aggregation_overflow_helper`, `counter_aggregation_overflow_helper_custom_limit`, `counter_aggregation_attribute_order_helper`, `updown_counter_aggregation_helper`, `find_sum_datapoint_with_key_value`, `find_overflow_sum_datapoint`, `find_gauge_datapoint_with_key_value`, `find_sum_datapoint_with_no_attributes`, `find_gauge_datapoint_with_no_attributes`, `find_histogram_datapoint_with_key_value`, `find_histogram_datapoint_with_no_attributes`, `find_scope_metric`, `new`, `new_with_view`, `u64_counter`, `i64_up_down_counter`, `meter`, `flush_metrics`, `reset_metrics`, `check_no_metrics`, `get_aggregation`, `get_from_multiple_aggregations`
+- **Types:** 1/2 matched (target 1)
+- **Missing types:** `TestContext`
+- **Tests:** 0/10 matched
+
+### 16. internal.mod
+
+- **Target:** `logs.ProcessorAndExporterTest [STUB] [PROVENANCE-FALLBACK]`
+- **Similarity:** 0.00
+- **Dependents:** 0
+- **Priority Score:** 363610.0
+- **Functions:** 0/29 matched (target 21)
+- **Missing functions:** `stream_overflow_attributes`, `new`, `trackers_for_collect`, `is_under_cardinality_limit`, `measure`, `collect_readonly`, `collect_and_reset`, `prepare_data`, `sort_and_dedup`, `min`, `max`, `into_float`, `make_aggregated_metrics`, `extract_metrics_data_ref`, `extract_metrics_data_mut`, `store`, `add`, `get_value`, `get_and_reset_value`, `new_atomic_tracker`, `can_store_u64_atomic_value`, `can_add_and_get_u64_atomic_value`, `can_reset_u64_atomic_value`, `can_store_i64_atomic_value`, `can_add_and_get_i64_atomic_value`, `can_reset_i64_atomic_value`, `can_store_f64_atomic_value`, `can_add_and_get_f64_atomic_value`, `can_reset_f64_atomic_value`
+- **Types:** 0/7 matched (target 3)
+- **Missing types:** `Aggregator`, `ValueMap`, `AtomicTracker`, `AtomicallyUpdate`, `AggregatedMetricsAccess`, `Number`, `F64AtomicTracker`
+- **Tests:** 0/9 matched
+- **Provenance warning:** port-lint provenance header matched only by basename: `logs/mod.rs` vs expected `metrics/internal/mod.rs`
+- **Proposed provenance header:** `// port-lint: source metrics/internal/mod.rs` (current: `// port-lint: source logs/mod.rs`)
+- **Lint issues:** 6
+
+### 17. data.mod
+
+- **Target:** `data.Data [STUB]`
+- **Similarity:** 0.00
+- **Dependents:** 0
+- **Priority Score:** 335010.0
+- **Functions:** 2/35 matched (target 4)
+- **Missing functions:** `default`, `resource`, `scope_metrics`, `scope`, `metrics`, `name`, `unit`, `data`, `from`, `attributes`, `exemplars`, `value`, `data_points`, `start_time`, `time`, `temporality`, `is_monotonic`, `bounds`, `bucket_counts`, `count`, `min`, `max`, `sum`, `scale`, `zero_count`, `positive_bucket`, `negative_bucket`, `zero_threshold`, `offset`, `counts`, `filtered_attributes`, `span_id`, `trace_id`
+- **Types:** 15/15 matched (target 23)
+- **Missing types:** _none_
+- **Tests:** 1/1 matched
+
+### 18. trace.provider
 
 - **Target:** `trace.Provider`
 - **Similarity:** 0.25
@@ -171,7 +246,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing types:** `TracerProviderInner`, `Tracer`, `AssertInfo`, `SharedAssertInfo`, `TestSpanProcessor`, `CountingShutdownProcessor`
 - **Tests:** 0/10 matched
 
-### 13. logs.logger_provider
+### 19. logs.logger_provider
 
 - **Target:** `logs.LoggerProvider`
 - **Similarity:** 0.19
@@ -183,7 +258,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing types:** `Logger`, `ShutdownTestLogProcessor`, `TestExporterForResource`, `TestProcessorForResource`, `LazyLogProcessor`, `CountingShutdownProcessor`
 - **Tests:** 0/15 matched
 
-### 14. trace.mod
+### 20. trace.mod
 
 - **Target:** `trace.TraceModel [STUB]`
 - **Similarity:** 0.00
@@ -195,7 +270,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing types:** `ValueA`, `BaggageInspectingSpanProcessor`, `TestRecordOnlySampler`
 - **Tests:** 0/11 matched
 
-### 15. jaeger_remote.sampler
+### 21. jaeger_remote.sampler
 
 - **Target:** `trace.SamplerTest [PROVENANCE-FALLBACK]`
 - **Similarity:** 0.00
@@ -210,7 +285,19 @@ Every matched file is listed below with function and type symbol parity.
 - **Proposed provenance header:** `// port-lint: source trace/sampler/jaeger_remote/sampler.rs` (current: `// port-lint: source trace/sampler.rs`)
 - **Lint issues:** 1
 
-### 16. logs.mod
+### 22. metrics.instrument
+
+- **Target:** `metrics.Instrument`
+- **Similarity:** 0.44
+- **Dependents:** 0
+- **Priority Score:** 123005.6
+- **Functions:** 14/23 matched (target 16)
+- **Missing functions:** `name`, `kind`, `unit`, `scope`, `new`, `validate_bucket_boundaries`, `normalize`, `measure`, `observe`
+- **Types:** 4/7 matched (target 5)
+- **Missing types:** `InstrumentId`, `ResolvedMeasures`, `Observable`
+- **Tests:** 5/5 matched
+
+### 23. logs.mod
 
 - **Target:** `logs.Model [STUB]`
 - **Similarity:** 0.00
@@ -222,7 +309,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing types:** `EnrichWithBaggageProcessor`, `ReentrantLogProcessor`
 - **Tests:** 0/5 matched
 
-### 17. logs.record
+### 24. logs.record
 
 - **Target:** `logs.Record`
 - **Similarity:** 0.59
@@ -234,7 +321,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing types:** `LogRecordAttributes`
 - **Tests:** 11/12 matched
 
-### 18. trace.sampler
+### 25. trace.sampler
 
 - **Target:** `trace.Sampler`
 - **Similarity:** 0.18
@@ -247,19 +334,19 @@ Every matched file is listed below with function and type symbol parity.
 - **Tests:** 0/3 matched
 - **Lint issues:** 4
 
-### 19. resource.mod
+### 26. resource.mod
 
 - **Target:** `resource.Resource [STUB]`
 - **Similarity:** 0.00
 - **Dependents:** 0
 - **Priority Score:** 73510.0
-- **Functions:** 25/28 matched (target 39)
+- **Functions:** 25/28 matched (target 40)
 - **Missing functions:** `schema_url`, `next`, `into_iter`
 - **Types:** 3/7 matched (target 12)
 - **Missing types:** `ResourceInner`, `Iter`, `Item`, `IntoIter`
 - **Tests:** 7/7 matched
 
-### 20. propagation.baggage
+### 27. propagation.baggage
 
 - **Target:** `propagation.Baggage`
 - **Similarity:** 0.23
@@ -271,7 +358,18 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing types:** _none_
 - **Tests:** 3/8 matched
 
-### 21. trace.links
+### 28. metrics.in_memory_exporter
+
+- **Target:** `metrics.InMemoryExporter`
+- **Similarity:** 0.32
+- **Dependents:** 0
+- **Priority Score:** 61806.8
+- **Functions:** 10/16 matched (target 13)
+- **Missing functions:** `clone`, `fmt`, `new`, `clone_metrics`, `clone_data`, `clone_inner`
+- **Types:** 2/2 matched (target 3)
+- **Missing types:** _none_
+
+### 29. trace.links
 
 - **Target:** `trace.Links`
 - **Similarity:** 0.00
@@ -282,18 +380,18 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 1/4 matched (target 2)
 - **Missing types:** `Target`, `Item`, `IntoIter`
 
-### 22. trace.events
+### 30. trace.events
 
 - **Target:** `trace.Events`
 - **Similarity:** 0.00
 - **Dependents:** 0
 - **Priority Score:** 60710.0
-- **Functions:** 0/3 matched
+- **Functions:** 0/3 matched (target 4)
 - **Missing functions:** `deref`, `into_iter`, `add_event`
 - **Types:** 1/4 matched (target 2)
 - **Missing types:** `Target`, `Item`, `IntoIter`
 
-### 23. logs.export
+### 31. logs.export
 
 - **Target:** `logs.Export`
 - **Similarity:** 0.47
@@ -305,7 +403,19 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing types:** `LogBatchData`, `LogBatchDataIter`, `Item`
 - **Lint issues:** 1
 
-### 24. trace.in_memory_exporter
+### 32. metrics.manual_reader
+
+- **Target:** `metrics.ManualReader`
+- **Similarity:** 0.42
+- **Dependents:** 0
+- **Priority Score:** 41405.8
+- **Functions:** 8/11 matched (target 8)
+- **Missing functions:** `default`, `fmt`, `new`
+- **Types:** 2/3 matched (target 2)
+- **Missing types:** `ManualReaderInner`
+- **Lint issues:** 1
+
+### 33. trace.in_memory_exporter
 
 - **Target:** `trace.InMemoryExporter`
 - **Similarity:** 0.28
@@ -318,7 +428,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Tests:** 0/1 matched
 - **Lint issues:** 1
 
-### 25. logs.in_memory_exporter
+### 34. logs.in_memory_exporter
 
 - **Target:** `logs.InMemoryExporter`
 - **Similarity:** 0.41
@@ -331,7 +441,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Tests:** 0/1 matched
 - **Lint issues:** 1
 
-### 26. logs.logger
+### 35. logs.logger
 
 - **Target:** `logs.Logger`
 - **Similarity:** 0.66
@@ -342,7 +452,18 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 1/2 matched (target 1)
 - **Missing types:** `LogRecord`
 
-### 27. trace.error
+### 36. metrics.view
+
+- **Target:** `metrics.View [ZERO]`
+- **Similarity:** 0.00
+- **Dependents:** 0
+- **Priority Score:** 20210.0
+- **Functions:** 0/1 matched (target 0)
+- **Missing functions:** `match_inst`
+- **Types:** 0/1 matched (target 0)
+- **Missing types:** `View`
+
+### 37. trace.error
 
 - **Target:** `trace.Error`
 - **Similarity:** 0.21
@@ -353,7 +474,29 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 2/3 matched (target 6)
 - **Missing types:** `Custom`
 
-### 28. lib
+### 38. metrics.error
+
+- **Target:** `metrics.Error`
+- **Similarity:** 0.00
+- **Dependents:** 0
+- **Priority Score:** 10310.0
+- **Functions:** 0/1 matched
+- **Missing functions:** `from`
+- **Types:** 2/2 matched (target 5)
+- **Missing types:** _none_
+
+### 39. trace.span_limit
+
+- **Target:** `trace.SpanLimits`
+- **Similarity:** 0.00
+- **Dependents:** 0
+- **Priority Score:** 10210.0
+- **Functions:** 0/1 matched
+- **Missing functions:** `default`
+- **Types:** 1/1 matched
+- **Missing types:** _none_
+
+### 40. lib
 
 - **Target:** `opentelemetrysdk.Lib [STUB] [PROVENANCE-FALLBACK]`
 - **Similarity:** 0.00
@@ -367,18 +510,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Proposed provenance header:** `// port-lint: source lib.rs` (current: `// port-lint: source src/lib.rs`)
 - **Lint issues:** 1
 
-### 29. trace.span_limit
-
-- **Target:** `trace.SpanLimits`
-- **Similarity:** 0.00
-- **Dependents:** 0
-- **Priority Score:** 10210.0
-- **Functions:** 0/1 matched
-- **Missing functions:** `default`
-- **Types:** 1/1 matched
-- **Missing types:** _none_
-
-### 30. util
+### 41. util
 
 - **Target:** `opentelemetrysdk.Util [PROVENANCE-FALLBACK]`
 - **Similarity:** 0.00
@@ -392,7 +524,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Proposed provenance header:** `// port-lint: source util.rs` (current: `// port-lint: source src/util.rs`)
 - **Lint issues:** 1
 
-### 31. trace.export
+### 42. trace.export
 
 - **Target:** `trace.Export`
 - **Similarity:** 0.65
@@ -404,7 +536,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing types:** _none_
 - **Lint issues:** 1
 
-### 32. id_generator.mod
+### 43. id_generator.mod
 
 - **Target:** `trace.IdGenerator [STUB]`
 - **Similarity:** 0.00
@@ -415,7 +547,41 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 2/2 matched
 - **Missing types:** _none_
 
-### 33. resource.telemetry
+### 44. metrics.noop
+
+- **Target:** `metrics.Noop`
+- **Similarity:** 0.83
+- **Dependents:** 0
+- **Priority Score:** 401.7
+- **Functions:** 2/2 matched (target 4)
+- **Missing functions:** _none_
+- **Types:** 2/2 matched
+- **Missing types:** _none_
+- **Lint issues:** 2
+
+### 45. metrics.reader
+
+- **Target:** `metrics.Reader`
+- **Similarity:** 0.55
+- **Dependents:** 0
+- **Priority Score:** 304.5
+- **Functions:** 1/1 matched (target 3)
+- **Missing functions:** _none_
+- **Types:** 2/2 matched
+- **Missing types:** _none_
+
+### 46. metrics.exporter
+
+- **Target:** `metrics.Exporter`
+- **Similarity:** 0.55
+- **Dependents:** 0
+- **Priority Score:** 204.5
+- **Functions:** 1/1 matched (target 3)
+- **Missing functions:** _none_
+- **Types:** 1/1 matched
+- **Missing types:** _none_
+
+### 47. resource.telemetry
 
 - **Target:** `resource.Telemetry`
 - **Similarity:** 0.58
@@ -426,7 +592,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 1/1 matched
 - **Missing types:** _none_
 
-### 34. resource.attributes
+### 48. resource.attributes
 
 - **Target:** `resource.Attributes [ZERO]`
 - **Similarity:** 0.00
@@ -437,7 +603,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 0/0 matched
 - **Missing types:** _none_
 
-### 35. jaeger_remote.mod
+### 49. jaeger_remote.mod
 
 - **Target:** `trace.TracePipelineTest [STUB] [PROVENANCE-FALLBACK]`
 - **Similarity:** 0.00
@@ -450,20 +616,6 @@ Every matched file is listed below with function and type symbol parity.
 - **Provenance warning:** port-lint provenance header matched only by basename: `trace/mod.rs` vs expected `trace/sampler/jaeger_remote/mod.rs`
 - **Proposed provenance header:** `// port-lint: source trace/sampler/jaeger_remote/mod.rs` (current: `// port-lint: source trace/mod.rs`)
 - **Lint issues:** 1
-
-### 36. testing.mod
-
-- **Target:** `logs.ProcessorAndExporterTest [STUB] [PROVENANCE-FALLBACK]`
-- **Similarity:** 0.00
-- **Dependents:** 0
-- **Priority Score:** 10.0
-- **Functions:** 0/0 matched (target 21)
-- **Missing functions:** _none_
-- **Types:** 0/0 matched (target 3)
-- **Missing types:** _none_
-- **Provenance warning:** port-lint provenance header matched only by basename: `logs/mod.rs` vs expected `testing/mod.rs`
-- **Proposed provenance header:** `// port-lint: source testing/mod.rs` (current: `// port-lint: source logs/mod.rs`)
-- **Lint issues:** 6
 
 ## Success Criteria
 
@@ -485,10 +637,8 @@ do not treat them as the next implementation target by default.
 
 | Source | Expected target | Deps | Source path | Expected path |
 |--------|-----------------|------|-------------|---------------|
-| `data.mod` | `metrics.data.Mod` | 0 | `metrics/data/mod.rs` | `metrics/data/Mod.kt` |
-| `internal.mod` | `metrics.internal.Mod` | 0 | `metrics/internal/mod.rs` | `metrics/internal/Mod.kt` |
-| `metrics.mod` | `metrics.Mod` | 0 | `metrics/mod.rs` | `metrics/Mod.kt` |
 | `propagation.mod` | `propagation.Mod` | 0 | `propagation/mod.rs` | `propagation/Mod.kt` |
 | `testing.metrics.mod` | `testing.metrics.Mod` | 0 | `testing/metrics/mod.rs` | `testing/metrics/Mod.kt` |
+| `testing.mod` | `testing.Mod` | 0 | `testing/mod.rs` | `testing/Mod.kt` |
 | `testing.trace.mod` | `testing.trace.Mod` | 0 | `testing/trace/mod.rs` | `testing/trace/Mod.kt` |
 

@@ -25,11 +25,12 @@ public class Span internal constructor(
         val spanAttributeLimit = spanLimits.maxAttributesPerSpan.toInt()
         while (true) {
             val current = dataRef.load() ?: return
-            val next = if (current.attributes.size < spanAttributeLimit) {
-                current.copy(attributes = current.attributes + attribute)
-            } else {
-                current.copy(droppedAttributesCount = current.droppedAttributesCount + 1u)
-            }
+            val next =
+                if (current.attributes.size < spanAttributeLimit) {
+                    current.copy(attributes = current.attributes + attribute)
+                } else {
+                    current.copy(droppedAttributesCount = current.droppedAttributesCount + 1u)
+                }
             if (dataRef.compareAndSet(current, next)) {
                 break
             }
@@ -59,11 +60,12 @@ public class Span internal constructor(
             val cappedAttrs = attributes.take(maxAttrsPerEvent)
             val event = Event(name, timestamp, cappedAttrs, droppedAttrs)
 
-            val nextEvents = if (current.events.events.size < maxEvents) {
-                SpanEvents(current.events.events + event, current.events.droppedCount)
-            } else {
-                SpanEvents(current.events.events, current.events.droppedCount + 1u)
-            }
+            val nextEvents =
+                if (current.events.events.size < maxEvents) {
+                    SpanEvents(current.events.events + event, current.events.droppedCount)
+                } else {
+                    SpanEvents(current.events.events, current.events.droppedCount + 1u)
+                }
             val next = current.copy(events = nextEvents)
             if (dataRef.compareAndSet(current, next)) {
                 break
@@ -80,11 +82,12 @@ public class Span internal constructor(
             val cappedAttrs = attributes.take(maxAttrsPerLink)
             val link = Link(spanContext, cappedAttrs, droppedAttrs)
 
-            val nextLinks = if (current.links.links.size < maxLinks) {
-                SpanLinks(current.links.links + link, current.links.droppedCount)
-            } else {
-                SpanLinks(current.links.links, current.links.droppedCount + 1u)
-            }
+            val nextLinks =
+                if (current.links.links.size < maxLinks) {
+                    SpanLinks(current.links.links + link, current.links.droppedCount)
+                } else {
+                    SpanLinks(current.links.links, current.links.droppedCount + 1u)
+                }
             val next = current.copy(links = nextLinks)
             if (dataRef.compareAndSet(current, next)) {
                 break
@@ -124,7 +127,30 @@ public class Span internal constructor(
         ensureEndedAndExported(null)
     }
 
-    public fun exportedData(): SpanData? = dataRef.load()
+    public fun recordError(err: Throwable) {
+        val message = err.message ?: err.toString()
+        val attributes = listOf(KeyValue("exception.message", message))
+        addEventWithTimestamp("exception", Clock.System.now(), attributes)
+    }
+
+    public fun recordError(message: String) {
+        val attributes = listOf(KeyValue("exception.message", message))
+        addEventWithTimestamp("exception", Clock.System.now(), attributes)
+    }
+
+    internal fun <T> withData(block: (SpanData) -> T): T? {
+        val current = dataRef.load() ?: return null
+        return block(current)
+    }
+
+    public fun exportedData(): SpanData? {
+        val current = dataRef.load() ?: return null
+        val provider = tracer.provider
+        if (provider.isShutdown()) {
+            return null
+        }
+        return current
+    }
 
     private fun ensureEndedAndExported(timestamp: Instant?) {
         var spanData: SpanData? = null
@@ -140,12 +166,22 @@ public class Span internal constructor(
             return
         }
         val endTime = timestamp ?: if (spanData.endTime == spanData.startTime) Clock.System.now() else spanData.endTime
-        val finalData = spanData.copy(
-            endTime = endTime,
-            instrumentationScope = tracer.instrumentationScope,
-        )
+        val finalData =
+            spanData.copy(
+                endTime = endTime,
+                instrumentationScope = tracer.instrumentationScope,
+            )
         for (processor in provider.spanProcessors()) {
             processor.onEnd(finalData)
         }
+    }
+
+    public companion object {
+        public fun new(
+            spanContext: SpanContext,
+            data: SpanData?,
+            tracer: SdkTracer,
+            spanLimits: SpanLimits = SpanLimits.DEFAULT,
+        ): Span = Span(spanContext, data, tracer, spanLimits)
     }
 }

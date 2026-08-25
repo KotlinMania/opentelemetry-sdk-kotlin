@@ -103,10 +103,11 @@ public class LoggerProviderBuilder {
         for (processor in processors) {
             processor.setResource(effectiveResource)
         }
-        val inner = LoggerProviderInner(
-            processors = processors.toList(),
-            isShutdown = AtomicBoolean(false),
-        )
+        val inner =
+            LoggerProviderInner(
+                processors = processors.toList(),
+                isShutdown = AtomicBoolean(false),
+            )
         return SdkLoggerProvider(inner)
     }
 

@@ -47,8 +47,13 @@ public data class SpanLimits(
 ) {
     public companion object {
         /**
+         * Default [SpanLimits] instance.
+         */
+        public val DEFAULT: SpanLimits = SpanLimits()
+
+        /**
          * Creates a [SpanLimits] with default limits.
          */
-        public fun defaultLimits(): SpanLimits = SpanLimits()
+        public fun defaultLimits(): SpanLimits = DEFAULT
     }
 }
