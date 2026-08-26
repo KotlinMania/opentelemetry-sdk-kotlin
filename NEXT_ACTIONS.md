@@ -8,8 +8,8 @@ Based on AST analysis, here are the concrete next steps.
 - **Function parity:** 290/992 matched (target 514) — 29.2%
 - **Class/type parity:** 99/246 matched (target 197) — 40.2%
 - **Combined symbol parity:** 389/1238 matched (target 711) — 31.4%
-- **Average inline-code cosine:** 0.33 (function body across 40 matched files)
-- **Average documentation cosine:** 0.57 (doc text across 40 matched files)
+- **Average inline-code cosine:** 0.32 (function body across 41 matched files)
+- **Average documentation cosine:** 0.57 (doc text across 41 matched files)
 - **Cheat-zeroed Files:** 11
 - **Critical Issues:** 44 files with <0.60 function similarity
 
@@ -369,18 +369,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 2/2 matched (target 3)
 - **Missing types:** _none_
 
-### 29. trace.links
-
-- **Target:** `trace.Links`
-- **Similarity:** 0.00
-- **Dependents:** 0
-- **Priority Score:** 60710.0
-- **Functions:** 0/3 matched (target 4)
-- **Missing functions:** `deref`, `into_iter`, `add_link`
-- **Types:** 1/4 matched (target 2)
-- **Missing types:** `Target`, `Item`, `IntoIter`
-
-### 30. trace.events
+### 29. trace.events
 
 - **Target:** `trace.Events`
 - **Similarity:** 0.00
@@ -388,6 +377,17 @@ Every matched file is listed below with function and type symbol parity.
 - **Priority Score:** 60710.0
 - **Functions:** 0/3 matched (target 4)
 - **Missing functions:** `deref`, `into_iter`, `add_event`
+- **Types:** 1/4 matched (target 2)
+- **Missing types:** `Target`, `Item`, `IntoIter`
+
+### 30. trace.links
+
+- **Target:** `trace.Links`
+- **Similarity:** 0.00
+- **Dependents:** 0
+- **Priority Score:** 60710.0
+- **Functions:** 0/3 matched (target 4)
+- **Missing functions:** `deref`, `into_iter`, `add_link`
 - **Types:** 1/4 matched (target 2)
 - **Missing types:** `Target`, `Item`, `IntoIter`
 
@@ -485,7 +485,18 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 2/2 matched (target 5)
 - **Missing types:** _none_
 
-### 39. trace.span_limit
+### 39. lib
+
+- **Target:** `opentelemetrysdk.Lib [ZERO]`
+- **Similarity:** 0.00
+- **Dependents:** 0
+- **Priority Score:** 10210.0
+- **Functions:** 0/1 matched (target 9)
+- **Missing functions:** `from`
+- **Types:** 1/1 matched (target 8)
+- **Missing types:** _none_
+
+### 40. trace.span_limit
 
 - **Target:** `trace.SpanLimits`
 - **Similarity:** 0.00
@@ -496,23 +507,9 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 1/1 matched
 - **Missing types:** _none_
 
-### 40. lib
-
-- **Target:** `opentelemetrysdk.Lib [STUB] [PROVENANCE-FALLBACK]`
-- **Similarity:** 0.00
-- **Dependents:** 0
-- **Priority Score:** 10210.0
-- **Functions:** 0/1 matched (target 9)
-- **Missing functions:** `from`
-- **Types:** 1/1 matched (target 8)
-- **Missing types:** _none_
-- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `src/lib.rs` vs expected `lib.rs`
-- **Proposed provenance header:** `// port-lint: source lib.rs` (current: `// port-lint: source src/lib.rs`)
-- **Lint issues:** 1
-
 ### 41. util
 
-- **Target:** `opentelemetrysdk.Util [PROVENANCE-FALLBACK]`
+- **Target:** `opentelemetrysdk.Util`
 - **Similarity:** 0.00
 - **Dependents:** 0
 - **Priority Score:** 10110.0
@@ -520,9 +517,6 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing functions:** `tokio_interval_stream`
 - **Types:** 0/0 matched
 - **Missing types:** _none_
-- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `src/util.rs` vs expected `util.rs`
-- **Proposed provenance header:** `// port-lint: source util.rs` (current: `// port-lint: source src/util.rs`)
-- **Lint issues:** 1
 
 ### 42. trace.export
 
