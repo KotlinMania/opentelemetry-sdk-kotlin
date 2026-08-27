@@ -59,10 +59,12 @@ public class LogProcessorTest {
         val firstProcessor = FirstProcessor(firstProcessorLogs)
         val secondProcessor = SecondProcessor(secondProcessorLogs)
 
-        val loggerProvider = SdkLoggerProvider.builder()
-            .withLogProcessor(firstProcessor)
-            .withLogProcessor(secondProcessor)
-            .build()
+        val loggerProvider =
+            SdkLoggerProvider
+                .builder()
+                .withLogProcessor(firstProcessor)
+                .withLogProcessor(secondProcessor)
+                .build()
 
         val logger = loggerProvider.logger("test-logger")
         val logRecord = logger.createLogRecord()

@@ -214,5 +214,3 @@ public data class Exemplar<out T>(
         return result
     }
 }
-
-

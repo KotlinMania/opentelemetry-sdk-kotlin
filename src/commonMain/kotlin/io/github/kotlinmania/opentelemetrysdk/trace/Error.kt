@@ -44,4 +44,3 @@ public sealed class TraceError(
         public val value: String,
     ) : TraceError(value)
 }
-

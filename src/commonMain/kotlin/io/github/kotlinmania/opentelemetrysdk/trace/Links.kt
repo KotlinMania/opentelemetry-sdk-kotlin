@@ -53,4 +53,3 @@ public data class SpanLinks(
         public fun new(): SpanLinks = EMPTY
     }
 }
-
