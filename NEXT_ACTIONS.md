@@ -5,10 +5,10 @@ Based on AST analysis, here are the concrete next steps.
 ## Summary
 
 - **Files Present:** 46/72 (63.9%)
-- **Function parity:** 322/1016 matched (target 553) — 31.7%
-- **Class/type parity:** 105/246 matched (target 202) — 42.7%
-- **Combined symbol parity:** 427/1262 matched (target 755) — 33.8%
-- **Average inline-code cosine:** 0.44 (function body across 40 matched files)
+- **Function parity:** 328/1016 matched (target 568) — 32.3%
+- **Class/type parity:** 106/246 matched (target 204) — 43.1%
+- **Combined symbol parity:** 434/1262 matched (target 772) — 34.4%
+- **Average inline-code cosine:** 0.45 (function body across 40 matched files)
 - **Average documentation cosine:** 0.58 (doc text across 40 matched files)
 - **Cheat-zeroed Files:** 7
 - **Critical Issues:** 35 files with <0.60 function similarity
@@ -149,19 +149,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing types:** `LogExporterThatRequiresTokio`, `ReentrantLogExporter`
 - **Tests:** 0/5 matched
 
-### 11. trace.tracer
-
-- **Target:** `trace.Tracer`
-- **Similarity:** 0.08
-- **Dependents:** 1
-- **Priority Score:** 1121409.2
-- **Functions:** 1/11 matched (target 13)
-- **Missing functions:** `fmt`, `new`, `instrumentation_scope`, `build_recording_span`, `id_generator`, `should_sample`, `build_with_context`, `allow_sampler_to_change_trace_state`, `drop_parent_based_children`, `uses_current_context_for_builders_if_unset`
-- **Types:** 1/3 matched (target 2)
-- **Missing types:** `Span`, `TestSampler`
-- **Tests:** 0/3 matched
-
-### 12. growable_array
+### 11. growable_array
 
 - **Target:** `opentelemetrysdk.GrowableArray`
 - **Similarity:** 0.50
@@ -172,6 +160,18 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 2/5 matched (target 3)
 - **Missing types:** `Item`, `IntoIter`, `KeyValuePair`
 - **Tests:** 9/10 matched
+
+### 12. trace.tracer
+
+- **Target:** `trace.Tracer`
+- **Similarity:** 0.42
+- **Dependents:** 1
+- **Priority Score:** 1061405.8
+- **Functions:** 6/11 matched (target 19)
+- **Missing functions:** `fmt`, `instrumentation_scope`, `build_recording_span`, `id_generator`, `build_with_context`
+- **Types:** 2/3 matched (target 4)
+- **Missing types:** `Span`
+- **Tests:** 3/3 matched
 
 ### 13. metrics.aggregation
 
@@ -213,9 +213,9 @@ Every matched file is listed below with function and type symbol parity.
 - **Target:** `data.Data [STUB]`
 - **Similarity:** 0.00
 - **Dependents:** 0
-- **Priority Score:** 335010.0
-- **Functions:** 2/35 matched (target 4)
-- **Missing functions:** `default`, `resource`, `scope_metrics`, `scope`, `metrics`, `name`, `unit`, `data`, `from`, `attributes`, `exemplars`, `value`, `data_points`, `start_time`, `time`, `temporality`, `is_monotonic`, `bounds`, `bucket_counts`, `count`, `min`, `max`, `sum`, `scale`, `zero_count`, `positive_bucket`, `negative_bucket`, `zero_threshold`, `offset`, `counts`, `filtered_attributes`, `span_id`, `trace_id`
+- **Priority Score:** 325010.0
+- **Functions:** 3/35 matched (target 6)
+- **Missing functions:** `resource`, `scope_metrics`, `scope`, `metrics`, `name`, `unit`, `data`, `from`, `attributes`, `exemplars`, `value`, `data_points`, `start_time`, `time`, `temporality`, `is_monotonic`, `bounds`, `bucket_counts`, `count`, `min`, `max`, `sum`, `scale`, `zero_count`, `positive_bucket`, `negative_bucket`, `zero_threshold`, `offset`, `counts`, `filtered_attributes`, `span_id`, `trace_id`
 - **Types:** 15/15 matched (target 23)
 - **Missing types:** _none_
 - **Tests:** 1/1 matched
@@ -238,7 +238,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Similarity:** 0.00
 - **Dependents:** 0
 - **Priority Score:** 212110.0
-- **Functions:** 0/18 matched (target 23)
+- **Functions:** 0/18 matched (target 26)
 - **Missing functions:** `span_modification_via_context`, `on_start`, `on_end`, `force_flush`, `shutdown_with_timeout`, `span_and_baggage`, `tracer_in_span`, `tracer_start`, `tracer_span_builder`, `exceed_span_links_limit`, `exceed_span_events_limit`, `trace_state_for_dropped_sampler`, `should_sample`, `trace_state_for_record_only_sampler`, `tracer_attributes`, `empty_tracer_name_retained`, `tracer_name_retained_helper`, `trace_suppression`
 - **Types:** 0/3 matched (target 12)
 - **Missing types:** `ValueA`, `BaggageInspectingSpanProcessor`, `TestRecordOnlySampler`
@@ -286,7 +286,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Similarity:** 0.18
 - **Dependents:** 0
 - **Priority Score:** 81208.2
-- **Functions:** 2/9 matched (target 8)
+- **Functions:** 2/9 matched (target 12)
 - **Missing functions:** `box_clone`, `clone`, `jaeger_remote`, `sampler_data`, `sampling`, `clone_a_parent_sampler`, `parent_sampler`
 - **Types:** 2/3 matched (target 9)
 - **Missing types:** `CloneShouldSample`
