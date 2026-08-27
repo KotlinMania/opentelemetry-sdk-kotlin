@@ -26,6 +26,11 @@ public class SdkTracer internal constructor(
             span.end()
         }
     }
+
+    public companion object {
+        public fun new(scope: InstrumentationScope, provider: SdkTracerProvider): SdkTracer =
+            SdkTracer(scope, provider)
+    }
 }
 
 /**
