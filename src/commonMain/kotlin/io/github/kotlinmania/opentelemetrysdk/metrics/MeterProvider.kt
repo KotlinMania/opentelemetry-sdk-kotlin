@@ -1,12 +1,16 @@
 // port-lint: source metrics/meter_provider.rs
 package io.github.kotlinmania.opentelemetrysdk.metrics
 
+import io.github.kotlinmania.opentelemetrysdk.InstrumentationScope
 import io.github.kotlinmania.opentelemetrysdk.OTelSdkError
 import io.github.kotlinmania.opentelemetrysdk.OTelSdkResult
-import io.github.kotlinmania.opentelemetrysdk.metrics.data.ResourceMetrics
 import io.github.kotlinmania.opentelemetrysdk.resource.Resource
+import kotlin.concurrent.atomics.AtomicReference
+import kotlin.concurrent.atomics.ExperimentalAtomicApi
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
+import kotlinx.collections.immutable.PersistentMap
+import kotlinx.collections.immutable.persistentMapOf
 
 /**
  * Handles the creation and coordination of Meters.
@@ -15,38 +19,33 @@ import kotlin.time.Duration.Companion.seconds
  * [Resource], have the same views applied to them, and have their produced
  * metric telemetry passed to the configured [MetricReader]s.
  */
+@OptIn(ExperimentalAtomicApi::class)
 public class SdkMeterProvider internal constructor(
     public val resource: Resource,
     public val readers: List<MetricReader>,
     public val views: List<View>,
 ) {
     private var isShutdown: Boolean = false
-
-    init {
-        val producer =
-            object : SdkProducer {
-                override fun produce(rm: ResourceMetrics): OTelSdkResult = Result.success(Unit)
-            }
-        for (reader in readers) {
-            reader.registerPipeline(producer)
-        }
-    }
+    internal val pipelines: Pipelines = Pipelines.create(resource, readers, views)
+    internal val viewCache: AtomicReference<PersistentMap<String, InstrumentId>> =
+        AtomicReference(persistentMapOf())
 
     /**
-     * Creates a new [NoopMeter] with the given name.
+     * Creates a new [SdkMeter] with the given name.
      */
-    public fun meter(name: String): NoopMeter {
+    public fun meter(name: String): SdkMeter {
         val scope =
-            io.github.kotlinmania.opentelemetrysdk.InstrumentationScope
+            InstrumentationScope
                 .builder(name)
                 .build()
         return meterWithScope(scope)
     }
 
     /**
-     * Creates a new [NoopMeter] with the given [io.github.kotlinmania.opentelemetrysdk.InstrumentationScope].
+     * Creates a new [SdkMeter] with the given [InstrumentationScope].
      */
-    public fun meterWithScope(scope: io.github.kotlinmania.opentelemetrysdk.InstrumentationScope): NoopMeter = NoopMeter.new()
+    public fun meterWithScope(scope: InstrumentationScope): SdkMeter =
+        SdkMeter(scope, pipelines, viewCache)
 
     /**
      * Flushes all pending telemetry.
@@ -55,11 +54,7 @@ public class SdkMeterProvider internal constructor(
         if (isShutdown) {
             return Result.failure(OTelSdkError.AlreadyShutdown)
         }
-        for (reader in readers) {
-            val result = reader.forceFlush()
-            if (result.isFailure) return result
-        }
-        return Result.success(Unit)
+        return pipelines.forceFlush()
     }
 
     /**
@@ -71,11 +66,7 @@ public class SdkMeterProvider internal constructor(
             return Result.failure(OTelSdkError.AlreadyShutdown)
         }
         isShutdown = true
-        for (reader in readers) {
-            val result = reader.shutdownWithTimeout(timeout)
-            if (result.isFailure) return result
-        }
-        return Result.success(Unit)
+        return pipelines.shutdown()
     }
 
     /**

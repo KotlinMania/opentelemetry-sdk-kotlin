@@ -4,6 +4,12 @@ package io.github.kotlinmania.opentelemetrysdk.metrics
 public const val EXPO_MAX_SCALE: Byte = 20
 public const val EXPO_MIN_SCALE: Byte = -10
 
+public val DEFAULT_HISTOGRAM_BOUNDARIES: List<Double> =
+    listOf(
+        0.0, 5.0, 10.0, 25.0, 50.0, 75.0, 100.0, 250.0, 500.0, 750.0, 1000.0,
+        2500.0, 5000.0, 7500.0, 10000.0,
+    )
+
 /**
  * The way recorded measurements are summarized.
  */
@@ -42,7 +48,7 @@ public sealed class Aggregation {
      * explicitly defined buckets.
      */
     public data class ExplicitBucketHistogram(
-        public val boundaries: List<Double>,
+        public val boundaries: List<Double> = DEFAULT_HISTOGRAM_BOUNDARIES,
         public val recordMinMax: Boolean = true,
     ) : Aggregation() {
         override fun toString(): String = "ExplicitBucketHistogram"

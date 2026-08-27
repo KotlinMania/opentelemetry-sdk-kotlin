@@ -11,8 +11,8 @@ import kotlin.time.Instant
  * A collection of [ScopeMetrics] and the associated [Resource] that created them.
  */
 public data class ResourceMetrics(
-    public val resource: Resource = Resource.empty(),
-    public val scopeMetrics: List<ScopeMetrics> = emptyList(),
+    public var resource: Resource = Resource.empty(),
+    public var scopeMetrics: List<ScopeMetrics> = emptyList(),
 ) {
     public companion object {
         public fun default(): ResourceMetrics = ResourceMetrics()
@@ -23,8 +23,8 @@ public data class ResourceMetrics(
  * A collection of metrics produced by a meter.
  */
 public data class ScopeMetrics(
-    public val scope: InstrumentationScope = InstrumentationScope.EMPTY,
-    public val metrics: List<Metric> = emptyList(),
+    public var scope: InstrumentationScope = InstrumentationScope.EMPTY,
+    public var metrics: List<Metric> = emptyList(),
 ) {
     public companion object {
         public fun default(): ScopeMetrics = ScopeMetrics()
@@ -35,10 +35,10 @@ public data class ScopeMetrics(
  * A collection of one or more aggregated time series from an Instrument.
  */
 public data class Metric(
-    public val name: String,
-    public val descriptionText: String = "",
-    public val unit: String = "",
-    public val data: AggregatedMetrics,
+    public var name: String,
+    public var descriptionText: String = "",
+    public var unit: String = "",
+    public var data: AggregatedMetrics,
 ) {
     public fun description(): String = descriptionText
 }

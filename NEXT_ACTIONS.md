@@ -86,7 +86,6 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 2/3 matched
 - **Missing types:** `SdkMeterProviderInner`
 - **Tests:** 3/7 matched
-- **Lint issues:** 1
 
 ### 6. propagation.trace_context
 
