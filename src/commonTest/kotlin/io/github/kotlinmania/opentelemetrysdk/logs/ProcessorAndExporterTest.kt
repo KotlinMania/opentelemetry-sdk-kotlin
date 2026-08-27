@@ -1,4 +1,4 @@
-// port-lint: source logs/mod.rs
+// port-lint: tests logs/mod.rs
 package io.github.kotlinmania.opentelemetrysdk.logs
 
 import io.github.kotlinmania.opentelemetrysdk.Context
