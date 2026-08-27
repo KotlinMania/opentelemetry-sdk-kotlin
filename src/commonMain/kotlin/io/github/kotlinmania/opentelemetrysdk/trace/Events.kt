@@ -47,7 +47,18 @@ public data class SpanEvents(
     public fun withAddedEvent(event: Event): SpanEvents =
         copy(events = events + event)
 
+    public fun addEvent(event: Event): SpanEvents = withAddedEvent(event)
+
+    public fun intoIter(): Iterator<Event> = iterator()
+
+    public fun deref(): List<Event> = events
+
     public companion object {
         public val EMPTY: SpanEvents = SpanEvents()
+
+        public fun default(): SpanEvents = EMPTY
+
+        public fun new(): SpanEvents = EMPTY
     }
 }
+

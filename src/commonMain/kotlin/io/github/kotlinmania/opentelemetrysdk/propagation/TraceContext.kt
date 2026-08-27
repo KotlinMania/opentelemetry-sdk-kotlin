@@ -131,6 +131,12 @@ public class TraceContextPropagator : TextMapPropagator {
         public const val TRACEPARENT_HEADER: String = "traceparent"
         public const val TRACESTATE_HEADER: String = "tracestate"
 
+        public fun new(): TraceContextPropagator = TraceContextPropagator()
+
+        public fun default(): TraceContextPropagator = new()
+
+        public fun traceContextHeaderFields(): List<String> = listOf(TRACEPARENT_HEADER, TRACESTATE_HEADER)
+
         private fun parseTraceState(traceStateStr: String): TraceState {
             if (traceStateStr.isBlank()) return TraceState.DEFAULT
             val entries =
@@ -149,3 +155,4 @@ public class TraceContextPropagator : TextMapPropagator {
         }
     }
 }
+

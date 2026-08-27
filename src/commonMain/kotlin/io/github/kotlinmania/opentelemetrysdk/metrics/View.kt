@@ -12,4 +12,9 @@ public fun interface View {
      * otherwise if there is no match, return `null`.
      */
     public fun matchInst(inst: Instrument): Stream?
+
+    public companion object {
+        public fun of(matcher: (Instrument) -> Stream?): View = View { inst -> matcher(inst) }
+    }
 }
+

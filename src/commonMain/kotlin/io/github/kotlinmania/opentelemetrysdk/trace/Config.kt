@@ -19,6 +19,10 @@ public data class Config(
         public const val OTEL_TRACES_SAMPLER: String = "OTEL_TRACES_SAMPLER"
         public const val OTEL_TRACES_SAMPLER_ARG: String = "OTEL_TRACES_SAMPLER_ARG"
 
+        public fun default(): Config = defaultConfig()
+
+        public fun new(): Config = default()
+
         public fun defaultConfig(getEnv: (String) -> String? = { null }): Config {
             var spanLimits = SpanLimits.defaultLimits()
             val maxAttr = getEnv(OTEL_SPAN_ATTRIBUTE_COUNT_LIMIT)?.toUIntOrNull()

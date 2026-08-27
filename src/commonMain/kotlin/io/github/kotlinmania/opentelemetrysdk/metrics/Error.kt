@@ -34,4 +34,10 @@ public sealed class MetricError(
     ) : MetricError("Invalid instrument configuration: $reason") {
         public fun description(): String = reason
     }
+
+    public companion object {
+        public fun from(err: Throwable): MetricError = Other(err.message ?: err.toString())
+        public fun from(message: String): MetricError = Other(message)
+    }
 }
+

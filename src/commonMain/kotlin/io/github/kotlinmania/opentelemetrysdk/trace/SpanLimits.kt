@@ -55,5 +55,10 @@ public data class SpanLimits(
          * Creates a [SpanLimits] with default limits.
          */
         public fun defaultLimits(): SpanLimits = DEFAULT
+
+        public fun default(): SpanLimits = DEFAULT
+
+        public fun new(): SpanLimits = DEFAULT
     }
 }
+
