@@ -90,17 +90,24 @@ public data class TraceState(
         return TraceState(listOf(TraceStateEntry(key, value)) + filtered)
     }
 
+    public fun insert(key: String, value: String): Result<TraceState> = Result.success(with(key, value))
+
     public fun without(key: String): TraceState =
         TraceState(entries.filterNot { it.key == key })
 
     public companion object {
         public val DEFAULT: TraceState = TraceState(emptyList())
 
+        public fun empty(): TraceState = DEFAULT
+
         public fun fromEntries(entries: List<TraceStateEntry>): TraceState =
             TraceState(entries)
 
-        internal fun fromKeyValue(entries: List<Pair<String, String>>): TraceState =
-            TraceState(entries.map { TraceStateEntry(it.first, it.second) })
+        public fun fromKeyValues(entries: List<TraceStateEntry>): Result<TraceState> =
+            Result.success(TraceState(entries))
+
+        internal fun fromPairs(entries: List<Pair<String, String>>): Result<TraceState> =
+            Result.success(TraceState(entries.map { TraceStateEntry(it.first, it.second) }))
     }
 }
 
