@@ -156,9 +156,11 @@ public sealed class Sampler : ShouldSample {
 
     public companion object {
         public fun alwaysOn(): Sampler = AlwaysOn
+
         public fun alwaysOff(): Sampler = AlwaysOff
+
         public fun parentBased(delegate: ShouldSample = AlwaysOn): Sampler = ParentBased(delegate)
+
         public fun traceIdRatioBased(ratio: Double): Sampler = TraceIdRatioBased(ratio)
     }
 }
-

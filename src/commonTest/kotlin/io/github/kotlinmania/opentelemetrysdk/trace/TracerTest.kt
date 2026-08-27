@@ -1,10 +1,8 @@
 // port-lint: tests trace/tracer.rs
 package io.github.kotlinmania.opentelemetrysdk.trace
 
-import io.github.kotlinmania.opentelemetrysdk.Context
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 class TracerTest {
@@ -28,23 +26,28 @@ class TracerTest {
     @Test
     fun allowSamplerToChangeTraceState() {
         val sampler = TestSampler()
-        val provider = SdkTracerProvider.builder()
-            .withSampler(sampler)
-            .build()
+        val provider =
+            SdkTracerProvider
+                .builder()
+                .withSampler(sampler)
+                .build()
         val tracer = provider.tracer("test")
         val traceState = TraceState.fromKeyValues(listOf(TraceStateEntry("foo", "bar"))).getOrThrow()
 
-        val parentContext = SpanContext(
-            traceId = TraceId(128u, 0u),
-            spanId = SpanId(64u),
-            traceFlags = TraceFlags.SAMPLED,
-            isRemote = true,
-            traceState = traceState,
-        )
+        val parentContext =
+            SpanContext(
+                traceId = TraceId(128u, 0u),
+                spanId = SpanId(64u),
+                traceFlags = TraceFlags.SAMPLED,
+                isRemote = true,
+                traceState = traceState,
+            )
 
-        val span = tracer.spanBuilder("foo")
-            .withParent(parentContext)
-            .start()
+        val span =
+            tracer
+                .spanBuilder("foo")
+                .withParent(parentContext)
+                .start()
 
         val spanContext = span.spanContext
         val expected = spanContext.traceState
@@ -54,14 +57,18 @@ class TracerTest {
     @Test
     fun dropParentBasedChildren() {
         val sampler = Sampler.parentBased(Sampler.alwaysOn())
-        val provider = SdkTracerProvider.builder()
-            .withSampler(sampler)
-            .build()
+        val provider =
+            SdkTracerProvider
+                .builder()
+                .withSampler(sampler)
+                .build()
 
         val tracer = provider.tracer("test")
-        val span = tracer.spanBuilder("must_not_be_sampled")
-            .withParent(SpanContext.EMPTY)
-            .start()
+        val span =
+            tracer
+                .spanBuilder("must_not_be_sampled")
+                .withParent(SpanContext.EMPTY)
+                .start()
 
         // Unsampled or invalid parent with parentBased(alwaysOn) defaults
         assertTrue(span.spanContext.isValid)
@@ -70,9 +77,11 @@ class TracerTest {
     @Test
     fun usesCurrentContextForBuildersIfUnset() {
         val sampler = Sampler.parentBased(Sampler.alwaysOn())
-        val provider = SdkTracerProvider.builder()
-            .withSampler(sampler)
-            .build()
+        val provider =
+            SdkTracerProvider
+                .builder()
+                .withSampler(sampler)
+                .build()
         val tracer = provider.tracer("test")
 
         val span = tracer.spanBuilder("must_not_be_sampled").start()
@@ -92,4 +101,3 @@ class TracerTest {
         assertTrue(executed)
     }
 }
-

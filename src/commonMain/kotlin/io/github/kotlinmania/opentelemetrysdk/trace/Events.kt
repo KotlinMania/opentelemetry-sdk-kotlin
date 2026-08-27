@@ -61,4 +61,3 @@ public data class SpanEvents(
         public fun new(): SpanEvents = EMPTY
     }
 }
-

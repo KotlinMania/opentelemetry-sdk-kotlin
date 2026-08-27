@@ -36,16 +36,17 @@ public class SdkMeterProvider internal constructor(
      * Creates a new [NoopMeter] with the given name.
      */
     public fun meter(name: String): NoopMeter {
-        val scope = io.github.kotlinmania.opentelemetrysdk.InstrumentationScope.builder(name).build()
+        val scope =
+            io.github.kotlinmania.opentelemetrysdk.InstrumentationScope
+                .builder(name)
+                .build()
         return meterWithScope(scope)
     }
 
     /**
      * Creates a new [NoopMeter] with the given [io.github.kotlinmania.opentelemetrysdk.InstrumentationScope].
      */
-    public fun meterWithScope(scope: io.github.kotlinmania.opentelemetrysdk.InstrumentationScope): NoopMeter {
-        return NoopMeter.new()
-    }
+    public fun meterWithScope(scope: io.github.kotlinmania.opentelemetrysdk.InstrumentationScope): NoopMeter = NoopMeter.new()
 
     /**
      * Flushes all pending telemetry.

@@ -17,4 +17,3 @@ public fun interface View {
         public fun of(matcher: (Instrument) -> Stream?): View = View { inst -> matcher(inst) }
     }
 }
-
