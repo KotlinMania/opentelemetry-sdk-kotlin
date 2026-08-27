@@ -48,6 +48,9 @@ public class EnvResourceDetector(
     public companion object {
         /** Creates a new [EnvResourceDetector] instance. */
         public fun new(): EnvResourceDetector = EnvResourceDetector()
+
+        /** Returns the default [EnvResourceDetector] instance. */
+        public fun default(): EnvResourceDetector = new()
     }
 }
 
@@ -72,5 +75,8 @@ public class SdkProvidedResourceDetector(
     public companion object {
         /** Creates a new [SdkProvidedResourceDetector] instance. */
         public fun new(): SdkProvidedResourceDetector = SdkProvidedResourceDetector()
+
+        /** Returns the default [SdkProvidedResourceDetector] instance. */
+        public fun default(): SdkProvidedResourceDetector = new()
     }
 }

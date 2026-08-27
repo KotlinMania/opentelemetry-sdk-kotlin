@@ -39,7 +39,18 @@ public data class SpanLinks(
     public fun withAddedLink(link: Link): SpanLinks =
         copy(links = links + link)
 
+    public fun addLink(link: Link): SpanLinks = withAddedLink(link)
+
+    public fun intoIter(): Iterator<Link> = iterator()
+
+    public fun deref(): List<Link> = links
+
     public companion object {
         public val EMPTY: SpanLinks = SpanLinks()
+
+        public fun default(): SpanLinks = EMPTY
+
+        public fun new(): SpanLinks = EMPTY
     }
 }
+

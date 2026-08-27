@@ -38,4 +38,10 @@ public sealed class TraceError(
         /** Creates a [TraceError] from a string message. */
         public fun from(message: String): TraceError = Other(message)
     }
+
+    /** Wrap type for string errors. */
+    public data class Custom(
+        public val value: String,
+    ) : TraceError(value)
 }
+

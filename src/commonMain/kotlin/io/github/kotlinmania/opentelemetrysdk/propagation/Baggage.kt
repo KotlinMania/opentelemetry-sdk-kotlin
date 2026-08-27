@@ -79,6 +79,12 @@ public class BaggagePropagator : TextMapPropagator {
     public companion object {
         public const val BAGGAGE_HEADER: String = "baggage"
 
+        public fun new(): BaggagePropagator = BaggagePropagator()
+
+        public fun default(): BaggagePropagator = new()
+
+        public fun baggageFields(): List<String> = listOf(BAGGAGE_HEADER)
+
         private val RESERVED_CHARS: Set<Char> = setOf(' ', '"', ';', ',', '=')
 
         public fun percentEncode(input: String): String {

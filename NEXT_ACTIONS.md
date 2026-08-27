@@ -5,13 +5,13 @@ Based on AST analysis, here are the concrete next steps.
 ## Summary
 
 - **Files Present:** 46/72 (63.9%)
-- **Function parity:** 299/1016 matched (target 514) — 29.4%
-- **Class/type parity:** 101/246 matched (target 197) — 41.1%
-- **Combined symbol parity:** 400/1262 matched (target 711) — 31.7%
-- **Average inline-code cosine:** 0.33 (function body across 40 matched files)
+- **Function parity:** 322/1016 matched (target 553) — 31.7%
+- **Class/type parity:** 105/246 matched (target 202) — 42.7%
+- **Combined symbol parity:** 427/1262 matched (target 755) — 33.8%
+- **Average inline-code cosine:** 0.44 (function body across 40 matched files)
 - **Average documentation cosine:** 0.58 (doc text across 40 matched files)
-- **Cheat-zeroed Files:** 9
-- **Critical Issues:** 41 files with <0.60 function similarity
+- **Cheat-zeroed Files:** 7
+- **Critical Issues:** 35 files with <0.60 function similarity
 
 ## Priority 1: Fix Incomplete High-Dependency Files
 
@@ -27,39 +27,39 @@ No missing high-value files detected.
 
 Every matched file is listed below with function and type symbol parity.
 
-### 1. logs.log_processor
-
-- **Target:** `logs.LogProcessor`
-- **Similarity:** 0.27
-- **Dependents:** 3
-- **Priority Score:** 3081307.2
-- **Functions:** 4/9 matched (target 4)
-- **Missing functions:** `export`, `get_resource`, `emit`, `force_flush`, `test_log_data_modification_by_multiple_processors`
-- **Types:** 1/4 matched (target 1)
-- **Missing types:** `MockLogExporter`, `FirstProcessor`, `SecondProcessor`
-- **Tests:** 0/1 matched
-- **Lint issues:** 1
-
-### 2. trace.span
+### 1. trace.span
 
 - **Target:** `trace.Span`
-- **Similarity:** 0.64
+- **Similarity:** 0.66
 - **Dependents:** 3
-- **Priority Score:** 3053503.5
-- **Functions:** 29/33 matched (target 40)
-- **Missing functions:** `span_context`, `drop`, `build_export_data`, `init`
+- **Priority Score:** 3043503.5
+- **Functions:** 30/33 matched (target 41)
+- **Missing functions:** `span_context`, `drop`, `init`
 - **Types:** 1/2 matched
 - **Missing types:** `SpanData`
 - **Tests:** 17/17 matched
 
+### 2. logs.log_processor
+
+- **Target:** `logs.LogProcessor`
+- **Similarity:** 0.68
+- **Dependents:** 3
+- **Priority Score:** 3001303.2
+- **Functions:** 9/9 matched (target 12)
+- **Missing functions:** _none_
+- **Types:** 4/4 matched (target 5)
+- **Missing types:** _none_
+- **Tests:** 1/1 matched
+- **Lint issues:** 1
+
 ### 3. resource.env
 
 - **Target:** `resource.Env`
-- **Similarity:** 0.56
+- **Similarity:** 0.68
 - **Dependents:** 3
-- **Priority Score:** 3010804.2
-- **Functions:** 5/6 matched (target 7)
-- **Missing functions:** `default`
+- **Priority Score:** 3000803.2
+- **Functions:** 6/6 matched (target 9)
+- **Missing functions:** _none_
 - **Types:** 2/2 matched (target 3)
 - **Missing types:** _none_
 - **Tests:** 2/2 matched
@@ -78,23 +78,24 @@ Every matched file is listed below with function and type symbol parity.
 ### 5. metrics.meter_provider
 
 - **Target:** `metrics.MeterProvider`
-- **Similarity:** 0.37
+- **Similarity:** 0.42
 - **Dependents:** 2
-- **Priority Score:** 2092406.4
-- **Functions:** 13/21 matched (target 14)
-- **Missing functions:** `drop`, `meter`, `meter_with_scope`, `fmt`, `test_shutdown_invoked_on_last_drop`, `same_meter_reused_same_scope`, `same_meter_reused_same_scope_attributes`, `different_meter_different_attributes`
+- **Priority Score:** 2072405.9
+- **Functions:** 15/21 matched (target 16)
+- **Missing functions:** `drop`, `fmt`, `test_shutdown_invoked_on_last_drop`, `same_meter_reused_same_scope`, `same_meter_reused_same_scope_attributes`, `different_meter_different_attributes`
 - **Types:** 2/3 matched
 - **Missing types:** `SdkMeterProviderInner`
 - **Tests:** 3/7 matched
+- **Lint issues:** 1
 
 ### 6. propagation.trace_context
 
 - **Target:** `propagation.TraceContext`
-- **Similarity:** 0.33
+- **Similarity:** 0.43
 - **Dependents:** 2
-- **Priority Score:** 2051506.8
-- **Functions:** 9/14 matched (target 18)
-- **Missing functions:** `trace_context_header_fields`, `new`, `extract_data`, `extract_data_invalid`, `inject_data`
+- **Priority Score:** 2031505.8
+- **Functions:** 11/14 matched (target 21)
+- **Missing functions:** `extract_data`, `extract_data_invalid`, `inject_data`
 - **Types:** 1/1 matched (target 6)
 - **Missing types:** _none_
 - **Tests:** 5/5 matched
@@ -187,11 +188,11 @@ Every matched file is listed below with function and type symbol parity.
 ### 14. trace.config
 
 - **Target:** `trace.Config`
-- **Similarity:** 0.00
+- **Similarity:** 0.15
 - **Dependents:** 1
-- **Priority Score:** 1010210.0
-- **Functions:** 0/1 matched (target 3)
-- **Missing functions:** `default`
+- **Priority Score:** 1000208.4
+- **Functions:** 1/1 matched (target 5)
+- **Missing functions:** _none_
 - **Types:** 1/1 matched (target 2)
 - **Missing types:** _none_
 
@@ -304,19 +305,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing types:** `ResourceInner`, `Iter`, `Item`, `IntoIter`
 - **Tests:** 7/7 matched
 
-### 24. propagation.baggage
-
-- **Target:** `propagation.Baggage`
-- **Similarity:** 0.23
-- **Dependents:** 0
-- **Priority Score:** 71407.7
-- **Functions:** 6/13 matched
-- **Missing functions:** `baggage_fields`, `new`, `valid_extract_data`, `valid_extract_data_with_metadata`, `valid_inject_data`, `valid_inject_data_metadata`, `inject_baggage_with_metadata`
-- **Types:** 1/1 matched (target 5)
-- **Missing types:** _none_
-- **Tests:** 3/8 matched
-
-### 25. metrics.in_memory_exporter
+### 24. metrics.in_memory_exporter
 
 - **Target:** `metrics.InMemoryExporter`
 - **Similarity:** 0.32
@@ -327,29 +316,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 2/2 matched (target 3)
 - **Missing types:** _none_
 
-### 26. trace.events
-
-- **Target:** `trace.Events`
-- **Similarity:** 0.00
-- **Dependents:** 0
-- **Priority Score:** 60710.0
-- **Functions:** 0/3 matched (target 4)
-- **Missing functions:** `deref`, `into_iter`, `add_event`
-- **Types:** 1/4 matched (target 2)
-- **Missing types:** `Target`, `Item`, `IntoIter`
-
-### 27. trace.links
-
-- **Target:** `trace.Links`
-- **Similarity:** 0.00
-- **Dependents:** 0
-- **Priority Score:** 60710.0
-- **Functions:** 0/3 matched (target 4)
-- **Missing functions:** `deref`, `into_iter`, `add_link`
-- **Types:** 1/4 matched (target 2)
-- **Missing types:** `Target`, `Item`, `IntoIter`
-
-### 28. logs.export
+### 25. logs.export
 
 - **Target:** `logs.Export`
 - **Similarity:** 0.47
@@ -361,7 +328,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing types:** `LogBatchData`, `LogBatchDataIter`, `Item`
 - **Lint issues:** 1
 
-### 29. metrics.manual_reader
+### 26. metrics.manual_reader
 
 - **Target:** `metrics.ManualReader`
 - **Similarity:** 0.42
@@ -373,7 +340,19 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing types:** `ManualReaderInner`
 - **Lint issues:** 1
 
-### 30. trace.in_memory_exporter
+### 27. propagation.baggage
+
+- **Target:** `propagation.Baggage`
+- **Similarity:** 0.53
+- **Dependents:** 0
+- **Priority Score:** 41404.7
+- **Functions:** 9/13 matched (target 19)
+- **Missing functions:** `valid_extract_data`, `valid_extract_data_with_metadata`, `valid_inject_data`, `valid_inject_data_metadata`
+- **Types:** 1/1 matched (target 5)
+- **Missing types:** _none_
+- **Tests:** 4/8 matched
+
+### 28. trace.in_memory_exporter
 
 - **Target:** `trace.InMemoryExporter`
 - **Similarity:** 0.28
@@ -385,6 +364,28 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing types:** _none_
 - **Tests:** 0/1 matched
 - **Lint issues:** 1
+
+### 29. trace.events
+
+- **Target:** `trace.Events`
+- **Similarity:** 0.69
+- **Dependents:** 0
+- **Priority Score:** 30703.1
+- **Functions:** 3/3 matched (target 9)
+- **Missing functions:** _none_
+- **Types:** 1/4 matched (target 2)
+- **Missing types:** `Target`, `Item`, `IntoIter`
+
+### 30. trace.links
+
+- **Target:** `trace.Links`
+- **Similarity:** 0.69
+- **Dependents:** 0
+- **Priority Score:** 30703.1
+- **Functions:** 3/3 matched (target 9)
+- **Missing functions:** _none_
+- **Types:** 1/4 matched (target 2)
+- **Missing types:** `Target`, `Item`, `IntoIter`
 
 ### 31. logs.in_memory_exporter
 
@@ -412,11 +413,11 @@ Every matched file is listed below with function and type symbol parity.
 
 ### 33. metrics.view
 
-- **Target:** `metrics.View [ZERO]`
+- **Target:** `metrics.View`
 - **Similarity:** 0.00
 - **Dependents:** 0
 - **Priority Score:** 20210.0
-- **Functions:** 0/1 matched (target 0)
+- **Functions:** 0/1 matched
 - **Missing functions:** `match_inst`
 - **Types:** 0/1 matched (target 0)
 - **Missing types:** `View`
@@ -433,40 +434,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing types:** _none_
 - **Tests:** 5/5 matched
 
-### 35. trace.error
-
-- **Target:** `trace.Error`
-- **Similarity:** 0.21
-- **Dependents:** 0
-- **Priority Score:** 10407.9
-- **Functions:** 1/1 matched (target 2)
-- **Missing functions:** _none_
-- **Types:** 2/3 matched (target 6)
-- **Missing types:** `Custom`
-
-### 36. metrics.error
-
-- **Target:** `metrics.Error`
-- **Similarity:** 0.00
-- **Dependents:** 0
-- **Priority Score:** 10310.0
-- **Functions:** 0/1 matched
-- **Missing functions:** `from`
-- **Types:** 2/2 matched (target 5)
-- **Missing types:** _none_
-
-### 37. trace.span_limit
-
-- **Target:** `trace.SpanLimits`
-- **Similarity:** 0.00
-- **Dependents:** 0
-- **Priority Score:** 10210.0
-- **Functions:** 0/1 matched
-- **Missing functions:** `default`
-- **Types:** 1/1 matched
-- **Missing types:** _none_
-
-### 38. lib
+### 35. lib
 
 - **Target:** `opentelemetrysdk.Lib [ZERO]`
 - **Similarity:** 0.00
@@ -477,7 +445,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 1/1 matched (target 8)
 - **Missing types:** _none_
 
-### 39. util
+### 36. util
 
 - **Target:** `opentelemetrysdk.Util`
 - **Similarity:** 0.00
@@ -488,7 +456,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 0/0 matched
 - **Missing types:** _none_
 
-### 40. trace.export
+### 37. trace.export
 
 - **Target:** `trace.Export`
 - **Similarity:** 0.65
@@ -500,7 +468,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing types:** _none_
 - **Lint issues:** 1
 
-### 41. id_generator.mod
+### 38. id_generator.mod
 
 - **Target:** `trace.IdGenerator [STUB]`
 - **Similarity:** 0.00
@@ -511,7 +479,18 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 2/2 matched
 - **Missing types:** _none_
 
-### 42. metrics.noop
+### 39. trace.error
+
+- **Target:** `trace.Error`
+- **Similarity:** 0.21
+- **Dependents:** 0
+- **Priority Score:** 407.9
+- **Functions:** 1/1 matched (target 2)
+- **Missing functions:** _none_
+- **Types:** 3/3 matched (target 7)
+- **Missing types:** _none_
+
+### 40. metrics.noop
 
 - **Target:** `metrics.Noop`
 - **Similarity:** 0.83
@@ -523,7 +502,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing types:** _none_
 - **Lint issues:** 2
 
-### 43. metrics.reader
+### 41. metrics.reader
 
 - **Target:** `metrics.Reader`
 - **Similarity:** 0.55
@@ -532,6 +511,28 @@ Every matched file is listed below with function and type symbol parity.
 - **Functions:** 1/1 matched (target 3)
 - **Missing functions:** _none_
 - **Types:** 2/2 matched
+- **Missing types:** _none_
+
+### 42. metrics.error
+
+- **Target:** `metrics.Error`
+- **Similarity:** 0.78
+- **Dependents:** 0
+- **Priority Score:** 302.2
+- **Functions:** 1/1 matched (target 3)
+- **Missing functions:** _none_
+- **Types:** 2/2 matched (target 5)
+- **Missing types:** _none_
+
+### 43. trace.span_limit
+
+- **Target:** `trace.SpanLimits`
+- **Similarity:** 0.18
+- **Dependents:** 0
+- **Priority Score:** 208.2
+- **Functions:** 1/1 matched (target 3)
+- **Missing functions:** _none_
+- **Types:** 1/1 matched
 - **Missing types:** _none_
 
 ### 44. metrics.exporter
@@ -558,10 +559,10 @@ Every matched file is listed below with function and type symbol parity.
 
 ### 46. resource.attributes
 
-- **Target:** `resource.Attributes [ZERO]`
-- **Similarity:** 0.00
+- **Target:** `resource.Attributes`
+- **Similarity:** 1.00
 - **Dependents:** 0
-- **Priority Score:** 10.0
+- **Priority Score:** 0.0
 - **Functions:** 0/0 matched
 - **Missing functions:** _none_
 - **Types:** 0/0 matched

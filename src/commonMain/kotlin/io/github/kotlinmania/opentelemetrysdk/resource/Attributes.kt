@@ -5,9 +5,9 @@ package io.github.kotlinmania.opentelemetrysdk.resource
  * Logical name of the service.
  *
  * MUST be the same for all instances of horizontally scaled services. If the value was not
- * specified, SDKs MUST fallback to "unknown_service:" concatenated with
- * `process.executable.name`, e.g. "unknown_service:bash". If `process.executable.name` is not
- * available, the value MUST be set to "unknown_service".
+ * specified, SDKs MUST fallback to the unknown service prefix concatenated with
+ * `process.executable.name`, e.g. "unknown service: bash". If `process.executable.name` is not
+ * available, the value MUST be set to "unknown service".
  *
  * Examples:
  *

@@ -19,6 +19,7 @@ public class Span internal constructor(
 ) {
     private val dataRef = AtomicReference(initialData)
 
+
     public fun isRecording(): Boolean = dataRef.load() != null
 
     public fun setAttribute(attribute: KeyValue) {
@@ -185,3 +186,14 @@ public class Span internal constructor(
         ): Span = Span(spanContext, data, tracer, spanLimits)
     }
 }
+
+internal fun buildExportData(
+    data: SpanData,
+    spanContext: SpanContext,
+    tracer: SdkTracer,
+): SpanData =
+    data.copy(
+        spanContext = spanContext,
+        instrumentationScope = tracer.instrumentationScope,
+    )
+
