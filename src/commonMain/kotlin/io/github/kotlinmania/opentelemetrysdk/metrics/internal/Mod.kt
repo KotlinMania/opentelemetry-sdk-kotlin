@@ -4,13 +4,13 @@ package io.github.kotlinmania.opentelemetrysdk.metrics.internal
 import io.github.kotlinmania.opentelemetrysdk.metrics.data.AggregatedMetrics
 import io.github.kotlinmania.opentelemetrysdk.metrics.data.MetricData
 import io.github.kotlinmania.opentelemetrysdk.resource.KeyValue
+import kotlinx.collections.immutable.PersistentMap
+import kotlinx.collections.immutable.persistentMapOf
 import kotlin.concurrent.atomics.AtomicBoolean
 import kotlin.concurrent.atomics.AtomicInt
 import kotlin.concurrent.atomics.AtomicLong
 import kotlin.concurrent.atomics.AtomicReference
 import kotlin.concurrent.atomics.ExperimentalAtomicApi
-import kotlinx.collections.immutable.PersistentMap
-import kotlinx.collections.immutable.persistentMapOf
 
 internal val STREAM_OVERFLOW_ATTRIBUTES: List<KeyValue> = listOf(KeyValue("otel.metric.overflow", true))
 

@@ -8,9 +8,9 @@ import io.github.kotlinmania.opentelemetrysdk.metrics.internal.LongOps
 import io.github.kotlinmania.opentelemetrysdk.metrics.internal.Measure
 import io.github.kotlinmania.opentelemetrysdk.metrics.internal.ULongOps
 import io.github.kotlinmania.opentelemetrysdk.resource.KeyValue
+import kotlinx.collections.immutable.PersistentMap
 import kotlin.concurrent.atomics.AtomicReference
 import kotlin.concurrent.atomics.ExperimentalAtomicApi
-import kotlinx.collections.immutable.PersistentMap
 
 internal fun validateInstrumentConfig(
     name: String,
