@@ -5,12 +5,12 @@ import io.github.kotlinmania.opentelemetrysdk.InstrumentationScope
 import io.github.kotlinmania.opentelemetrysdk.OTelSdkError
 import io.github.kotlinmania.opentelemetrysdk.OTelSdkResult
 import io.github.kotlinmania.opentelemetrysdk.resource.Resource
+import kotlinx.collections.immutable.PersistentMap
+import kotlinx.collections.immutable.persistentMapOf
 import kotlin.concurrent.atomics.AtomicReference
 import kotlin.concurrent.atomics.ExperimentalAtomicApi
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
-import kotlinx.collections.immutable.PersistentMap
-import kotlinx.collections.immutable.persistentMapOf
 
 /**
  * Handles the creation and coordination of Meters.

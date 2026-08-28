@@ -14,10 +14,10 @@ import io.github.kotlinmania.opentelemetrysdk.metrics.internal.Measure
 import io.github.kotlinmania.opentelemetrysdk.metrics.internal.NumberOps
 import io.github.kotlinmania.opentelemetrysdk.resource.KeyValue
 import io.github.kotlinmania.opentelemetrysdk.resource.Resource
-import kotlin.concurrent.atomics.AtomicReference
-import kotlin.concurrent.atomics.ExperimentalAtomicApi
 import kotlinx.collections.immutable.PersistentMap
 import kotlinx.collections.immutable.persistentMapOf
+import kotlin.concurrent.atomics.AtomicReference
+import kotlin.concurrent.atomics.ExperimentalAtomicApi
 
 internal const val DEFAULT_CARDINALITY_LIMIT: Int = 2000
 

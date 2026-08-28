@@ -7,10 +7,10 @@ import io.github.kotlinmania.opentelemetrysdk.metrics.data.MetricData
 import io.github.kotlinmania.opentelemetrysdk.metrics.data.Sum
 import io.github.kotlinmania.opentelemetrysdk.metrics.data.SumDataPoint
 import io.github.kotlinmania.opentelemetrysdk.resource.KeyValue
-import kotlin.concurrent.atomics.AtomicReference
-import kotlin.concurrent.atomics.ExperimentalAtomicApi
 import kotlinx.collections.immutable.PersistentMap
 import kotlinx.collections.immutable.persistentMapOf
+import kotlin.concurrent.atomics.AtomicReference
+import kotlin.concurrent.atomics.ExperimentalAtomicApi
 
 /**
  * Summarizes a set of pre-computed sums as their arithmetic sum.

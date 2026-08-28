@@ -145,4 +145,15 @@ class PeriodicReaderTest {
         assertTrue(result.isSuccess)
         assertTrue(exporter.isShutdown.load())
     }
+
+    @Test
+    fun exporterFailuresAreHandled() {
+        val exporter = MetricExporterThatFailsOnlyOnFirst()
+        val rm = ResourceMetrics(Resource.empty(), emptyList())
+        val firstExport = exporter.export(rm)
+        assertTrue(firstExport.isFailure)
+        val secondExport = exporter.export(rm)
+        assertTrue(secondExport.isSuccess)
+        assertEquals(2, exporter.getCount())
+    }
 }

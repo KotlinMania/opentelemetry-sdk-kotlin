@@ -4,7 +4,6 @@ package io.github.kotlinmania.opentelemetrysdk.metrics.internal
 import io.github.kotlinmania.opentelemetrysdk.metrics.Temporality
 import io.github.kotlinmania.opentelemetrysdk.metrics.data.AggregatedMetrics
 import io.github.kotlinmania.opentelemetrysdk.metrics.data.MetricData
-import io.github.kotlinmania.opentelemetrysdk.metrics.data.SumDataPoint
 import io.github.kotlinmania.opentelemetrysdk.resource.KeyValue
 import kotlin.test.Test
 import kotlin.test.assertEquals

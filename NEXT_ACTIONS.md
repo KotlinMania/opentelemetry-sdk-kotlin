@@ -4,14 +4,14 @@ Based on AST analysis, here are the concrete next steps.
 
 ## Summary
 
-- **Files Present:** 55/72 (76.4%)
-- **Function parity:** 389/974 matched (target 697) — 39.9%
-- **Class/type parity:** 133/246 matched (target 251) — 54.1%
-- **Combined symbol parity:** 522/1220 matched (target 948) — 42.8%
-- **Average inline-code cosine:** 0.44 (function body across 48 matched files)
-- **Average documentation cosine:** 0.60 (doc text across 48 matched files)
-- **Cheat-zeroed Files:** 9
-- **Critical Issues:** 44 files with <0.60 function similarity
+- **Files Present:** 72/72 (100.0%)
+- **Function parity:** 451/959 matched (target 772) — 47.0%
+- **Class/type parity:** 159/246 matched (target 313) — 64.6%
+- **Combined symbol parity:** 610/1205 matched (target 1085) — 50.6%
+- **Average inline-code cosine:** 0.44 (function body across 60 matched files)
+- **Average documentation cosine:** 0.54 (doc text across 60 matched files)
+- **Cheat-zeroed Files:** 14
+- **Critical Issues:** 59 files with <0.60 function similarity
 
 ## Priority 1: Fix Incomplete High-Dependency Files
 
@@ -100,19 +100,30 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing types:** _none_
 - **Tests:** 5/5 matched
 
-### 7. metrics.periodic_reader
+### 7. runtime
+
+- **Target:** `opentelemetrysdk.Runtime`
+- **Similarity:** 0.53
+- **Dependents:** 2
+- **Priority Score:** 2011404.6
+- **Functions:** 5/5 matched (target 11)
+- **Missing functions:** _none_
+- **Types:** 8/9 matched (target 13)
+- **Missing types:** `Message`
+
+### 8. metrics.periodic_reader
 
 - **Target:** `metrics.PeriodicReader`
 - **Similarity:** 0.29
 - **Dependents:** 1
-- **Priority Score:** 1305007.1
-- **Functions:** 16/44 matched (target 25)
-- **Missing functions:** `new`, `clone`, `collect_and_export`, `fmt`, `default`, `collection_triggered_by_interval_multiple`, `exporter_failures_are_handled`, `collection`, `collection_from_tokio_multi_with_one_worker`, `collection_from_tokio_with_two_worker`, `collection_from_tokio_current`, `collection_triggered_by_interval_helper`, `collection_triggered_by_flush_helper`, `collection_triggered_by_shutdown_helper`, `collection_triggered_by_drop_helper`, `collection_helper`, `some_async_function`, `async_inside_observable_callback_from_tokio_multi_with_one_worker`, `async_inside_observable_callback_from_tokio_multi_with_two_worker`, `async_inside_observable_callback_from_tokio_current_thread`, `async_inside_observable_callback_from_regular_main`, `async_inside_observable_callback_helper`, `some_tokio_async_function`, `tokio_async_inside_observable_callback_from_tokio_multi_with_one_worker`, `tokio_async_inside_observable_callback_from_tokio_multi_with_two_worker`, `tokio_async_inside_observable_callback_from_tokio_current_thread`, `tokio_async_inside_observable_callback_from_regular_main`, `tokio_async_inside_observable_callback_helper`
+- **Priority Score:** 1295007.0
+- **Functions:** 17/44 matched (target 26)
+- **Missing functions:** `new`, `clone`, `collect_and_export`, `fmt`, `default`, `collection_triggered_by_interval_multiple`, `collection`, `collection_from_tokio_multi_with_one_worker`, `collection_from_tokio_with_two_worker`, `collection_from_tokio_current`, `collection_triggered_by_interval_helper`, `collection_triggered_by_flush_helper`, `collection_triggered_by_shutdown_helper`, `collection_triggered_by_drop_helper`, `collection_helper`, `some_async_function`, `async_inside_observable_callback_from_tokio_multi_with_one_worker`, `async_inside_observable_callback_from_tokio_multi_with_two_worker`, `async_inside_observable_callback_from_tokio_current_thread`, `async_inside_observable_callback_from_regular_main`, `async_inside_observable_callback_helper`, `some_tokio_async_function`, `tokio_async_inside_observable_callback_from_tokio_multi_with_one_worker`, `tokio_async_inside_observable_callback_from_tokio_multi_with_two_worker`, `tokio_async_inside_observable_callback_from_tokio_current_thread`, `tokio_async_inside_observable_callback_from_regular_main`, `tokio_async_inside_observable_callback_helper`
 - **Types:** 4/6 matched (target 5)
 - **Missing types:** `PeriodicReaderInner`, `Message`
-- **Tests:** 5/10 matched
+- **Tests:** 6/10 matched
 
-### 8. trace.span_processor
+### 9. trace.span_processor
 
 - **Target:** `trace.SpanProcessor`
 - **Similarity:** 0.28
@@ -125,7 +136,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Tests:** 0/15 matched
 - **Lint issues:** 5
 
-### 9. logs.batch_log_processor
+### 10. logs.batch_log_processor
 
 - **Target:** `logs.BatchLogProcessor`
 - **Similarity:** 0.26
@@ -137,7 +148,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing types:** `BatchMessage`, `LogsData`
 - **Tests:** 0/8 matched
 
-### 10. logs.simple_log_processor
+### 11. logs.simple_log_processor
 
 - **Target:** `logs.SimpleLogProcessor`
 - **Similarity:** 0.15
@@ -149,7 +160,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing types:** `LogExporterThatRequiresTokio`, `ReentrantLogExporter`
 - **Tests:** 0/5 matched
 
-### 11. growable_array
+### 12. growable_array
 
 - **Target:** `opentelemetrysdk.GrowableArray`
 - **Similarity:** 0.50
@@ -161,7 +172,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing types:** `Item`, `IntoIter`, `KeyValuePair`
 - **Tests:** 9/10 matched
 
-### 12. metrics.pipeline
+### 13. metrics.pipeline
 
 - **Target:** `metrics.Pipeline`
 - **Similarity:** 0.46
@@ -172,7 +183,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 5/8 matched (target 7)
 - **Missing types:** `GenericCallback`, `PipelineInner`, `Cache`
 
-### 13. trace.tracer
+### 14. trace.tracer
 
 - **Target:** `trace.Tracer`
 - **Similarity:** 0.42
@@ -184,7 +195,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing types:** `Span`
 - **Tests:** 3/3 matched
 
-### 14. metrics.aggregation
+### 15. metrics.aggregation
 
 - **Target:** `metrics.Aggregation`
 - **Similarity:** 0.47
@@ -196,7 +207,19 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing types:** _none_
 - **Tests:** 1/1 matched
 
-### 15. trace.config
+### 16. metrics.metric_reader
+
+- **Target:** `metrics.MetricReader`
+- **Similarity:** 0.53
+- **Dependents:** 1
+- **Priority Score:** 1000904.7
+- **Functions:** 8/8 matched
+- **Missing functions:** _none_
+- **Types:** 1/1 matched
+- **Missing types:** _none_
+- **Lint issues:** 2
+
+### 17. trace.config
 
 - **Target:** `trace.Config`
 - **Similarity:** 0.15
@@ -207,7 +230,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 1/1 matched (target 2)
 - **Missing types:** _none_
 
-### 16. metrics.mod
+### 18. metrics.mod
 
 - **Target:** `metrics.Temporality [STUB]`
 - **Similarity:** 0.00
@@ -219,7 +242,20 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing types:** `TestContext`
 - **Tests:** 0/10 matched
 
-### 17. metrics.meter
+### 19. logs.log_processor_with_async_runtime
+
+- **Target:** `logs.LogProcessorWithAsyncRuntime`
+- **Similarity:** 0.10
+- **Dependents:** 0
+- **Priority Score:** 364209.0
+- **Functions:** 6/36 matched (target 7)
+- **Missing functions:** `fmt`, `shutdown`, `new`, `export_with_timeout`, `export`, `get_resource`, `test_default_const_values`, `test_default_batch_config_adheres_to_specification`, `test_batch_config_configurable_by_env_vars`, `test_batch_config_max_export_batch_size_validation`, `test_batch_config_with_fields`, `test_build_batch_log_processor_builder`, `test_build_batch_log_processor_builder_with_custom_config`, `test_set_resource_simple_processor`, `test_set_resource_batch_processor`, `test_batch_shutdown`, `test_batch_log_processor_shutdown_under_async_runtime_current_flavor_multi_thread`, `test_batch_log_processor_with_async_runtime_shutdown_under_async_runtime_current_flavor_multi_thread`, `test_batch_log_processor_shutdown_with_async_runtime_current_flavor_current_thread`, `test_batch_log_processor_shutdown_with_async_runtime_multi_flavor_multi_thread`, `test_batch_log_processor_shutdown_with_async_runtime_multi_flavor_current_thread`, `test_log_data_modification_by_multiple_processors`, `test_build_batch_log_processor_builder_rt`, `test_build_batch_log_processor_builder_rt_with_custom_config`, `test_set_resource_batch_processor_rt`, `test_batch_shutdown_rt`, `test_batch_log_processor_rt_shutdown_with_async_runtime_current_flavor_multi_thread`, `test_batch_log_processor_rt_shutdown_with_async_runtime_current_flavor_current_thread`, `test_batch_log_processor_rt_shutdown_with_async_runtime_multi_flavor_multi_thread`, `test_batch_log_processor_rt_shutdown_with_async_runtime_multi_flavor_current_thread`
+- **Types:** 0/6 matched (target 7)
+- **Missing types:** `BatchMessage`, `BatchLogProcessor`, `BatchLogProcessorBuilder`, `MockLogExporter`, `FirstProcessor`, `SecondProcessor`
+- **Tests:** 0/11 matched
+- **Lint issues:** 1
+
+### 20. metrics.meter
 
 - **Target:** `metrics.Meter`
 - **Similarity:** 0.01
@@ -232,7 +268,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Tests:** 0/3 matched
 - **Lint issues:** 1
 
-### 18. data.mod
+### 21. data.mod
 
 - **Target:** `data.Data [STUB]`
 - **Similarity:** 0.00
@@ -244,7 +280,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing types:** _none_
 - **Tests:** 1/1 matched
 
-### 19. internal.exponential_histogram
+### 22. internal.exponential_histogram
 
 - **Target:** `internal.ExponentialHistogram`
 - **Similarity:** 0.26
@@ -256,7 +292,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing types:** `InitConfig`, `PreComputedValue`, `TestCase`, `Expected`, `Args`
 - **Tests:** 0/17 matched
 
-### 20. logs.logger_provider
+### 23. logs.logger_provider
 
 - **Target:** `logs.LoggerProvider`
 - **Similarity:** 0.19
@@ -268,7 +304,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing types:** `Logger`, `ShutdownTestLogProcessor`, `TestExporterForResource`, `TestProcessorForResource`, `LazyLogProcessor`, `CountingShutdownProcessor`
 - **Tests:** 0/15 matched
 
-### 21. internal.mod
+### 24. internal.mod
 
 - **Target:** `internal.Mod [STUB]`
 - **Similarity:** 0.00
@@ -280,7 +316,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing types:** `AtomicallyUpdate`, `AggregatedMetricsAccess`, `Number`, `F64AtomicTracker`
 - **Tests:** 0/9 matched
 
-### 22. trace.mod
+### 25. trace.mod
 
 - **Target:** `trace.TraceModel [STUB]`
 - **Similarity:** 0.00
@@ -292,7 +328,33 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing types:** `ValueA`, `BaggageInspectingSpanProcessor`, `TestRecordOnlySampler`
 - **Tests:** 0/11 matched
 
-### 23. trace.provider
+### 26. metrics.periodic_reader_with_async_runtime
+
+- **Target:** `metrics.PeriodicReaderWithAsyncRuntime`
+- **Similarity:** 0.26
+- **Dependents:** 0
+- **Priority Score:** 203007.4
+- **Functions:** 10/24 matched (target 11)
+- **Missing functions:** `new`, `clone`, `fmt`, `process_message`, `run`, `collection_triggered_by_interval_tokio_current`, `collection_triggered_by_interval_from_tokio_multi_one_thread_on_runtime_tokio`, `collection_triggered_by_interval_from_tokio_multi_two_thread_on_runtime_tokio`, `collection_triggered_by_interval_from_tokio_multi_one_thread_on_runtime_tokio_current`, `collection_triggered_by_interval_from_tokio_multi_two_thread_on_runtime_tokio_current`, `collection_triggered_by_interval_from_tokio_current_on_runtime_tokio`, `collection_triggered_by_interval_from_tokio_current_on_runtime_tokio_current`, `unregistered_collect`, `collection_triggered_by_interval_helper`
+- **Types:** 0/6 matched
+- **Missing types:** `PeriodicReaderBuilder`, `PeriodicReader`, `PeriodicReaderInner`, `Message`, `ProducerOrWorker`, `PeriodicReaderWorker`
+- **Tests:** 0/2 matched
+- **Lint issues:** 1
+
+### 27. trace.span_processor_with_async_runtime
+
+- **Target:** `trace.SpanProcessorWithAsyncRuntime`
+- **Similarity:** 0.21
+- **Dependents:** 0
+- **Priority Score:** 192707.9
+- **Functions:** 8/21 matched (target 8)
+- **Missing functions:** `fmt`, `flush`, `process_message`, `export`, `run`, `new`, `test_build_batch_span_processor_builder`, `test_batch_span_processor`, `timeout_test_tokio`, `test_timeout_tokio_timeout`, `test_timeout_tokio_not_timeout`, `test_concurrent_exports_expected`, `test_exports_serial_when_max_concurrent_exports_1`
+- **Types:** 0/6 matched (target 7)
+- **Missing types:** `BatchSpanProcessor`, `BatchMessage`, `BatchSpanProcessorInternal`, `BatchSpanProcessorBuilder`, `BlockingExporter`, `TrackingExporter`
+- **Tests:** 0/1 matched
+- **Lint issues:** 3
+
+### 28. trace.provider
 
 - **Target:** `trace.Provider`
 - **Similarity:** 0.49
@@ -304,7 +366,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing types:** `TracerProviderInner`, `Tracer`
 - **Tests:** 6/10 matched
 
-### 24. metrics.instrument
+### 29. metrics.instrument
 
 - **Target:** `metrics.Instrument`
 - **Similarity:** 0.44
@@ -316,7 +378,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing types:** `InstrumentId`, `ResolvedMeasures`, `Observable`
 - **Tests:** 5/5 matched
 
-### 25. logs.record
+### 30. logs.record
 
 - **Target:** `logs.Record`
 - **Similarity:** 0.59
@@ -328,7 +390,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing types:** `LogRecordAttributes`
 - **Tests:** 11/12 matched
 
-### 26. internal.aggregate
+### 31. internal.aggregate
 
 - **Target:** `internal.Aggregate`
 - **Similarity:** 0.34
@@ -340,7 +402,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing types:** `Filter`
 - **Tests:** 0/5 matched
 
-### 27. trace.sampler
+### 32. trace.sampler
 
 - **Target:** `trace.Sampler`
 - **Similarity:** 0.18
@@ -353,7 +415,18 @@ Every matched file is listed below with function and type symbol parity.
 - **Tests:** 0/3 matched
 - **Lint issues:** 4
 
-### 28. resource.mod
+### 33. trace.runtime_tests
+
+- **Target:** `trace.RuntimeTests`
+- **Similarity:** 0.13
+- **Dependents:** 0
+- **Priority Score:** 81108.8
+- **Functions:** 2/10 matched (target 2)
+- **Missing functions:** `build_batch_tracer_provider`, `build_simple_tracer_provider`, `test_set_provider_in_tokio`, `test_set_provider_multiple_thread_tokio`, `test_set_provider_multiple_thread_tokio_shutdown`, `test_set_provider_single_thread_tokio_with_simple_processor`, `test_set_provider_single_thread_tokio`, `test_set_provider_single_thread_tokio_shutdown`
+- **Types:** 1/1 matched
+- **Missing types:** _none_
+
+### 34. resource.mod
 
 - **Target:** `resource.Resource [STUB]`
 - **Similarity:** 0.00
@@ -365,7 +438,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing types:** `ResourceInner`, `Iter`, `Item`, `IntoIter`
 - **Tests:** 7/7 matched
 
-### 29. metrics.in_memory_exporter
+### 35. metrics.in_memory_exporter
 
 - **Target:** `metrics.InMemoryExporter`
 - **Similarity:** 0.32
@@ -376,7 +449,19 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 2/2 matched (target 3)
 - **Missing types:** _none_
 
-### 30. logs.export
+### 36. jaeger_remote.sampler
+
+- **Target:** `jaegerremote.Sampler`
+- **Similarity:** 0.29
+- **Dependents:** 0
+- **Priority Score:** 61307.1
+- **Functions:** 5/11 matched (target 7)
+- **Missing functions:** `new`, `get_endpoint`, `run_update_task`, `request_new_strategy`, `fmt`, `deserialize_sampling_strategy_response`
+- **Types:** 2/2 matched
+- **Missing types:** _none_
+- **Tests:** 0/2 matched
+
+### 37. logs.export
 
 - **Target:** `logs.Export`
 - **Similarity:** 0.47
@@ -388,7 +473,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing types:** `LogBatchData`, `LogBatchDataIter`, `Item`
 - **Lint issues:** 1
 
-### 31. internal.histogram
+### 38. internal.histogram
 
 - **Target:** `internal.Histogram`
 - **Similarity:** 0.37
@@ -400,7 +485,19 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing types:** `InitConfig`, `PreComputedValue`
 - **Tests:** 0/1 matched
 
-### 32. metrics.manual_reader
+### 39. trace.span_exporters
+
+- **Target:** `trace.SpanExporters`
+- **Similarity:** 0.32
+- **Dependents:** 0
+- **Priority Score:** 51106.8
+- **Functions:** 4/8 matched (target 6)
+- **Missing functions:** `shutdown`, `exporter_name`, `fmt`, `from`
+- **Types:** 2/3 matched (target 2)
+- **Missing types:** `TestExportError`
+- **Lint issues:** 1
+
+### 40. metrics.manual_reader
 
 - **Target:** `metrics.ManualReader`
 - **Similarity:** 0.42
@@ -412,7 +509,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing types:** `ManualReaderInner`
 - **Lint issues:** 1
 
-### 33. propagation.baggage
+### 41. propagation.baggage
 
 - **Target:** `propagation.Baggage`
 - **Similarity:** 0.53
@@ -424,7 +521,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing types:** _none_
 - **Tests:** 4/8 matched
 
-### 34. internal.last_value
+### 42. internal.last_value
 
 - **Target:** `internal.LastValue`
 - **Similarity:** 0.52
@@ -435,7 +532,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 2/4 matched (target 3)
 - **Missing types:** `InitConfig`, `PreComputedValue`
 
-### 35. internal.sum
+### 43. internal.sum
 
 - **Target:** `internal.Sum`
 - **Similarity:** 0.55
@@ -446,7 +543,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 2/4 matched (target 3)
 - **Missing types:** `InitConfig`, `PreComputedValue`
 
-### 36. trace.in_memory_exporter
+### 44. trace.in_memory_exporter
 
 - **Target:** `trace.InMemoryExporter`
 - **Similarity:** 0.28
@@ -459,18 +556,30 @@ Every matched file is listed below with function and type symbol parity.
 - **Tests:** 0/1 matched
 - **Lint issues:** 1
 
-### 37. trace.links
+### 45. jaeger_remote.sampling_strategy
 
-- **Target:** `trace.Links`
-- **Similarity:** 0.69
+- **Target:** `jaegerremote.SamplingStrategy`
+- **Similarity:** 0.46
 - **Dependents:** 0
-- **Priority Score:** 30703.1
-- **Functions:** 3/3 matched (target 9)
-- **Missing functions:** _none_
-- **Types:** 1/4 matched (target 2)
-- **Missing types:** `Target`, `Item`, `IntoIter`
+- **Priority Score:** 31005.4
+- **Functions:** 4/7 matched (target 5)
+- **Missing functions:** `fmt`, `drop`, `new`
+- **Types:** 3/3 matched (target 6)
+- **Missing types:** _none_
 
-### 38. trace.events
+### 46. jaeger_remote.rate_limit
+
+- **Target:** `jaegerremote.RateLimit`
+- **Similarity:** 0.42
+- **Dependents:** 0
+- **Priority Score:** 30705.8
+- **Functions:** 3/6 matched (target 3)
+- **Missing functions:** `new`, `test_leaky_bucket`, `test_rewind_clock_should_pass`
+- **Types:** 1/1 matched
+- **Missing types:** _none_
+- **Tests:** 0/2 matched
+
+### 47. trace.events
 
 - **Target:** `trace.Events`
 - **Similarity:** 0.69
@@ -481,7 +590,18 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 1/4 matched (target 2)
 - **Missing types:** `Target`, `Item`, `IntoIter`
 
-### 39. logs.in_memory_exporter
+### 48. trace.links
+
+- **Target:** `trace.Links`
+- **Similarity:** 0.69
+- **Dependents:** 0
+- **Priority Score:** 30703.1
+- **Functions:** 3/3 matched (target 9)
+- **Missing functions:** _none_
+- **Types:** 1/4 matched (target 2)
+- **Missing types:** `Target`, `Item`, `IntoIter`
+
+### 49. logs.in_memory_exporter
 
 - **Target:** `logs.InMemoryExporter`
 - **Similarity:** 0.41
@@ -494,7 +614,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Tests:** 0/1 matched
 - **Lint issues:** 1
 
-### 40. logs.logger
+### 50. logs.logger
 
 - **Target:** `logs.Logger`
 - **Similarity:** 0.66
@@ -505,7 +625,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 1/2 matched (target 1)
 - **Missing types:** `LogRecord`
 
-### 41. metrics.view
+### 51. metrics.view
 
 - **Target:** `metrics.View [ZERO]`
 - **Similarity:** 0.00
@@ -516,7 +636,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 0/1 matched (target 0)
 - **Missing types:** `View`
 
-### 42. logs.mod
+### 52. logs.mod
 
 - **Target:** `logs.Model [STUB]`
 - **Similarity:** 0.00
@@ -528,7 +648,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing types:** _none_
 - **Tests:** 5/5 matched
 
-### 43. internal.precomputed_sum
+### 53. internal.precomputed_sum
 
 - **Target:** `internal.PrecomputedSum`
 - **Similarity:** 0.57
@@ -539,7 +659,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 1/1 matched (target 2)
 - **Missing types:** _none_
 
-### 44. lib
+### 54. lib
 
 - **Target:** `opentelemetrysdk.Lib [ZERO]`
 - **Similarity:** 0.00
@@ -550,7 +670,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 1/1 matched (target 8)
 - **Missing types:** _none_
 
-### 45. util
+### 55. util
 
 - **Target:** `opentelemetrysdk.Util`
 - **Similarity:** 0.00
@@ -561,7 +681,29 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 0/0 matched
 - **Missing types:** _none_
 
-### 46. trace.export
+### 56. logs.concurrent_log_processor
+
+- **Target:** `logs.ConcurrentLogProcessor`
+- **Similarity:** 0.75
+- **Dependents:** 0
+- **Priority Score:** 702.5
+- **Functions:** 6/6 matched
+- **Missing functions:** _none_
+- **Types:** 1/1 matched
+- **Missing types:** _none_
+
+### 57. jaeger_remote.remote
+
+- **Target:** `jaegerremote.Remote`
+- **Similarity:** 1.00
+- **Dependents:** 0
+- **Priority Score:** 700.0
+- **Functions:** 0/0 matched
+- **Missing functions:** _none_
+- **Types:** 7/7 matched
+- **Missing types:** _none_
+
+### 58. trace.export
 
 - **Target:** `trace.Export`
 - **Similarity:** 0.65
@@ -573,7 +715,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing types:** _none_
 - **Lint issues:** 1
 
-### 47. id_generator.mod
+### 59. id_generator.mod
 
 - **Target:** `trace.IdGenerator [STUB]`
 - **Similarity:** 0.00
@@ -584,7 +726,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 2/2 matched
 - **Missing types:** _none_
 
-### 48. trace.error
+### 60. trace.error
 
 - **Target:** `trace.Error`
 - **Similarity:** 0.21
@@ -595,7 +737,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 3/3 matched (target 7)
 - **Missing types:** _none_
 
-### 49. metrics.noop
+### 61. metrics.noop
 
 - **Target:** `metrics.Noop`
 - **Similarity:** 0.83
@@ -607,7 +749,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing types:** _none_
 - **Lint issues:** 2
 
-### 50. metrics.reader
+### 62. metrics.reader
 
 - **Target:** `metrics.Reader`
 - **Similarity:** 0.55
@@ -618,7 +760,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 2/2 matched
 - **Missing types:** _none_
 
-### 51. metrics.error
+### 63. metrics.error
 
 - **Target:** `metrics.Error`
 - **Similarity:** 0.78
@@ -629,7 +771,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 2/2 matched (target 5)
 - **Missing types:** _none_
 
-### 52. trace.span_limit
+### 64. trace.span_limit
 
 - **Target:** `trace.SpanLimits`
 - **Similarity:** 0.18
@@ -640,7 +782,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 1/1 matched
 - **Missing types:** _none_
 
-### 53. metrics.exporter
+### 65. metrics.exporter
 
 - **Target:** `metrics.Exporter`
 - **Similarity:** 0.55
@@ -651,7 +793,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 1/1 matched
 - **Missing types:** _none_
 
-### 54. resource.telemetry
+### 66. resource.telemetry
 
 - **Target:** `resource.Telemetry`
 - **Similarity:** 0.58
@@ -662,7 +804,62 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 1/1 matched
 - **Missing types:** _none_
 
-### 55. resource.attributes
+### 67. propagation.mod
+
+- **Target:** `propagation.Mod [STUB]`
+- **Similarity:** 0.00
+- **Dependents:** 0
+- **Priority Score:** 10.0
+- **Functions:** 0/0 matched
+- **Missing functions:** _none_
+- **Types:** 0/0 matched (target 2)
+- **Missing types:** _none_
+
+### 68. jaeger_remote.mod
+
+- **Target:** `jaegerremote.Mod [STUB]`
+- **Similarity:** 0.00
+- **Dependents:** 0
+- **Priority Score:** 10.0
+- **Functions:** 0/0 matched
+- **Missing functions:** _none_
+- **Types:** 0/0 matched (target 2)
+- **Missing types:** _none_
+
+### 69. testing.trace.mod
+
+- **Target:** `trace.Mod [STUB]`
+- **Similarity:** 0.00
+- **Dependents:** 0
+- **Priority Score:** 10.0
+- **Functions:** 0/0 matched
+- **Missing functions:** _none_
+- **Types:** 0/0 matched (target 2)
+- **Missing types:** _none_
+
+### 70. testing.mod
+
+- **Target:** `testing.Mod [STUB]`
+- **Similarity:** 0.00
+- **Dependents:** 0
+- **Priority Score:** 10.0
+- **Functions:** 0/0 matched
+- **Missing functions:** _none_
+- **Types:** 0/0 matched (target 1)
+- **Missing types:** _none_
+
+### 71. testing.metrics.mod
+
+- **Target:** `metrics.Mod [STUB]`
+- **Similarity:** 0.00
+- **Dependents:** 0
+- **Priority Score:** 10.0
+- **Functions:** 0/0 matched
+- **Missing functions:** _none_
+- **Types:** 0/0 matched (target 1)
+- **Missing types:** _none_
+
+### 72. resource.attributes
 
 - **Target:** `resource.Attributes`
 - **Similarity:** 1.00
