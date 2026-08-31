@@ -1,4 +1,4 @@
-// port-lint: source src/context.rs
+// port-lint: source opentelemetry_sdk/benches/context.rs
 package io.github.kotlinmania.opentelemetrysdk
 
 import io.github.kotlinmania.opentelemetrysdk.resource.KeyValue

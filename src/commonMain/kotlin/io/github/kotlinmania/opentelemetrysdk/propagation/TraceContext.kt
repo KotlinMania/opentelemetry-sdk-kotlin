@@ -1,4 +1,4 @@
-// port-lint: source propagation/trace_context.rs
+// port-lint: source opentelemetry_sdk/src/propagation/trace_context.rs
 package io.github.kotlinmania.opentelemetrysdk.propagation
 
 import io.github.kotlinmania.opentelemetrysdk.Context

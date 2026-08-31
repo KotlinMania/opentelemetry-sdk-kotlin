@@ -1,4 +1,4 @@
-// port-lint: tests metrics/internal/sum.rs
+// port-lint: tests opentelemetry_sdk/src/metrics/internal/sum.rs
 package io.github.kotlinmania.opentelemetrysdk.metrics.internal
 
 import io.github.kotlinmania.opentelemetrysdk.metrics.Temporality

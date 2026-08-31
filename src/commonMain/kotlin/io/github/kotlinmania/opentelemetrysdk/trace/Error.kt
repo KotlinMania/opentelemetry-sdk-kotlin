@@ -1,4 +1,4 @@
-// port-lint: source trace/error.rs
+// port-lint: source opentelemetry_sdk/src/trace/error.rs
 package io.github.kotlinmania.opentelemetrysdk.trace
 
 import io.github.kotlinmania.opentelemetrysdk.ExportError

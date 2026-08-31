@@ -1,4 +1,4 @@
-// port-lint: source util.rs
+// port-lint: source opentelemetry_sdk/src/util.rs
 package io.github.kotlinmania.opentelemetrysdk
 
 import kotlinx.coroutines.delay

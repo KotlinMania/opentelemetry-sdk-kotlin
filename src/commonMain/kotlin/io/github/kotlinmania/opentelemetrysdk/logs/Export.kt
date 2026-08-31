@@ -1,4 +1,4 @@
-// port-lint: source logs/export.rs
+// port-lint: source opentelemetry_sdk/src/logs/export.rs
 package io.github.kotlinmania.opentelemetrysdk.logs
 
 import io.github.kotlinmania.opentelemetrysdk.OTelSdkResult
