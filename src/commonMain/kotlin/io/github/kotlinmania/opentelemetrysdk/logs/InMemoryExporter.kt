@@ -1,4 +1,4 @@
-// port-lint: source logs/in_memory_exporter.rs
+// port-lint: source opentelemetry_sdk/src/logs/in_memory_exporter.rs
 package io.github.kotlinmania.opentelemetrysdk.logs
 
 import io.github.kotlinmania.opentelemetrysdk.InstrumentationScope

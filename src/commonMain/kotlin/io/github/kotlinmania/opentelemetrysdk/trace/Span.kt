@@ -1,4 +1,4 @@
-// port-lint: source trace/span.rs
+// port-lint: source opentelemetry_sdk/src/trace/span.rs
 package io.github.kotlinmania.opentelemetrysdk.trace
 
 import io.github.kotlinmania.opentelemetrysdk.resource.KeyValue

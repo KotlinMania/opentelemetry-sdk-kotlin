@@ -1,4 +1,4 @@
-// port-lint: source error.rs
+// port-lint: source opentelemetry_sdk/src/error.rs
 package io.github.kotlinmania.opentelemetrysdk
 
 import kotlin.time.Duration

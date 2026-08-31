@@ -1,4 +1,4 @@
-// port-lint: source testing/trace/span_exporters.rs
+// port-lint: source opentelemetry_sdk/src/testing/trace/span_exporters.rs
 package io.github.kotlinmania.opentelemetrysdk.testing.trace
 
 import io.github.kotlinmania.opentelemetrysdk.InstrumentationScope

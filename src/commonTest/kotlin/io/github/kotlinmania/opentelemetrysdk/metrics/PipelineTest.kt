@@ -1,4 +1,4 @@
-// port-lint: tests metrics/pipeline.rs
+// port-lint: tests opentelemetry_sdk/src/metrics/pipeline.rs
 package io.github.kotlinmania.opentelemetrysdk.metrics
 
 import io.github.kotlinmania.opentelemetrysdk.metrics.data.AggregatedMetrics

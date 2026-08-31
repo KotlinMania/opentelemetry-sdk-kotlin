@@ -1,4 +1,4 @@
-// port-lint: tests metrics/data/mod.rs
+// port-lint: tests opentelemetry_sdk/src/metrics/data/mod.rs
 package io.github.kotlinmania.opentelemetrysdk.metrics.data
 
 import io.github.kotlinmania.opentelemetrysdk.resource.KeyValue

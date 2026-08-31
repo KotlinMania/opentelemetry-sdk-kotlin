@@ -1,4 +1,4 @@
-// port-lint: source metrics/internal/histogram.rs
+// port-lint: source opentelemetry_sdk/src/metrics/internal/histogram.rs
 package io.github.kotlinmania.opentelemetrysdk.metrics.internal
 
 import io.github.kotlinmania.opentelemetrysdk.metrics.Temporality

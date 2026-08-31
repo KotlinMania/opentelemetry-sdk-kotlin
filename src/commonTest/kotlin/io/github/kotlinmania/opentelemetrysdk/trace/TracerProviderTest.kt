@@ -1,4 +1,4 @@
-// port-lint: tests trace/provider.rs
+// port-lint: tests opentelemetry_sdk/src/trace/provider.rs
 package io.github.kotlinmania.opentelemetrysdk.trace
 
 import io.github.kotlinmania.opentelemetrysdk.OTelSdkError
