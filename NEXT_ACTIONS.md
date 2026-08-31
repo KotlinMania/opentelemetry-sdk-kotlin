@@ -4,14 +4,14 @@ Based on AST analysis, here are the concrete next steps.
 
 ## Summary
 
-- **Files Present:** 73/86 (84.9%)
-- **Function parity:** 453/1052 matched (target 788) — 43.1%
-- **Class/type parity:** 160/265 matched (target 316) — 60.4%
-- **Combined symbol parity:** 613/1317 matched (target 1104) — 46.5%
-- **Average inline-code cosine:** 0.46 (function body across 60 matched files)
-- **Average documentation cosine:** 0.55 (doc text across 60 matched files)
+- **Files Present:** 72/72 (100.0%)
+- **Function parity:** 453/959 matched (target 775) — 47.2%
+- **Class/type parity:** 160/246 matched (target 314) — 65.0%
+- **Combined symbol parity:** 613/1205 matched (target 1089) — 50.9%
+- **Average inline-code cosine:** 0.47 (function body across 59 matched files)
+- **Average documentation cosine:** 0.56 (doc text across 59 matched files)
 - **Cheat-zeroed Files:** 13
-- **Critical Issues:** 59 files with <0.60 function similarity
+- **Critical Issues:** 58 files with <0.60 function similarity
 
 ## Priority 1: Fix Incomplete High-Dependency Files
 
@@ -27,20 +27,43 @@ No missing high-value files detected.
 
 Every matched file is listed below with function and type symbol parity.
 
-### 1. opentelemetry_sdk.runtime
+### 1. trace.span
 
-- **Target:** `opentelemetrysdk.Runtime`
-- **Similarity:** 0.53
+- **Target:** `trace.Span [PROVENANCE-FALLBACK]`
+- **Similarity:** 0.66
 - **Dependents:** 3
-- **Priority Score:** 3011404.8
-- **Functions:** 5/5 matched (target 11)
+- **Priority Score:** 3043503.5
+- **Functions:** 30/33 matched (target 41)
+- **Missing functions:** `span_context`, `drop`, `init`
+- **Types:** 1/2 matched
+- **Missing types:** `SpanData`
+- **Tests:** 17/17 matched
+- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `opentelemetry_sdk/src/trace/span.rs` vs expected `trace/span.rs`
+- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `tests:opentelemetry_sdk/src/trace/span.rs` vs expected `trace/span.rs`
+- **Proposed provenance header:** `// port-lint: source trace/span.rs` (current: `// port-lint: source opentelemetry_sdk/src/trace/span.rs`)
+- **Proposed provenance header:** `// port-lint: tests trace/span.rs` (current: `// port-lint: tests opentelemetry_sdk/src/trace/span.rs`)
+- **Lint issues:** 2
+
+### 2. logs.log_processor
+
+- **Target:** `logs.LogProcessor [PROVENANCE-FALLBACK]`
+- **Similarity:** 0.68
+- **Dependents:** 3
+- **Priority Score:** 3001303.2
+- **Functions:** 9/9 matched (target 12)
 - **Missing functions:** _none_
-- **Types:** 8/9 matched (target 13)
-- **Missing types:** `Message`
+- **Types:** 4/4 matched (target 5)
+- **Missing types:** _none_
+- **Tests:** 1/1 matched
+- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `opentelemetry_sdk/src/logs/log_processor.rs` vs expected `logs/log_processor.rs`
+- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `tests:opentelemetry_sdk/src/logs/log_processor.rs` vs expected `logs/log_processor.rs`
+- **Proposed provenance header:** `// port-lint: source logs/log_processor.rs` (current: `// port-lint: source opentelemetry_sdk/src/logs/log_processor.rs`)
+- **Proposed provenance header:** `// port-lint: tests logs/log_processor.rs` (current: `// port-lint: tests opentelemetry_sdk/src/logs/log_processor.rs`)
+- **Lint issues:** 3
 
-### 2. resource.env
+### 3. resource.env
 
-- **Target:** `resource.Env`
+- **Target:** `resource.Env [PROVENANCE-FALLBACK]`
 - **Similarity:** 0.68
 - **Dependents:** 3
 - **Priority Score:** 3000803.2
@@ -49,10 +72,15 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 2/2 matched (target 3)
 - **Missing types:** _none_
 - **Tests:** 2/2 matched
+- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `opentelemetry_sdk/src/resource/env.rs` vs expected `resource/env.rs`
+- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `tests:opentelemetry_sdk/src/resource/env.rs` vs expected `resource/env.rs`
+- **Proposed provenance header:** `// port-lint: source resource/env.rs` (current: `// port-lint: source opentelemetry_sdk/src/resource/env.rs`)
+- **Proposed provenance header:** `// port-lint: tests resource/env.rs` (current: `// port-lint: tests opentelemetry_sdk/src/resource/env.rs`)
+- **Lint issues:** 2
 
-### 3. opentelemetry_sdk.error
+### 4. error
 
-- **Target:** `opentelemetrysdk.Error`
+- **Target:** `opentelemetrysdk.Error [PROVENANCE-FALLBACK]`
 - **Similarity:** 1.00
 - **Dependents:** 3
 - **Priority Score:** 3000300.0
@@ -60,21 +88,13 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing functions:** _none_
 - **Types:** 3/3 matched (target 6)
 - **Missing types:** _none_
-
-### 4. benches.context
-
-- **Target:** `opentelemetrysdk.Context`
-- **Similarity:** 0.00
-- **Dependents:** 2
-- **Priority Score:** 2151510.0
-- **Functions:** 0/12 matched (target 13)
-- **Missing functions:** `criterion_benchmark`, `has_active_span_alt`, `has_active_span_spec`, `is_sampled_alt`, `is_sampled_spec`, `is_recording_alt`, `is_recording_spec`, `as_str`, `fmt`, `setup`, `parent_sampled_tracer`, `export`
-- **Types:** 0/3 matched (target 2)
-- **Missing types:** `Api`, `Environment`, `NoopExporter`
+- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `opentelemetry_sdk/src/error.rs` vs expected `error.rs`
+- **Proposed provenance header:** `// port-lint: source error.rs` (current: `// port-lint: source opentelemetry_sdk/src/error.rs`)
+- **Lint issues:** 1
 
 ### 5. metrics.meter_provider
 
-- **Target:** `metrics.MeterProvider`
+- **Target:** `metrics.MeterProvider [PROVENANCE-FALLBACK]`
 - **Similarity:** 0.43
 - **Dependents:** 2
 - **Priority Score:** 2072405.6
@@ -83,23 +103,15 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 2/3 matched
 - **Missing types:** `SdkMeterProviderInner`
 - **Tests:** 3/7 matched
-- **Lint issues:** 1
+- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `opentelemetry_sdk/src/metrics/meter_provider.rs` vs expected `metrics/meter_provider.rs`
+- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `tests:opentelemetry_sdk/src/metrics/meter_provider.rs` vs expected `metrics/meter_provider.rs`
+- **Proposed provenance header:** `// port-lint: source metrics/meter_provider.rs` (current: `// port-lint: source opentelemetry_sdk/src/metrics/meter_provider.rs`)
+- **Proposed provenance header:** `// port-lint: tests metrics/meter_provider.rs` (current: `// port-lint: tests opentelemetry_sdk/src/metrics/meter_provider.rs`)
+- **Lint issues:** 3
 
-### 6. trace.tracer
+### 6. propagation.trace_context
 
-- **Target:** `trace.Tracer`
-- **Similarity:** 0.42
-- **Dependents:** 2
-- **Priority Score:** 2061405.8
-- **Functions:** 6/11 matched (target 19)
-- **Missing functions:** `fmt`, `instrumentation_scope`, `build_recording_span`, `id_generator`, `build_with_context`
-- **Types:** 2/3 matched (target 4)
-- **Missing types:** `Span`
-- **Tests:** 3/3 matched
-
-### 7. propagation.trace_context
-
-- **Target:** `propagation.TraceContext`
+- **Target:** `propagation.TraceContext [PROVENANCE-FALLBACK]`
 - **Similarity:** 0.43
 - **Dependents:** 2
 - **Priority Score:** 2031505.8
@@ -108,10 +120,29 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 1/1 matched (target 6)
 - **Missing types:** _none_
 - **Tests:** 5/5 matched
+- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `opentelemetry_sdk/src/propagation/trace_context.rs` vs expected `propagation/trace_context.rs`
+- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `tests:opentelemetry_sdk/src/propagation/trace_context.rs` vs expected `propagation/trace_context.rs`
+- **Proposed provenance header:** `// port-lint: source propagation/trace_context.rs` (current: `// port-lint: source opentelemetry_sdk/src/propagation/trace_context.rs`)
+- **Proposed provenance header:** `// port-lint: tests propagation/trace_context.rs` (current: `// port-lint: tests opentelemetry_sdk/src/propagation/trace_context.rs`)
+- **Lint issues:** 2
+
+### 7. runtime
+
+- **Target:** `opentelemetrysdk.Runtime [PROVENANCE-FALLBACK]`
+- **Similarity:** 0.53
+- **Dependents:** 2
+- **Priority Score:** 2011404.6
+- **Functions:** 5/5 matched (target 11)
+- **Missing functions:** _none_
+- **Types:** 8/9 matched (target 13)
+- **Missing types:** `Message`
+- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `opentelemetry_sdk/src/runtime.rs` vs expected `runtime.rs`
+- **Proposed provenance header:** `// port-lint: source runtime.rs` (current: `// port-lint: source opentelemetry_sdk/src/runtime.rs`)
+- **Lint issues:** 1
 
 ### 8. metrics.periodic_reader
 
-- **Target:** `metrics.PeriodicReader`
+- **Target:** `metrics.PeriodicReader [PROVENANCE-FALLBACK]`
 - **Similarity:** 0.29
 - **Dependents:** 1
 - **Priority Score:** 1295007.0
@@ -120,10 +151,15 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 4/6 matched (target 5)
 - **Missing types:** `PeriodicReaderInner`, `Message`
 - **Tests:** 6/10 matched
+- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `opentelemetry_sdk/src/metrics/periodic_reader.rs` vs expected `metrics/periodic_reader.rs`
+- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `tests:opentelemetry_sdk/src/metrics/periodic_reader.rs` vs expected `metrics/periodic_reader.rs`
+- **Proposed provenance header:** `// port-lint: source metrics/periodic_reader.rs` (current: `// port-lint: source opentelemetry_sdk/src/metrics/periodic_reader.rs`)
+- **Proposed provenance header:** `// port-lint: tests metrics/periodic_reader.rs` (current: `// port-lint: tests opentelemetry_sdk/src/metrics/periodic_reader.rs`)
+- **Lint issues:** 2
 
 ### 9. trace.span_processor
 
-- **Target:** `trace.SpanProcessor`
+- **Target:** `trace.SpanProcessor [PROVENANCE-FALLBACK]`
 - **Similarity:** 0.28
 - **Dependents:** 1
 - **Priority Score:** 1274707.1
@@ -132,11 +168,13 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 6/8 matched (target 6)
 - **Missing types:** `BatchMessage`, `MockSpanExporter`
 - **Tests:** 0/15 matched
-- **Lint issues:** 5
+- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `opentelemetry_sdk/src/trace/span_processor.rs` vs expected `trace/span_processor.rs`
+- **Proposed provenance header:** `// port-lint: source trace/span_processor.rs` (current: `// port-lint: source opentelemetry_sdk/src/trace/span_processor.rs`)
+- **Lint issues:** 6
 
 ### 10. logs.batch_log_processor
 
-- **Target:** `logs.BatchLogProcessor`
+- **Target:** `logs.BatchLogProcessor [PROVENANCE-FALLBACK]`
 - **Similarity:** 0.26
 - **Dependents:** 1
 - **Priority Score:** 1213707.4
@@ -145,10 +183,13 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 4/6 matched (target 4)
 - **Missing types:** `BatchMessage`, `LogsData`
 - **Tests:** 0/8 matched
+- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `opentelemetry_sdk/src/logs/batch_log_processor.rs` vs expected `logs/batch_log_processor.rs`
+- **Proposed provenance header:** `// port-lint: source logs/batch_log_processor.rs` (current: `// port-lint: source opentelemetry_sdk/src/logs/batch_log_processor.rs`)
+- **Lint issues:** 1
 
 ### 11. logs.simple_log_processor
 
-- **Target:** `logs.SimpleLogProcessor`
+- **Target:** `logs.SimpleLogProcessor [PROVENANCE-FALLBACK]`
 - **Similarity:** 0.15
 - **Dependents:** 1
 - **Priority Score:** 1182508.5
@@ -157,10 +198,13 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 1/3 matched (target 1)
 - **Missing types:** `LogExporterThatRequiresTokio`, `ReentrantLogExporter`
 - **Tests:** 0/5 matched
+- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `opentelemetry_sdk/src/logs/simple_log_processor.rs` vs expected `logs/simple_log_processor.rs`
+- **Proposed provenance header:** `// port-lint: source logs/simple_log_processor.rs` (current: `// port-lint: source opentelemetry_sdk/src/logs/simple_log_processor.rs`)
+- **Lint issues:** 1
 
-### 12. opentelemetry_sdk.growable_array
+### 12. growable_array
 
-- **Target:** `opentelemetrysdk.GrowableArray`
+- **Target:** `opentelemetrysdk.GrowableArray [PROVENANCE-FALLBACK]`
 - **Similarity:** 0.50
 - **Dependents:** 1
 - **Priority Score:** 1072405.0
@@ -169,10 +213,15 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 2/5 matched (target 3)
 - **Missing types:** `Item`, `IntoIter`, `KeyValuePair`
 - **Tests:** 9/10 matched
+- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `opentelemetry_sdk/src/growable_array.rs` vs expected `growable_array.rs`
+- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `tests:opentelemetry_sdk/src/growable_array.rs` vs expected `growable_array.rs`
+- **Proposed provenance header:** `// port-lint: source growable_array.rs` (current: `// port-lint: source opentelemetry_sdk/src/growable_array.rs`)
+- **Proposed provenance header:** `// port-lint: tests growable_array.rs` (current: `// port-lint: tests opentelemetry_sdk/src/growable_array.rs`)
+- **Lint issues:** 2
 
 ### 13. metrics.pipeline
 
-- **Target:** `metrics.Pipeline`
+- **Target:** `metrics.Pipeline [PROVENANCE-FALLBACK]`
 - **Similarity:** 0.46
 - **Dependents:** 1
 - **Priority Score:** 1062405.4
@@ -180,10 +229,32 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing functions:** `fmt`, `new`, `log_conflict`
 - **Types:** 5/8 matched (target 7)
 - **Missing types:** `GenericCallback`, `PipelineInner`, `Cache`
+- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `opentelemetry_sdk/src/metrics/pipeline.rs` vs expected `metrics/pipeline.rs`
+- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `tests:opentelemetry_sdk/src/metrics/pipeline.rs` vs expected `metrics/pipeline.rs`
+- **Proposed provenance header:** `// port-lint: source metrics/pipeline.rs` (current: `// port-lint: source opentelemetry_sdk/src/metrics/pipeline.rs`)
+- **Proposed provenance header:** `// port-lint: tests metrics/pipeline.rs` (current: `// port-lint: tests opentelemetry_sdk/src/metrics/pipeline.rs`)
+- **Lint issues:** 2
 
-### 14. metrics.aggregation
+### 14. trace.tracer
 
-- **Target:** `metrics.Aggregation`
+- **Target:** `trace.Tracer [PROVENANCE-FALLBACK]`
+- **Similarity:** 0.42
+- **Dependents:** 1
+- **Priority Score:** 1061405.8
+- **Functions:** 6/11 matched (target 19)
+- **Missing functions:** `fmt`, `instrumentation_scope`, `build_recording_span`, `id_generator`, `build_with_context`
+- **Types:** 2/3 matched (target 4)
+- **Missing types:** `Span`
+- **Tests:** 3/3 matched
+- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `opentelemetry_sdk/src/trace/tracer.rs` vs expected `trace/tracer.rs`
+- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `tests:opentelemetry_sdk/src/trace/tracer.rs` vs expected `trace/tracer.rs`
+- **Proposed provenance header:** `// port-lint: source trace/tracer.rs` (current: `// port-lint: source opentelemetry_sdk/src/trace/tracer.rs`)
+- **Proposed provenance header:** `// port-lint: tests trace/tracer.rs` (current: `// port-lint: tests opentelemetry_sdk/src/trace/tracer.rs`)
+- **Lint issues:** 2
+
+### 15. metrics.aggregation
+
+- **Target:** `metrics.Aggregation [PROVENANCE-FALLBACK]`
 - **Similarity:** 0.47
 - **Dependents:** 1
 - **Priority Score:** 1010505.3
@@ -192,10 +263,15 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 2/2 matched (target 9)
 - **Missing types:** _none_
 - **Tests:** 1/1 matched
+- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `opentelemetry_sdk/src/metrics/aggregation.rs` vs expected `metrics/aggregation.rs`
+- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `tests:opentelemetry_sdk/src/metrics/aggregation.rs` vs expected `metrics/aggregation.rs`
+- **Proposed provenance header:** `// port-lint: source metrics/aggregation.rs` (current: `// port-lint: source opentelemetry_sdk/src/metrics/aggregation.rs`)
+- **Proposed provenance header:** `// port-lint: tests metrics/aggregation.rs` (current: `// port-lint: tests opentelemetry_sdk/src/metrics/aggregation.rs`)
+- **Lint issues:** 2
 
-### 15. metrics.metric_reader
+### 16. metrics.metric_reader
 
-- **Target:** `metrics.MetricReader`
+- **Target:** `metrics.MetricReader [PROVENANCE-FALLBACK]`
 - **Similarity:** 0.53
 - **Dependents:** 1
 - **Priority Score:** 1000904.7
@@ -203,11 +279,13 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing functions:** _none_
 - **Types:** 1/1 matched
 - **Missing types:** _none_
-- **Lint issues:** 2
+- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `opentelemetry_sdk/src/testing/metrics/metric_reader.rs` vs expected `testing/metrics/metric_reader.rs`
+- **Proposed provenance header:** `// port-lint: source testing/metrics/metric_reader.rs` (current: `// port-lint: source opentelemetry_sdk/src/testing/metrics/metric_reader.rs`)
+- **Lint issues:** 3
 
-### 16. trace.config
+### 17. trace.config
 
-- **Target:** `trace.Config`
+- **Target:** `trace.Config [PROVENANCE-FALLBACK]`
 - **Similarity:** 0.15
 - **Dependents:** 1
 - **Priority Score:** 1000208.4
@@ -215,10 +293,15 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing functions:** _none_
 - **Types:** 1/1 matched (target 2)
 - **Missing types:** _none_
+- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `opentelemetry_sdk/src/trace/config.rs` vs expected `trace/config.rs`
+- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `opentelemetry_sdk/src/trace/config.rs` vs expected `trace/config.rs`
+- **Proposed provenance header:** `// port-lint: source trace/config.rs` (current: `// port-lint: source opentelemetry_sdk/src/trace/config.rs`)
+- **Proposed provenance header:** `// port-lint: source trace/config.rs` (current: `// port-lint: source opentelemetry_sdk/src/trace/config.rs`)
+- **Lint issues:** 2
 
-### 17. metrics.mod
+### 18. metrics.mod
 
-- **Target:** `metrics.Temporality [STUB]`
+- **Target:** `metrics.Temporality [STUB] [PROVENANCE-FALLBACK]`
 - **Similarity:** 0.00
 - **Dependents:** 0
 - **Priority Score:** 969710.0
@@ -227,10 +310,13 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 1/2 matched (target 1)
 - **Missing types:** `TestContext`
 - **Tests:** 0/10 matched
+- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `opentelemetry_sdk/src/metrics/mod.rs` vs expected `metrics/mod.rs`
+- **Proposed provenance header:** `// port-lint: source metrics/mod.rs` (current: `// port-lint: source opentelemetry_sdk/src/metrics/mod.rs`)
+- **Lint issues:** 1
 
-### 18. logs.log_processor_with_async_runtime
+### 19. logs.log_processor_with_async_runtime
 
-- **Target:** `logs.LogProcessorWithAsyncRuntime`
+- **Target:** `logs.LogProcessorWithAsyncRuntime [PROVENANCE-FALLBACK]`
 - **Similarity:** 0.10
 - **Dependents:** 0
 - **Priority Score:** 364209.0
@@ -239,11 +325,13 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 0/6 matched (target 7)
 - **Missing types:** `BatchMessage`, `BatchLogProcessor`, `BatchLogProcessorBuilder`, `MockLogExporter`, `FirstProcessor`, `SecondProcessor`
 - **Tests:** 0/11 matched
-- **Lint issues:** 1
+- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `opentelemetry_sdk/src/logs/log_processor_with_async_runtime.rs` vs expected `logs/log_processor_with_async_runtime.rs`
+- **Proposed provenance header:** `// port-lint: source logs/log_processor_with_async_runtime.rs` (current: `// port-lint: source opentelemetry_sdk/src/logs/log_processor_with_async_runtime.rs`)
+- **Lint issues:** 2
 
-### 19. metrics.meter
+### 20. metrics.meter
 
-- **Target:** `metrics.Meter`
+- **Target:** `metrics.Meter [PROVENANCE-FALLBACK]`
 - **Similarity:** 0.01
 - **Dependents:** 0
 - **Priority Score:** 343609.9
@@ -252,11 +340,13 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 1/2 matched (target 5)
 - **Missing types:** `InstrumentResolver`
 - **Tests:** 0/3 matched
-- **Lint issues:** 1
+- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `opentelemetry_sdk/src/metrics/meter.rs` vs expected `metrics/meter.rs`
+- **Proposed provenance header:** `// port-lint: source metrics/meter.rs` (current: `// port-lint: source opentelemetry_sdk/src/metrics/meter.rs`)
+- **Lint issues:** 2
 
-### 20. data.mod
+### 21. data.mod
 
-- **Target:** `data.Data [STUB]`
+- **Target:** `data.Data [STUB] [PROVENANCE-FALLBACK]`
 - **Similarity:** 0.00
 - **Dependents:** 0
 - **Priority Score:** 325010.0
@@ -265,10 +355,15 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 15/15 matched (target 23)
 - **Missing types:** _none_
 - **Tests:** 1/1 matched
+- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `opentelemetry_sdk/src/metrics/data/mod.rs` vs expected `metrics/data/mod.rs`
+- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `tests:opentelemetry_sdk/src/metrics/data/mod.rs` vs expected `metrics/data/mod.rs`
+- **Proposed provenance header:** `// port-lint: source metrics/data/mod.rs` (current: `// port-lint: source opentelemetry_sdk/src/metrics/data/mod.rs`)
+- **Proposed provenance header:** `// port-lint: tests metrics/data/mod.rs` (current: `// port-lint: tests opentelemetry_sdk/src/metrics/data/mod.rs`)
+- **Lint issues:** 2
 
-### 21. internal.exponential_histogram
+### 22. internal.exponential_histogram
 
-- **Target:** `internal.ExponentialHistogram`
+- **Target:** `internal.ExponentialHistogram [PROVENANCE-FALLBACK]`
 - **Similarity:** 0.26
 - **Dependents:** 0
 - **Priority Score:** 253907.4
@@ -277,10 +372,15 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 4/9 matched (target 6)
 - **Missing types:** `InitConfig`, `PreComputedValue`, `TestCase`, `Expected`, `Args`
 - **Tests:** 0/17 matched
+- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `opentelemetry_sdk/src/metrics/internal/exponential_histogram.rs` vs expected `metrics/internal/exponential_histogram.rs`
+- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `tests:opentelemetry_sdk/src/metrics/internal/exponential_histogram.rs` vs expected `metrics/internal/exponential_histogram.rs`
+- **Proposed provenance header:** `// port-lint: source metrics/internal/exponential_histogram.rs` (current: `// port-lint: source opentelemetry_sdk/src/metrics/internal/exponential_histogram.rs`)
+- **Proposed provenance header:** `// port-lint: tests metrics/internal/exponential_histogram.rs` (current: `// port-lint: tests opentelemetry_sdk/src/metrics/internal/exponential_histogram.rs`)
+- **Lint issues:** 2
 
-### 22. logs.logger_provider
+### 23. logs.logger_provider
 
-- **Target:** `logs.LoggerProvider`
+- **Target:** `logs.LoggerProvider [PROVENANCE-FALLBACK]`
 - **Similarity:** 0.19
 - **Dependents:** 0
 - **Priority Score:** 233808.1
@@ -289,10 +389,13 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 3/9 matched (target 3)
 - **Missing types:** `Logger`, `ShutdownTestLogProcessor`, `TestExporterForResource`, `TestProcessorForResource`, `LazyLogProcessor`, `CountingShutdownProcessor`
 - **Tests:** 0/15 matched
+- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `opentelemetry_sdk/src/logs/logger_provider.rs` vs expected `logs/logger_provider.rs`
+- **Proposed provenance header:** `// port-lint: source logs/logger_provider.rs` (current: `// port-lint: source opentelemetry_sdk/src/logs/logger_provider.rs`)
+- **Lint issues:** 1
 
-### 23. internal.mod
+### 24. internal.mod
 
-- **Target:** `internal.Mod [STUB]`
+- **Target:** `internal.Mod [STUB] [PROVENANCE-FALLBACK]`
 - **Similarity:** 0.00
 - **Dependents:** 0
 - **Priority Score:** 223610.0
@@ -301,10 +404,13 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 3/7 matched (target 10)
 - **Missing types:** `AtomicallyUpdate`, `AggregatedMetricsAccess`, `Number`, `F64AtomicTracker`
 - **Tests:** 0/9 matched
+- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `opentelemetry_sdk/src/metrics/internal/mod.rs` vs expected `metrics/internal/mod.rs`
+- **Proposed provenance header:** `// port-lint: source metrics/internal/mod.rs` (current: `// port-lint: source opentelemetry_sdk/src/metrics/internal/mod.rs`)
+- **Lint issues:** 1
 
-### 24. trace.mod
+### 25. trace.mod
 
-- **Target:** `trace.TraceModel [STUB]`
+- **Target:** `trace.TraceModel [STUB] [PROVENANCE-FALLBACK]`
 - **Similarity:** 0.00
 - **Dependents:** 0
 - **Priority Score:** 212110.0
@@ -313,10 +419,15 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 0/3 matched (target 12)
 - **Missing types:** `ValueA`, `BaggageInspectingSpanProcessor`, `TestRecordOnlySampler`
 - **Tests:** 0/11 matched
+- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `opentelemetry_sdk/src/trace/mod.rs` vs expected `trace/mod.rs`
+- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `tests:opentelemetry_sdk/src/trace/mod.rs` vs expected `trace/mod.rs`
+- **Proposed provenance header:** `// port-lint: source trace/mod.rs` (current: `// port-lint: source opentelemetry_sdk/src/trace/mod.rs`)
+- **Proposed provenance header:** `// port-lint: tests trace/mod.rs` (current: `// port-lint: tests opentelemetry_sdk/src/trace/mod.rs`)
+- **Lint issues:** 2
 
-### 25. metrics.periodic_reader_with_async_runtime
+### 26. metrics.periodic_reader_with_async_runtime
 
-- **Target:** `metrics.PeriodicReaderWithAsyncRuntime`
+- **Target:** `metrics.PeriodicReaderWithAsyncRuntime [PROVENANCE-FALLBACK]`
 - **Similarity:** 0.26
 - **Dependents:** 0
 - **Priority Score:** 203007.4
@@ -325,11 +436,13 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 0/6 matched
 - **Missing types:** `PeriodicReaderBuilder`, `PeriodicReader`, `PeriodicReaderInner`, `Message`, `ProducerOrWorker`, `PeriodicReaderWorker`
 - **Tests:** 0/2 matched
-- **Lint issues:** 1
+- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `opentelemetry_sdk/src/metrics/periodic_reader_with_async_runtime.rs` vs expected `metrics/periodic_reader_with_async_runtime.rs`
+- **Proposed provenance header:** `// port-lint: source metrics/periodic_reader_with_async_runtime.rs` (current: `// port-lint: source opentelemetry_sdk/src/metrics/periodic_reader_with_async_runtime.rs`)
+- **Lint issues:** 2
 
-### 26. trace.span_processor_with_async_runtime
+### 27. trace.span_processor_with_async_runtime
 
-- **Target:** `trace.SpanProcessorWithAsyncRuntime`
+- **Target:** `trace.SpanProcessorWithAsyncRuntime [PROVENANCE-FALLBACK]`
 - **Similarity:** 0.21
 - **Dependents:** 0
 - **Priority Score:** 192707.9
@@ -338,11 +451,13 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 0/6 matched (target 7)
 - **Missing types:** `BatchSpanProcessor`, `BatchMessage`, `BatchSpanProcessorInternal`, `BatchSpanProcessorBuilder`, `BlockingExporter`, `TrackingExporter`
 - **Tests:** 0/1 matched
-- **Lint issues:** 3
+- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `opentelemetry_sdk/src/trace/span_processor_with_async_runtime.rs` vs expected `trace/span_processor_with_async_runtime.rs`
+- **Proposed provenance header:** `// port-lint: source trace/span_processor_with_async_runtime.rs` (current: `// port-lint: source opentelemetry_sdk/src/trace/span_processor_with_async_runtime.rs`)
+- **Lint issues:** 4
 
-### 27. trace.provider
+### 28. trace.provider
 
-- **Target:** `trace.Provider`
+- **Target:** `trace.Provider [PROVENANCE-FALLBACK]`
 - **Similarity:** 0.49
 - **Dependents:** 0
 - **Priority Score:** 154405.1
@@ -351,10 +466,15 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 6/8 matched (target 7)
 - **Missing types:** `TracerProviderInner`, `Tracer`
 - **Tests:** 6/10 matched
+- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `opentelemetry_sdk/src/trace/provider.rs` vs expected `trace/provider.rs`
+- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `tests:opentelemetry_sdk/src/trace/provider.rs` vs expected `trace/provider.rs`
+- **Proposed provenance header:** `// port-lint: source trace/provider.rs` (current: `// port-lint: source opentelemetry_sdk/src/trace/provider.rs`)
+- **Proposed provenance header:** `// port-lint: tests trace/provider.rs` (current: `// port-lint: tests opentelemetry_sdk/src/trace/provider.rs`)
+- **Lint issues:** 2
 
-### 28. metrics.instrument
+### 29. metrics.instrument
 
-- **Target:** `metrics.Instrument`
+- **Target:** `metrics.Instrument [PROVENANCE-FALLBACK]`
 - **Similarity:** 0.44
 - **Dependents:** 0
 - **Priority Score:** 123005.6
@@ -363,10 +483,15 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 4/7 matched (target 5)
 - **Missing types:** `InstrumentId`, `ResolvedMeasures`, `Observable`
 - **Tests:** 5/5 matched
+- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `opentelemetry_sdk/src/metrics/instrument.rs` vs expected `metrics/instrument.rs`
+- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `tests:opentelemetry_sdk/src/metrics/instrument.rs` vs expected `metrics/instrument.rs`
+- **Proposed provenance header:** `// port-lint: source metrics/instrument.rs` (current: `// port-lint: source opentelemetry_sdk/src/metrics/instrument.rs`)
+- **Proposed provenance header:** `// port-lint: tests metrics/instrument.rs` (current: `// port-lint: tests opentelemetry_sdk/src/metrics/instrument.rs`)
+- **Lint issues:** 2
 
-### 29. logs.record
+### 30. logs.record
 
-- **Target:** `logs.Record`
+- **Target:** `logs.Record [PROVENANCE-FALLBACK]`
 - **Similarity:** 0.59
 - **Dependents:** 0
 - **Priority Score:** 103804.1
@@ -375,10 +500,15 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 2/3 matched
 - **Missing types:** `LogRecordAttributes`
 - **Tests:** 11/12 matched
+- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `opentelemetry_sdk/src/logs/record.rs` vs expected `logs/record.rs`
+- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `opentelemetry_sdk/src/logs/record.rs` vs expected `logs/record.rs`
+- **Proposed provenance header:** `// port-lint: source logs/record.rs` (current: `// port-lint: source opentelemetry_sdk/src/logs/record.rs`)
+- **Proposed provenance header:** `// port-lint: source logs/record.rs` (current: `// port-lint: source opentelemetry_sdk/src/logs/record.rs`)
+- **Lint issues:** 2
 
-### 30. internal.aggregate
+### 31. internal.aggregate
 
-- **Target:** `internal.Aggregate`
+- **Target:** `internal.Aggregate [PROVENANCE-FALLBACK]`
 - **Similarity:** 0.34
 - **Dependents:** 0
 - **Priority Score:** 92406.6
@@ -387,10 +517,13 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 7/8 matched (target 7)
 - **Missing types:** `Filter`
 - **Tests:** 0/5 matched
+- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `opentelemetry_sdk/src/metrics/internal/aggregate.rs` vs expected `metrics/internal/aggregate.rs`
+- **Proposed provenance header:** `// port-lint: source metrics/internal/aggregate.rs` (current: `// port-lint: source opentelemetry_sdk/src/metrics/internal/aggregate.rs`)
+- **Lint issues:** 1
 
-### 31. trace.sampler
+### 32. trace.sampler
 
-- **Target:** `trace.Sampler`
+- **Target:** `trace.Sampler [PROVENANCE-FALLBACK]`
 - **Similarity:** 0.18
 - **Dependents:** 0
 - **Priority Score:** 81208.2
@@ -399,11 +532,15 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 2/3 matched (target 9)
 - **Missing types:** `CloneShouldSample`
 - **Tests:** 0/3 matched
-- **Lint issues:** 4
+- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `opentelemetry_sdk/src/trace/sampler.rs` vs expected `trace/sampler.rs`
+- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `tests:opentelemetry_sdk/src/trace/sampler.rs` vs expected `trace/sampler.rs`
+- **Proposed provenance header:** `// port-lint: source trace/sampler.rs` (current: `// port-lint: source opentelemetry_sdk/src/trace/sampler.rs`)
+- **Proposed provenance header:** `// port-lint: tests trace/sampler.rs` (current: `// port-lint: tests opentelemetry_sdk/src/trace/sampler.rs`)
+- **Lint issues:** 6
 
-### 32. trace.runtime_tests
+### 33. trace.runtime_tests
 
-- **Target:** `trace.RuntimeTests`
+- **Target:** `trace.RuntimeTests [PROVENANCE-FALLBACK]`
 - **Similarity:** 0.13
 - **Dependents:** 0
 - **Priority Score:** 81108.8
@@ -411,10 +548,13 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing functions:** `build_batch_tracer_provider`, `build_simple_tracer_provider`, `test_set_provider_in_tokio`, `test_set_provider_multiple_thread_tokio`, `test_set_provider_multiple_thread_tokio_shutdown`, `test_set_provider_single_thread_tokio_with_simple_processor`, `test_set_provider_single_thread_tokio`, `test_set_provider_single_thread_tokio_shutdown`
 - **Types:** 1/1 matched
 - **Missing types:** _none_
+- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `opentelemetry_sdk/src/trace/runtime_tests.rs` vs expected `trace/runtime_tests.rs`
+- **Proposed provenance header:** `// port-lint: source trace/runtime_tests.rs` (current: `// port-lint: source opentelemetry_sdk/src/trace/runtime_tests.rs`)
+- **Lint issues:** 1
 
-### 33. resource.mod
+### 34. resource.mod
 
-- **Target:** `resource.Resource [STUB]`
+- **Target:** `resource.Resource [STUB] [PROVENANCE-FALLBACK]`
 - **Similarity:** 0.00
 - **Dependents:** 0
 - **Priority Score:** 73510.0
@@ -423,10 +563,15 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 3/7 matched (target 12)
 - **Missing types:** `ResourceInner`, `Iter`, `Item`, `IntoIter`
 - **Tests:** 7/7 matched
+- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `opentelemetry_sdk/src/resource/mod.rs` vs expected `resource/mod.rs`
+- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `tests:opentelemetry_sdk/src/resource/mod.rs` vs expected `resource/mod.rs`
+- **Proposed provenance header:** `// port-lint: source resource/mod.rs` (current: `// port-lint: source opentelemetry_sdk/src/resource/mod.rs`)
+- **Proposed provenance header:** `// port-lint: tests resource/mod.rs` (current: `// port-lint: tests opentelemetry_sdk/src/resource/mod.rs`)
+- **Lint issues:** 2
 
-### 34. metrics.in_memory_exporter
+### 35. metrics.in_memory_exporter
 
-- **Target:** `metrics.InMemoryExporter`
+- **Target:** `metrics.InMemoryExporter [PROVENANCE-FALLBACK]`
 - **Similarity:** 0.32
 - **Dependents:** 0
 - **Priority Score:** 61806.8
@@ -434,10 +579,15 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing functions:** `clone`, `fmt`, `new`, `clone_metrics`, `clone_data`, `clone_inner`
 - **Types:** 2/2 matched (target 3)
 - **Missing types:** _none_
+- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `opentelemetry_sdk/src/metrics/in_memory_exporter.rs` vs expected `metrics/in_memory_exporter.rs`
+- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `tests:opentelemetry_sdk/src/metrics/in_memory_exporter.rs` vs expected `metrics/in_memory_exporter.rs`
+- **Proposed provenance header:** `// port-lint: source metrics/in_memory_exporter.rs` (current: `// port-lint: source opentelemetry_sdk/src/metrics/in_memory_exporter.rs`)
+- **Proposed provenance header:** `// port-lint: tests metrics/in_memory_exporter.rs` (current: `// port-lint: tests opentelemetry_sdk/src/metrics/in_memory_exporter.rs`)
+- **Lint issues:** 2
 
-### 35. jaeger_remote.sampler
+### 36. jaeger_remote.sampler
 
-- **Target:** `jaegerremote.Sampler`
+- **Target:** `jaegerremote.Sampler [PROVENANCE-FALLBACK]`
 - **Similarity:** 0.29
 - **Dependents:** 0
 - **Priority Score:** 61307.1
@@ -446,10 +596,13 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 2/2 matched
 - **Missing types:** _none_
 - **Tests:** 0/2 matched
+- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `opentelemetry_sdk/src/trace/sampler/jaeger_remote/sampler.rs` vs expected `trace/sampler/jaeger_remote/sampler.rs`
+- **Proposed provenance header:** `// port-lint: source trace/sampler/jaeger_remote/sampler.rs` (current: `// port-lint: source opentelemetry_sdk/src/trace/sampler/jaeger_remote/sampler.rs`)
+- **Lint issues:** 1
 
-### 36. logs.export
+### 37. logs.export
 
-- **Target:** `logs.Export`
+- **Target:** `logs.Export [PROVENANCE-FALLBACK]`
 - **Similarity:** 0.47
 - **Dependents:** 0
 - **Priority Score:** 51305.3
@@ -457,11 +610,13 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing functions:** `new_with_owned_data`, `next`
 - **Types:** 2/5 matched (target 2)
 - **Missing types:** `LogBatchData`, `LogBatchDataIter`, `Item`
-- **Lint issues:** 1
+- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `opentelemetry_sdk/src/logs/export.rs` vs expected `logs/export.rs`
+- **Proposed provenance header:** `// port-lint: source logs/export.rs` (current: `// port-lint: source opentelemetry_sdk/src/logs/export.rs`)
+- **Lint issues:** 2
 
-### 37. internal.histogram
+### 38. internal.histogram
 
-- **Target:** `internal.Histogram`
+- **Target:** `internal.Histogram [PROVENANCE-FALLBACK]`
 - **Similarity:** 0.37
 - **Dependents:** 0
 - **Priority Score:** 51206.3
@@ -470,10 +625,15 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 2/4 matched
 - **Missing types:** `InitConfig`, `PreComputedValue`
 - **Tests:** 0/1 matched
+- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `opentelemetry_sdk/src/metrics/internal/histogram.rs` vs expected `metrics/internal/histogram.rs`
+- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `tests:opentelemetry_sdk/src/metrics/internal/histogram.rs` vs expected `metrics/internal/histogram.rs`
+- **Proposed provenance header:** `// port-lint: source metrics/internal/histogram.rs` (current: `// port-lint: source opentelemetry_sdk/src/metrics/internal/histogram.rs`)
+- **Proposed provenance header:** `// port-lint: tests metrics/internal/histogram.rs` (current: `// port-lint: tests opentelemetry_sdk/src/metrics/internal/histogram.rs`)
+- **Lint issues:** 2
 
-### 38. trace.span_exporters
+### 39. trace.span_exporters
 
-- **Target:** `trace.SpanExporters`
+- **Target:** `trace.SpanExporters [PROVENANCE-FALLBACK]`
 - **Similarity:** 0.32
 - **Dependents:** 0
 - **Priority Score:** 51106.8
@@ -481,23 +641,13 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing functions:** `shutdown`, `exporter_name`, `fmt`, `from`
 - **Types:** 2/3 matched (target 2)
 - **Missing types:** `TestExportError`
-- **Lint issues:** 1
-
-### 39. trace.span
-
-- **Target:** `trace.Span`
-- **Similarity:** 0.66
-- **Dependents:** 0
-- **Priority Score:** 43503.4
-- **Functions:** 30/33 matched (target 41)
-- **Missing functions:** `span_context`, `drop`, `init`
-- **Types:** 1/2 matched
-- **Missing types:** `SpanData`
-- **Tests:** 17/17 matched
+- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `opentelemetry_sdk/src/testing/trace/span_exporters.rs` vs expected `testing/trace/span_exporters.rs`
+- **Proposed provenance header:** `// port-lint: source testing/trace/span_exporters.rs` (current: `// port-lint: source opentelemetry_sdk/src/testing/trace/span_exporters.rs`)
+- **Lint issues:** 2
 
 ### 40. metrics.manual_reader
 
-- **Target:** `metrics.ManualReader`
+- **Target:** `metrics.ManualReader [PROVENANCE-FALLBACK]`
 - **Similarity:** 0.42
 - **Dependents:** 0
 - **Priority Score:** 41405.8
@@ -505,11 +655,13 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing functions:** `default`, `fmt`, `new`
 - **Types:** 2/3 matched (target 2)
 - **Missing types:** `ManualReaderInner`
-- **Lint issues:** 1
+- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `opentelemetry_sdk/src/metrics/manual_reader.rs` vs expected `metrics/manual_reader.rs`
+- **Proposed provenance header:** `// port-lint: source metrics/manual_reader.rs` (current: `// port-lint: source opentelemetry_sdk/src/metrics/manual_reader.rs`)
+- **Lint issues:** 2
 
 ### 41. propagation.baggage
 
-- **Target:** `propagation.Baggage`
+- **Target:** `propagation.Baggage [PROVENANCE-FALLBACK]`
 - **Similarity:** 0.53
 - **Dependents:** 0
 - **Priority Score:** 41404.7
@@ -518,10 +670,15 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 1/1 matched (target 5)
 - **Missing types:** _none_
 - **Tests:** 4/8 matched
+- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `opentelemetry_sdk/src/propagation/baggage.rs` vs expected `propagation/baggage.rs`
+- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `tests:opentelemetry_sdk/src/propagation/baggage.rs` vs expected `propagation/baggage.rs`
+- **Proposed provenance header:** `// port-lint: source propagation/baggage.rs` (current: `// port-lint: source opentelemetry_sdk/src/propagation/baggage.rs`)
+- **Proposed provenance header:** `// port-lint: tests propagation/baggage.rs` (current: `// port-lint: tests opentelemetry_sdk/src/propagation/baggage.rs`)
+- **Lint issues:** 2
 
 ### 42. internal.last_value
 
-- **Target:** `internal.LastValue`
+- **Target:** `internal.LastValue [PROVENANCE-FALLBACK]`
 - **Similarity:** 0.52
 - **Dependents:** 0
 - **Priority Score:** 41104.8
@@ -529,10 +686,15 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing functions:** `create`, `new`
 - **Types:** 2/4 matched (target 3)
 - **Missing types:** `InitConfig`, `PreComputedValue`
+- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `opentelemetry_sdk/src/metrics/internal/last_value.rs` vs expected `metrics/internal/last_value.rs`
+- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `tests:opentelemetry_sdk/src/metrics/internal/last_value.rs` vs expected `metrics/internal/last_value.rs`
+- **Proposed provenance header:** `// port-lint: source metrics/internal/last_value.rs` (current: `// port-lint: source opentelemetry_sdk/src/metrics/internal/last_value.rs`)
+- **Proposed provenance header:** `// port-lint: tests metrics/internal/last_value.rs` (current: `// port-lint: tests opentelemetry_sdk/src/metrics/internal/last_value.rs`)
+- **Lint issues:** 2
 
 ### 43. internal.sum
 
-- **Target:** `internal.Sum`
+- **Target:** `internal.Sum [PROVENANCE-FALLBACK]`
 - **Similarity:** 0.55
 - **Dependents:** 0
 - **Priority Score:** 41104.5
@@ -540,10 +702,15 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing functions:** `create`, `new`
 - **Types:** 2/4 matched (target 3)
 - **Missing types:** `InitConfig`, `PreComputedValue`
+- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `opentelemetry_sdk/src/metrics/internal/sum.rs` vs expected `metrics/internal/sum.rs`
+- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `tests:opentelemetry_sdk/src/metrics/internal/sum.rs` vs expected `metrics/internal/sum.rs`
+- **Proposed provenance header:** `// port-lint: source metrics/internal/sum.rs` (current: `// port-lint: source opentelemetry_sdk/src/metrics/internal/sum.rs`)
+- **Proposed provenance header:** `// port-lint: tests metrics/internal/sum.rs` (current: `// port-lint: tests opentelemetry_sdk/src/metrics/internal/sum.rs`)
+- **Lint issues:** 2
 
 ### 44. trace.in_memory_exporter
 
-- **Target:** `trace.InMemoryExporter`
+- **Target:** `trace.InMemoryExporter [PROVENANCE-FALLBACK]`
 - **Similarity:** 0.28
 - **Dependents:** 0
 - **Priority Score:** 31207.2
@@ -552,11 +719,13 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 2/2 matched
 - **Missing types:** _none_
 - **Tests:** 0/1 matched
-- **Lint issues:** 1
+- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `opentelemetry_sdk/src/trace/in_memory_exporter.rs` vs expected `trace/in_memory_exporter.rs`
+- **Proposed provenance header:** `// port-lint: source trace/in_memory_exporter.rs` (current: `// port-lint: source opentelemetry_sdk/src/trace/in_memory_exporter.rs`)
+- **Lint issues:** 2
 
 ### 45. jaeger_remote.sampling_strategy
 
-- **Target:** `jaegerremote.SamplingStrategy`
+- **Target:** `jaegerremote.SamplingStrategy [PROVENANCE-FALLBACK]`
 - **Similarity:** 0.46
 - **Dependents:** 0
 - **Priority Score:** 31005.4
@@ -564,10 +733,13 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing functions:** `fmt`, `drop`, `new`
 - **Types:** 3/3 matched (target 6)
 - **Missing types:** _none_
+- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `opentelemetry_sdk/src/trace/sampler/jaeger_remote/sampling_strategy.rs` vs expected `trace/sampler/jaeger_remote/sampling_strategy.rs`
+- **Proposed provenance header:** `// port-lint: source trace/sampler/jaeger_remote/sampling_strategy.rs` (current: `// port-lint: source opentelemetry_sdk/src/trace/sampler/jaeger_remote/sampling_strategy.rs`)
+- **Lint issues:** 1
 
 ### 46. jaeger_remote.rate_limit
 
-- **Target:** `jaegerremote.RateLimit`
+- **Target:** `jaegerremote.RateLimit [PROVENANCE-FALLBACK]`
 - **Similarity:** 0.42
 - **Dependents:** 0
 - **Priority Score:** 30705.8
@@ -576,10 +748,13 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 1/1 matched
 - **Missing types:** _none_
 - **Tests:** 0/2 matched
+- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `opentelemetry_sdk/src/trace/sampler/jaeger_remote/rate_limit.rs` vs expected `trace/sampler/jaeger_remote/rate_limit.rs`
+- **Proposed provenance header:** `// port-lint: source trace/sampler/jaeger_remote/rate_limit.rs` (current: `// port-lint: source opentelemetry_sdk/src/trace/sampler/jaeger_remote/rate_limit.rs`)
+- **Lint issues:** 1
 
 ### 47. trace.links
 
-- **Target:** `trace.Links`
+- **Target:** `trace.Links [PROVENANCE-FALLBACK]`
 - **Similarity:** 0.69
 - **Dependents:** 0
 - **Priority Score:** 30703.1
@@ -587,10 +762,13 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing functions:** _none_
 - **Types:** 1/4 matched (target 2)
 - **Missing types:** `Target`, `Item`, `IntoIter`
+- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `opentelemetry_sdk/src/trace/links.rs` vs expected `trace/links.rs`
+- **Proposed provenance header:** `// port-lint: source trace/links.rs` (current: `// port-lint: source opentelemetry_sdk/src/trace/links.rs`)
+- **Lint issues:** 1
 
 ### 48. trace.events
 
-- **Target:** `trace.Events`
+- **Target:** `trace.Events [PROVENANCE-FALLBACK]`
 - **Similarity:** 0.69
 - **Dependents:** 0
 - **Priority Score:** 30703.1
@@ -598,10 +776,13 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing functions:** _none_
 - **Types:** 1/4 matched (target 2)
 - **Missing types:** `Target`, `Item`, `IntoIter`
+- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `opentelemetry_sdk/src/trace/events.rs` vs expected `trace/events.rs`
+- **Proposed provenance header:** `// port-lint: source trace/events.rs` (current: `// port-lint: source opentelemetry_sdk/src/trace/events.rs`)
+- **Lint issues:** 1
 
 ### 49. logs.in_memory_exporter
 
-- **Target:** `logs.InMemoryExporter`
+- **Target:** `logs.InMemoryExporter [PROVENANCE-FALLBACK]`
 - **Similarity:** 0.41
 - **Dependents:** 0
 - **Priority Score:** 21405.9
@@ -610,11 +791,13 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 4/4 matched
 - **Missing types:** _none_
 - **Tests:** 0/1 matched
-- **Lint issues:** 1
+- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `opentelemetry_sdk/src/logs/in_memory_exporter.rs` vs expected `logs/in_memory_exporter.rs`
+- **Proposed provenance header:** `// port-lint: source logs/in_memory_exporter.rs` (current: `// port-lint: source opentelemetry_sdk/src/logs/in_memory_exporter.rs`)
+- **Lint issues:** 2
 
 ### 50. logs.logger
 
-- **Target:** `logs.Logger`
+- **Target:** `logs.Logger [PROVENANCE-FALLBACK]`
 - **Similarity:** 0.66
 - **Dependents:** 0
 - **Priority Score:** 20603.4
@@ -622,10 +805,13 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing functions:** `new`
 - **Types:** 1/2 matched (target 1)
 - **Missing types:** `LogRecord`
+- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `opentelemetry_sdk/src/logs/logger.rs` vs expected `logs/logger.rs`
+- **Proposed provenance header:** `// port-lint: source logs/logger.rs` (current: `// port-lint: source opentelemetry_sdk/src/logs/logger.rs`)
+- **Lint issues:** 1
 
 ### 51. logs.mod
 
-- **Target:** `logs.Model [STUB]`
+- **Target:** `logs.Model [STUB] [PROVENANCE-FALLBACK]`
 - **Similarity:** 0.00
 - **Dependents:** 0
 - **Priority Score:** 11210.0
@@ -634,10 +820,15 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 2/2 matched (target 16)
 - **Missing types:** _none_
 - **Tests:** 5/5 matched
+- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `opentelemetry_sdk/src/logs/mod.rs` vs expected `logs/mod.rs`
+- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `tests:opentelemetry_sdk/src/logs/mod.rs` vs expected `logs/mod.rs`
+- **Proposed provenance header:** `// port-lint: source logs/mod.rs` (current: `// port-lint: source opentelemetry_sdk/src/logs/mod.rs`)
+- **Proposed provenance header:** `// port-lint: tests logs/mod.rs` (current: `// port-lint: tests opentelemetry_sdk/src/logs/mod.rs`)
+- **Lint issues:** 2
 
 ### 52. internal.precomputed_sum
 
-- **Target:** `internal.PrecomputedSum`
+- **Target:** `internal.PrecomputedSum [PROVENANCE-FALLBACK]`
 - **Similarity:** 0.57
 - **Dependents:** 0
 - **Priority Score:** 10504.3
@@ -645,10 +836,15 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing functions:** `new`
 - **Types:** 1/1 matched (target 2)
 - **Missing types:** _none_
+- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `opentelemetry_sdk/src/metrics/internal/precomputed_sum.rs` vs expected `metrics/internal/precomputed_sum.rs`
+- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `tests:opentelemetry_sdk/src/metrics/internal/precomputed_sum.rs` vs expected `metrics/internal/precomputed_sum.rs`
+- **Proposed provenance header:** `// port-lint: source metrics/internal/precomputed_sum.rs` (current: `// port-lint: source opentelemetry_sdk/src/metrics/internal/precomputed_sum.rs`)
+- **Proposed provenance header:** `// port-lint: tests metrics/internal/precomputed_sum.rs` (current: `// port-lint: tests opentelemetry_sdk/src/metrics/internal/precomputed_sum.rs`)
+- **Lint issues:** 2
 
-### 53. opentelemetry_sdk.lib
+### 53. lib
 
-- **Target:** `opentelemetrysdk.Lib [STUB]`
+- **Target:** `opentelemetrysdk.Lib [STUB] [PROVENANCE-FALLBACK]`
 - **Similarity:** 0.00
 - **Dependents:** 0
 - **Priority Score:** 10210.0
@@ -656,23 +852,21 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing functions:** `from`
 - **Types:** 1/1 matched (target 8)
 - **Missing types:** _none_
+- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `opentelemetry_sdk/src/lib.rs` vs expected `lib.rs`
+- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `opentelemetry_sdk/src/lib.rs` vs expected `lib.rs`
+- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `opentelemetry_sdk/src/lib.rs` vs expected `lib.rs`
+- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `tests:opentelemetry_sdk/src/lib.rs` vs expected `lib.rs`
+- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `opentelemetry_sdk/src/lib.rs` vs expected `lib.rs`
+- **Proposed provenance header:** `// port-lint: source lib.rs` (current: `// port-lint: source opentelemetry_sdk/src/lib.rs`)
+- **Proposed provenance header:** `// port-lint: source lib.rs` (current: `// port-lint: source opentelemetry_sdk/src/lib.rs`)
+- **Proposed provenance header:** `// port-lint: source lib.rs` (current: `// port-lint: source opentelemetry_sdk/src/lib.rs`)
+- **Proposed provenance header:** `// port-lint: tests lib.rs` (current: `// port-lint: tests opentelemetry_sdk/src/lib.rs`)
+- **Proposed provenance header:** `// port-lint: source lib.rs` (current: `// port-lint: source opentelemetry_sdk/src/lib.rs`)
+- **Lint issues:** 5
 
-### 54. logs.log_processor
+### 54. logs.concurrent_log_processor
 
-- **Target:** `logs.LogProcessor`
-- **Similarity:** 0.68
-- **Dependents:** 0
-- **Priority Score:** 1303.2
-- **Functions:** 9/9 matched (target 12)
-- **Missing functions:** _none_
-- **Types:** 4/4 matched (target 5)
-- **Missing types:** _none_
-- **Tests:** 1/1 matched
-- **Lint issues:** 1
-
-### 55. logs.concurrent_log_processor
-
-- **Target:** `logs.ConcurrentLogProcessor`
+- **Target:** `logs.ConcurrentLogProcessor [PROVENANCE-FALLBACK]`
 - **Similarity:** 0.75
 - **Dependents:** 0
 - **Priority Score:** 702.5
@@ -680,10 +874,13 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing functions:** _none_
 - **Types:** 1/1 matched
 - **Missing types:** _none_
+- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `opentelemetry_sdk/src/logs/concurrent_log_processor.rs` vs expected `logs/concurrent_log_processor.rs`
+- **Proposed provenance header:** `// port-lint: source logs/concurrent_log_processor.rs` (current: `// port-lint: source opentelemetry_sdk/src/logs/concurrent_log_processor.rs`)
+- **Lint issues:** 1
 
-### 56. jaeger_remote.remote
+### 55. jaeger_remote.remote
 
-- **Target:** `jaegerremote.Remote`
+- **Target:** `jaegerremote.Remote [PROVENANCE-FALLBACK]`
 - **Similarity:** 1.00
 - **Dependents:** 0
 - **Priority Score:** 700.0
@@ -691,10 +888,13 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing functions:** _none_
 - **Types:** 7/7 matched
 - **Missing types:** _none_
+- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `opentelemetry_sdk/src/trace/sampler/jaeger_remote/remote.rs` vs expected `trace/sampler/jaeger_remote/remote.rs`
+- **Proposed provenance header:** `// port-lint: source trace/sampler/jaeger_remote/remote.rs` (current: `// port-lint: source opentelemetry_sdk/src/trace/sampler/jaeger_remote/remote.rs`)
+- **Lint issues:** 1
 
-### 57. trace.export
+### 56. trace.export
 
-- **Target:** `trace.Export`
+- **Target:** `trace.Export [PROVENANCE-FALLBACK]`
 - **Similarity:** 0.65
 - **Dependents:** 0
 - **Priority Score:** 603.5
@@ -702,11 +902,13 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing functions:** _none_
 - **Types:** 2/2 matched
 - **Missing types:** _none_
-- **Lint issues:** 1
+- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `opentelemetry_sdk/src/trace/export.rs` vs expected `trace/export.rs`
+- **Proposed provenance header:** `// port-lint: source trace/export.rs` (current: `// port-lint: source opentelemetry_sdk/src/trace/export.rs`)
+- **Lint issues:** 2
 
-### 58. id_generator.mod
+### 57. id_generator.mod
 
-- **Target:** `trace.IdGenerator [STUB]`
+- **Target:** `trace.IdGenerator [STUB] [PROVENANCE-FALLBACK]`
 - **Similarity:** 0.00
 - **Dependents:** 0
 - **Priority Score:** 410.0
@@ -714,10 +916,13 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing functions:** _none_
 - **Types:** 2/2 matched
 - **Missing types:** _none_
+- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `opentelemetry_sdk/src/trace/id_generator/mod.rs` vs expected `trace/id_generator/mod.rs`
+- **Proposed provenance header:** `// port-lint: source trace/id_generator/mod.rs` (current: `// port-lint: source opentelemetry_sdk/src/trace/id_generator/mod.rs`)
+- **Lint issues:** 1
 
-### 59. trace.error
+### 58. trace.error
 
-- **Target:** `trace.Error`
+- **Target:** `trace.Error [PROVENANCE-FALLBACK]`
 - **Similarity:** 0.21
 - **Dependents:** 0
 - **Priority Score:** 407.9
@@ -725,10 +930,13 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing functions:** _none_
 - **Types:** 3/3 matched (target 7)
 - **Missing types:** _none_
+- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `opentelemetry_sdk/src/trace/error.rs` vs expected `trace/error.rs`
+- **Proposed provenance header:** `// port-lint: source trace/error.rs` (current: `// port-lint: source opentelemetry_sdk/src/trace/error.rs`)
+- **Lint issues:** 1
 
-### 60. metrics.noop
+### 59. metrics.noop
 
-- **Target:** `metrics.Noop`
+- **Target:** `metrics.Noop [PROVENANCE-FALLBACK]`
 - **Similarity:** 0.83
 - **Dependents:** 0
 - **Priority Score:** 401.7
@@ -736,11 +944,13 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing functions:** _none_
 - **Types:** 2/2 matched
 - **Missing types:** _none_
-- **Lint issues:** 2
+- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `opentelemetry_sdk/src/metrics/noop.rs` vs expected `metrics/noop.rs`
+- **Proposed provenance header:** `// port-lint: source metrics/noop.rs` (current: `// port-lint: source opentelemetry_sdk/src/metrics/noop.rs`)
+- **Lint issues:** 3
 
-### 61. metrics.reader
+### 60. metrics.reader
 
-- **Target:** `metrics.Reader`
+- **Target:** `metrics.Reader [PROVENANCE-FALLBACK]`
 - **Similarity:** 0.55
 - **Dependents:** 0
 - **Priority Score:** 304.5
@@ -748,10 +958,13 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing functions:** _none_
 - **Types:** 2/2 matched
 - **Missing types:** _none_
+- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `opentelemetry_sdk/src/metrics/reader.rs` vs expected `metrics/reader.rs`
+- **Proposed provenance header:** `// port-lint: source metrics/reader.rs` (current: `// port-lint: source opentelemetry_sdk/src/metrics/reader.rs`)
+- **Lint issues:** 1
 
-### 62. metrics.error
+### 61. metrics.error
 
-- **Target:** `metrics.Error`
+- **Target:** `metrics.Error [PROVENANCE-FALLBACK]`
 - **Similarity:** 0.78
 - **Dependents:** 0
 - **Priority Score:** 302.2
@@ -759,10 +972,13 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing functions:** _none_
 - **Types:** 2/2 matched (target 5)
 - **Missing types:** _none_
+- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `opentelemetry_sdk/src/metrics/error.rs` vs expected `metrics/error.rs`
+- **Proposed provenance header:** `// port-lint: source metrics/error.rs` (current: `// port-lint: source opentelemetry_sdk/src/metrics/error.rs`)
+- **Lint issues:** 1
 
-### 63. trace.span_limit
+### 62. trace.span_limit
 
-- **Target:** `trace.SpanLimits`
+- **Target:** `trace.SpanLimits [PROVENANCE-FALLBACK]`
 - **Similarity:** 0.18
 - **Dependents:** 0
 - **Priority Score:** 208.2
@@ -770,10 +986,13 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing functions:** _none_
 - **Types:** 1/1 matched
 - **Missing types:** _none_
+- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `opentelemetry_sdk/src/trace/span_limit.rs` vs expected `trace/span_limit.rs`
+- **Proposed provenance header:** `// port-lint: source trace/span_limit.rs` (current: `// port-lint: source opentelemetry_sdk/src/trace/span_limit.rs`)
+- **Lint issues:** 1
 
-### 64. metrics.exporter
+### 63. metrics.exporter
 
-- **Target:** `metrics.Exporter`
+- **Target:** `metrics.Exporter [PROVENANCE-FALLBACK]`
 - **Similarity:** 0.55
 - **Dependents:** 0
 - **Priority Score:** 204.5
@@ -781,10 +1000,13 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing functions:** _none_
 - **Types:** 1/1 matched
 - **Missing types:** _none_
+- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `opentelemetry_sdk/src/metrics/exporter.rs` vs expected `metrics/exporter.rs`
+- **Proposed provenance header:** `// port-lint: source metrics/exporter.rs` (current: `// port-lint: source opentelemetry_sdk/src/metrics/exporter.rs`)
+- **Lint issues:** 1
 
-### 65. resource.telemetry
+### 64. resource.telemetry
 
-- **Target:** `resource.Telemetry`
+- **Target:** `resource.Telemetry [PROVENANCE-FALLBACK]`
 - **Similarity:** 0.58
 - **Dependents:** 0
 - **Priority Score:** 204.2
@@ -792,10 +1014,13 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing functions:** _none_
 - **Types:** 1/1 matched
 - **Missing types:** _none_
+- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `opentelemetry_sdk/src/resource/telemetry.rs` vs expected `resource/telemetry.rs`
+- **Proposed provenance header:** `// port-lint: source resource/telemetry.rs` (current: `// port-lint: source opentelemetry_sdk/src/resource/telemetry.rs`)
+- **Lint issues:** 1
 
-### 66. metrics.view
+### 65. metrics.view
 
-- **Target:** `metrics.View`
+- **Target:** `metrics.View [PROVENANCE-FALLBACK]`
 - **Similarity:** 0.96
 - **Dependents:** 0
 - **Priority Score:** 200.4
@@ -803,10 +1028,13 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing functions:** _none_
 - **Types:** 1/1 matched
 - **Missing types:** _none_
+- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `opentelemetry_sdk/src/metrics/view.rs` vs expected `metrics/view.rs`
+- **Proposed provenance header:** `// port-lint: source metrics/view.rs` (current: `// port-lint: source opentelemetry_sdk/src/metrics/view.rs`)
+- **Lint issues:** 1
 
-### 67. opentelemetry_sdk.util
+### 66. util
 
-- **Target:** `opentelemetrysdk.Util`
+- **Target:** `opentelemetrysdk.Util [PROVENANCE-FALLBACK]`
 - **Similarity:** 0.57
 - **Dependents:** 0
 - **Priority Score:** 104.3
@@ -814,10 +1042,27 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing functions:** _none_
 - **Types:** 0/0 matched
 - **Missing types:** _none_
+- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `opentelemetry_sdk/src/util.rs` vs expected `util.rs`
+- **Proposed provenance header:** `// port-lint: source util.rs` (current: `// port-lint: source opentelemetry_sdk/src/util.rs`)
+- **Lint issues:** 1
 
-### 68. opentelemetry_sdk.testing.metrics.mod
+### 67. jaeger_remote.mod
 
-- **Target:** `metrics.Mod [STUB]`
+- **Target:** `jaegerremote.Mod [STUB] [PROVENANCE-FALLBACK]`
+- **Similarity:** 0.00
+- **Dependents:** 0
+- **Priority Score:** 10.0
+- **Functions:** 0/0 matched
+- **Missing functions:** _none_
+- **Types:** 0/0 matched (target 2)
+- **Missing types:** _none_
+- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `opentelemetry_sdk/src/trace/sampler/jaeger_remote/mod.rs` vs expected `trace/sampler/jaeger_remote/mod.rs`
+- **Proposed provenance header:** `// port-lint: source trace/sampler/jaeger_remote/mod.rs` (current: `// port-lint: source opentelemetry_sdk/src/trace/sampler/jaeger_remote/mod.rs`)
+- **Lint issues:** 1
+
+### 68. testing.mod
+
+- **Target:** `testing.Mod [STUB] [PROVENANCE-FALLBACK]`
 - **Similarity:** 0.00
 - **Dependents:** 0
 - **Priority Score:** 10.0
@@ -825,10 +1070,13 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing functions:** _none_
 - **Types:** 0/0 matched (target 1)
 - **Missing types:** _none_
+- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `opentelemetry_sdk/src/testing/mod.rs` vs expected `testing/mod.rs`
+- **Proposed provenance header:** `// port-lint: source testing/mod.rs` (current: `// port-lint: source opentelemetry_sdk/src/testing/mod.rs`)
+- **Lint issues:** 1
 
-### 69. opentelemetry_sdk.testing.trace.mod
+### 69. propagation.mod
 
-- **Target:** `trace.Mod [STUB]`
+- **Target:** `propagation.Mod [STUB] [PROVENANCE-FALLBACK]`
 - **Similarity:** 0.00
 - **Dependents:** 0
 - **Priority Score:** 10.0
@@ -836,10 +1084,13 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing functions:** _none_
 - **Types:** 0/0 matched (target 2)
 - **Missing types:** _none_
+- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `opentelemetry_sdk/src/propagation/mod.rs` vs expected `propagation/mod.rs`
+- **Proposed provenance header:** `// port-lint: source propagation/mod.rs` (current: `// port-lint: source opentelemetry_sdk/src/propagation/mod.rs`)
+- **Lint issues:** 1
 
-### 70. propagation.mod
+### 70. testing.trace.mod
 
-- **Target:** `propagation.Mod [STUB]`
+- **Target:** `trace.Mod [STUB] [PROVENANCE-FALLBACK]`
 - **Similarity:** 0.00
 - **Dependents:** 0
 - **Priority Score:** 10.0
@@ -847,21 +1098,13 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing functions:** _none_
 - **Types:** 0/0 matched (target 2)
 - **Missing types:** _none_
+- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `opentelemetry_sdk/src/testing/trace/mod.rs` vs expected `testing/trace/mod.rs`
+- **Proposed provenance header:** `// port-lint: source testing/trace/mod.rs` (current: `// port-lint: source opentelemetry_sdk/src/testing/trace/mod.rs`)
+- **Lint issues:** 1
 
-### 71. jaeger_remote.mod
+### 71. testing.metrics.mod
 
-- **Target:** `jaegerremote.Mod [STUB]`
-- **Similarity:** 0.00
-- **Dependents:** 0
-- **Priority Score:** 10.0
-- **Functions:** 0/0 matched
-- **Missing functions:** _none_
-- **Types:** 0/0 matched (target 2)
-- **Missing types:** _none_
-
-### 72. testing.mod
-
-- **Target:** `testing.Mod [STUB]`
+- **Target:** `metrics.Mod [STUB] [PROVENANCE-FALLBACK]`
 - **Similarity:** 0.00
 - **Dependents:** 0
 - **Priority Score:** 10.0
@@ -869,10 +1112,13 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing functions:** _none_
 - **Types:** 0/0 matched (target 1)
 - **Missing types:** _none_
+- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `opentelemetry_sdk/src/testing/metrics/mod.rs` vs expected `testing/metrics/mod.rs`
+- **Proposed provenance header:** `// port-lint: source testing/metrics/mod.rs` (current: `// port-lint: source opentelemetry_sdk/src/testing/metrics/mod.rs`)
+- **Lint issues:** 1
 
-### 73. resource.attributes
+### 72. resource.attributes
 
-- **Target:** `resource.Attributes`
+- **Target:** `resource.Attributes [PROVENANCE-FALLBACK]`
 - **Similarity:** 1.00
 - **Dependents:** 0
 - **Priority Score:** 0.0
@@ -880,6 +1126,9 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing functions:** _none_
 - **Types:** 0/0 matched
 - **Missing types:** _none_
+- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `opentelemetry_sdk/src/resource/attributes.rs` vs expected `resource/attributes.rs`
+- **Proposed provenance header:** `// port-lint: source resource/attributes.rs` (current: `// port-lint: source opentelemetry_sdk/src/resource/attributes.rs`)
+- **Lint issues:** 1
 
 ## Success Criteria
 
