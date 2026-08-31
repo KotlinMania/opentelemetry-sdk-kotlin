@@ -1,4 +1,4 @@
-// port-lint: source logs/simple_log_processor.rs
+// port-lint: source opentelemetry_sdk/src/logs/simple_log_processor.rs
 package io.github.kotlinmania.opentelemetrysdk.logs
 
 import io.github.kotlinmania.opentelemetrysdk.Context

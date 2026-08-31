@@ -1,4 +1,4 @@
-// port-lint: source metrics/noop.rs
+// port-lint: source opentelemetry_sdk/src/metrics/noop.rs
 package io.github.kotlinmania.opentelemetrysdk.metrics
 
 import io.github.kotlinmania.opentelemetrysdk.resource.KeyValue

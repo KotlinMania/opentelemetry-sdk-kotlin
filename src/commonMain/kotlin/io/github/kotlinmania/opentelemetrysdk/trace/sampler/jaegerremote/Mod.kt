@@ -1,4 +1,4 @@
-// port-lint: source trace/sampler/jaeger_remote/mod.rs
+// port-lint: source opentelemetry_sdk/src/trace/sampler/jaeger_remote/mod.rs
 package io.github.kotlinmania.opentelemetrysdk.trace.sampler.jaegerremote
 
 /**
