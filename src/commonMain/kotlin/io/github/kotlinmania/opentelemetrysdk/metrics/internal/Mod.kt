@@ -1,4 +1,4 @@
-// port-lint: source metrics/internal/mod.rs
+// port-lint: source opentelemetry_sdk/src/metrics/internal/mod.rs
 package io.github.kotlinmania.opentelemetrysdk.metrics.internal
 
 import io.github.kotlinmania.opentelemetrysdk.metrics.data.AggregatedMetrics

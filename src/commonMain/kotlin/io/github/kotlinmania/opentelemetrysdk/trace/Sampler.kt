@@ -1,4 +1,4 @@
-// port-lint: source trace/sampler.rs
+// port-lint: source opentelemetry_sdk/src/trace/sampler.rs
 package io.github.kotlinmania.opentelemetrysdk.trace
 
 import io.github.kotlinmania.opentelemetrysdk.resource.KeyValue

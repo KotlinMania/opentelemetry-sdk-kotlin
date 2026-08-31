@@ -1,4 +1,4 @@
-// port-lint: source metrics/aggregation.rs
+// port-lint: source opentelemetry_sdk/src/metrics/aggregation.rs
 package io.github.kotlinmania.opentelemetrysdk.metrics
 
 public const val EXPO_MAX_SCALE: Byte = 20

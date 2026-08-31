@@ -1,4 +1,4 @@
-// port-lint: source trace/export.rs
+// port-lint: source opentelemetry_sdk/src/trace/export.rs
 package io.github.kotlinmania.opentelemetrysdk.trace
 
 import io.github.kotlinmania.opentelemetrysdk.InstrumentationScope
