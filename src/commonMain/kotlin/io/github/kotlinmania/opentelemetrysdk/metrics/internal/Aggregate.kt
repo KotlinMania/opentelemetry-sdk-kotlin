@@ -1,4 +1,4 @@
-// port-lint: source opentelemetry_sdk/src/metrics/internal/aggregate.rs
+// port-lint: source metrics/internal/aggregate.rs
 package io.github.kotlinmania.opentelemetrysdk.metrics.internal
 
 import io.github.kotlinmania.opentelemetrysdk.metrics.Temporality

@@ -1,4 +1,4 @@
-// port-lint: source opentelemetry_sdk/src/logs/concurrent_log_processor.rs
+// port-lint: source logs/concurrent_log_processor.rs
 package io.github.kotlinmania.opentelemetrysdk.logs
 
 import io.github.kotlinmania.opentelemetrysdk.InstrumentationScope

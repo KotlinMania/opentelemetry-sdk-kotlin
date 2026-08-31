@@ -1,4 +1,4 @@
-// port-lint: source opentelemetry_sdk/src/trace/sampler/jaeger_remote/sampler.rs
+// port-lint: source trace/sampler/jaeger_remote/sampler.rs
 package io.github.kotlinmania.opentelemetrysdk.trace.sampler.jaegerremote
 
 import io.github.kotlinmania.opentelemetrysdk.RuntimeChannel
