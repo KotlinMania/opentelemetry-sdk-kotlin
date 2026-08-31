@@ -1,4 +1,4 @@
-// port-lint: tests opentelemetry_sdk/src/resource/env.rs
+// port-lint: tests resource/env.rs
 package io.github.kotlinmania.opentelemetrysdk.resource
 
 import kotlin.test.Test

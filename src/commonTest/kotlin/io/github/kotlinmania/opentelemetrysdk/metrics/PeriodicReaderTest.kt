@@ -1,4 +1,4 @@
-// port-lint: tests opentelemetry_sdk/src/metrics/periodic_reader.rs
+// port-lint: tests metrics/periodic_reader.rs
 package io.github.kotlinmania.opentelemetrysdk.metrics
 
 import io.github.kotlinmania.opentelemetrysdk.OTelSdkError

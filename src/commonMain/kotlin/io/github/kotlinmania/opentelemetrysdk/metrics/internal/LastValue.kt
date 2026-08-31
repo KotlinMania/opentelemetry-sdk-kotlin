@@ -1,4 +1,4 @@
-// port-lint: source opentelemetry_sdk/src/metrics/internal/last_value.rs
+// port-lint: source metrics/internal/last_value.rs
 package io.github.kotlinmania.opentelemetrysdk.metrics.internal
 
 import io.github.kotlinmania.opentelemetrysdk.metrics.Temporality

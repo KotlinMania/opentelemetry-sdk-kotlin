@@ -1,4 +1,4 @@
-// port-lint: source opentelemetry_sdk/src/util.rs
+// port-lint: source util.rs
 package io.github.kotlinmania.opentelemetrysdk
 
 import kotlinx.coroutines.delay
@@ -11,9 +11,14 @@ import kotlin.time.Duration
  */
 
 /**
+ * Helper which wraps interval and makes it return a stream / flow.
+ */
+public fun tokioIntervalStream(period: Duration): Flow<Unit> = intervalFlow(period)
+
+/**
  * Helper which creates a periodic flow emitting at [period] intervals.
  */
-fun intervalFlow(period: Duration): Flow<Unit> =
+public fun intervalFlow(period: Duration): Flow<Unit> =
     flow {
         while (true) {
             delay(period)

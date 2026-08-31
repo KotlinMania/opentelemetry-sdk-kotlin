@@ -1,4 +1,4 @@
-// port-lint: source opentelemetry_sdk/src/testing/metrics/metric_reader.rs
+// port-lint: source testing/metrics/metric_reader.rs
 package io.github.kotlinmania.opentelemetrysdk.testing.metrics
 
 import io.github.kotlinmania.opentelemetrysdk.OTelSdkResult

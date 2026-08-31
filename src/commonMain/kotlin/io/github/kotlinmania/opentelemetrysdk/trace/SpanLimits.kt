@@ -1,4 +1,4 @@
-// port-lint: source opentelemetry_sdk/src/trace/span_limit.rs
+// port-lint: source trace/span_limit.rs
 package io.github.kotlinmania.opentelemetrysdk.trace
 
 /**

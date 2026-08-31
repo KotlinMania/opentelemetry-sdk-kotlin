@@ -1,4 +1,4 @@
-// port-lint: source opentelemetry_sdk/src/trace/mod.rs
+// port-lint: source trace/mod.rs
 package io.github.kotlinmania.opentelemetrysdk.trace
 
 /**
