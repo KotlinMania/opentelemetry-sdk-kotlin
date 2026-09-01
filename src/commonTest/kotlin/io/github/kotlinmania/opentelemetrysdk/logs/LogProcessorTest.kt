@@ -1,4 +1,4 @@
-// port-lint: tests opentelemetry_sdk/src/logs/log_processor.rs
+// port-lint: tests logs/log_processor.rs
 package io.github.kotlinmania.opentelemetrysdk.logs
 
 import io.github.kotlinmania.opentelemetrysdk.InstrumentationScope

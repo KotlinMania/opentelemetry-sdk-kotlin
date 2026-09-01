@@ -1,4 +1,4 @@
-// port-lint: source opentelemetry_sdk/src/trace/span_processor_with_async_runtime.rs
+// port-lint: source trace/span_processor_with_async_runtime.rs
 package io.github.kotlinmania.opentelemetrysdk.trace
 
 import io.github.kotlinmania.opentelemetrysdk.OTelSdkResult

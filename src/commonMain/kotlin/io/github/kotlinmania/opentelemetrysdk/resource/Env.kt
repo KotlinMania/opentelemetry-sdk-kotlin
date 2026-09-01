@@ -1,4 +1,4 @@
-// port-lint: source opentelemetry_sdk/src/resource/env.rs
+// port-lint: source resource/env.rs
 package io.github.kotlinmania.opentelemetrysdk.resource
 
 /** Environment variable for setting resource attributes. */

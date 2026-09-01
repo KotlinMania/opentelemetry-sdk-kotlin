@@ -1,4 +1,4 @@
-// port-lint: source opentelemetry_sdk/src/propagation/baggage.rs
+// port-lint: source propagation/baggage.rs
 package io.github.kotlinmania.opentelemetrysdk.propagation
 
 import io.github.kotlinmania.opentelemetrysdk.Context

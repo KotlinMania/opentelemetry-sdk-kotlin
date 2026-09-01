@@ -1,4 +1,4 @@
-// port-lint: source opentelemetry_sdk/src/trace/sampler/jaeger_remote/rate_limit.rs
+// port-lint: source trace/sampler/jaeger_remote/rate_limit.rs
 package io.github.kotlinmania.opentelemetrysdk.trace.sampler.jaegerremote
 
 import kotlin.math.min

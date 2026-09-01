@@ -1,4 +1,4 @@
-// port-lint: source opentelemetry_sdk/src/metrics/pipeline.rs
+// port-lint: source metrics/pipeline.rs
 package io.github.kotlinmania.opentelemetrysdk.metrics
 
 import io.github.kotlinmania.opentelemetrysdk.InstrumentationScope

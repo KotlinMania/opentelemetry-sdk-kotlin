@@ -1,4 +1,4 @@
-// port-lint: source opentelemetry_sdk/src/metrics/view.rs
+// port-lint: source metrics/view.rs
 package io.github.kotlinmania.opentelemetrysdk.metrics
 
 /**

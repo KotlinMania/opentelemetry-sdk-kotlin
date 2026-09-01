@@ -1,4 +1,4 @@
-// port-lint: source opentelemetry_sdk/src/resource/attributes.rs
+// port-lint: source resource/attributes.rs
 package io.github.kotlinmania.opentelemetrysdk.resource
 
 /**

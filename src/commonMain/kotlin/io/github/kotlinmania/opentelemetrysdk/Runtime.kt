@@ -1,4 +1,4 @@
-// port-lint: source opentelemetry_sdk/src/runtime.rs
+// port-lint: source runtime.rs
 package io.github.kotlinmania.opentelemetrysdk
 
 import kotlinx.coroutines.CoroutineScope

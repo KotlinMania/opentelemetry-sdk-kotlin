@@ -1,4 +1,4 @@
-// port-lint: source opentelemetry_sdk/src/trace/links.rs
+// port-lint: source trace/links.rs
 package io.github.kotlinmania.opentelemetrysdk.trace
 
 import io.github.kotlinmania.opentelemetrysdk.resource.KeyValue
