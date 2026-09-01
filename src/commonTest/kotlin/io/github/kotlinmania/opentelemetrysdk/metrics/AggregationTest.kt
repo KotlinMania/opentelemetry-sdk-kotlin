@@ -1,4 +1,4 @@
-// port-lint: tests opentelemetry_sdk/src/metrics/aggregation.rs
+// port-lint: tests metrics/aggregation.rs
 package io.github.kotlinmania.opentelemetrysdk.metrics
 
 import kotlin.test.Test

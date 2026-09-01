@@ -1,7 +1,7 @@
 {
   "name": "opentelemetry-sdk-kotlin",
   "source": {
-    "path": "tmp",
+    "path": "tmp/opentelemetry_sdk/src",
     "lang": "rust"
   },
   "target": {
