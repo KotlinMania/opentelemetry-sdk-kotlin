@@ -61,7 +61,8 @@ public fun Context.withSpan(span: Span): Context =
  */
 public class TraceContextPropagator : TextMapPropagator {
     public fun extractSpanContext(extractor: Extractor): SpanContext? {
-        val headerValue = extractor.get(TRACEPARENT_HEADER)?.trim() ?: return null
+        val rawHeader = extractor.get(TRACEPARENT_HEADER)?.trim() ?: return null
+        val headerValue = if (rawHeader.endsWith('-')) rawHeader.substring(0, rawHeader.length - 1) else rawHeader
         val parts = headerValue.split('-')
         if (parts.size < 4) return null
 

@@ -33,7 +33,7 @@ public data class InstrumentationScope(
         }
 
         public fun withAttributes(attributes: Iterable<KeyValue>): Builder {
-            this.attributes = attributes.toList()
+            this.attributes = attributes.distinct().sortedWith(compareBy({ it.key.name }, { it.value.toString() }))
             return this
         }
 

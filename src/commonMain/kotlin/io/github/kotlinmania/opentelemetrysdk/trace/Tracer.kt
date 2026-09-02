@@ -14,9 +14,28 @@ public class SdkTracer internal constructor(
 ) {
     public fun provider(): SdkTracerProvider = provider
 
+    public fun idGenerator(): IdGenerator = provider.config().idGenerator
+
+    public fun shouldSample(): ShouldSample = provider.config().sampler
+
     public fun spanBuilder(name: String): SpanBuilder = SpanBuilder(name, this)
 
     public fun start(name: String): Span = spanBuilder(name).start()
+
+    public fun buildWithContext(
+        builder: SpanBuilder,
+        parentContext: io.github.kotlinmania.opentelemetrysdk.Context,
+    ): Span {
+        if (parentContext.suppressTelemetry) {
+            return Span(
+                spanContext = SpanContext.EMPTY,
+                initialData = null,
+                tracer = this,
+                spanLimits = provider.config().spanLimits,
+            )
+        }
+        return provider.startSpanFromBuilder(builder, this)
+    }
 
     public inline fun <T> inSpan(name: String, block: (Span) -> T): T {
         val span = start(name)
