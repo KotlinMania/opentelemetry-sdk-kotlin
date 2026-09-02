@@ -29,6 +29,8 @@ public class SdkMeterProvider internal constructor(
     internal val pipelines: Pipelines = Pipelines.create(resource, readers, views)
     internal val viewCache: AtomicReference<PersistentMap<String, InstrumentId>> =
         AtomicReference(persistentMapOf())
+    internal val meters: AtomicReference<PersistentMap<InstrumentationScope, SdkMeter>> =
+        AtomicReference(persistentMapOf())
 
     /**
      * Creates a new [SdkMeter] with the given name.
@@ -44,8 +46,20 @@ public class SdkMeterProvider internal constructor(
     /**
      * Creates a new [SdkMeter] with the given [InstrumentationScope].
      */
-    public fun meterWithScope(scope: InstrumentationScope): SdkMeter =
-        SdkMeter(scope, pipelines, viewCache)
+    public fun meterWithScope(scope: InstrumentationScope): SdkMeter {
+        while (true) {
+            val current = meters.load()
+            val existing = current[scope]
+            if (existing != null) {
+                return existing
+            }
+            val newMeter = SdkMeter(scope, pipelines, viewCache)
+            val updated = current.putting(scope, newMeter)
+            if (meters.compareAndSet(current, updated)) {
+                return newMeter
+            }
+        }
+    }
 
     /**
      * Flushes all pending telemetry.

@@ -91,4 +91,105 @@ class MeterProviderTest {
         )
         assertEquals("http://example.com", provider.resource.schemaUrl)
     }
+
+    @Test
+    fun sameMeterReusedSameScope() {
+        val provider = SdkMeterProvider.builder().build()
+        val meter1 = provider.meter("test")
+        val meter2 = provider.meter("test")
+        assertEquals(meter1, meter2)
+        assertEquals(1, provider.meters.load().size)
+
+        val scope =
+            io.github.kotlinmania.opentelemetrysdk.InstrumentationScope
+                .builder("test")
+                .withVersion("1.0.0")
+                .withSchemaUrl("http://example.com")
+                .build()
+
+        val meter3 = provider.meterWithScope(scope)
+        val meter4 = provider.meterWithScope(scope)
+        assertEquals(meter3, meter4)
+        assertEquals(2, provider.meters.load().size)
+
+        fun makeScope(name: String) =
+            io.github.kotlinmania.opentelemetrysdk.InstrumentationScope
+                .builder(name)
+                .withVersion("1.0.0")
+                .withSchemaUrl("http://example.com")
+                .build()
+
+        provider.meterWithScope(makeScope("ABC"))
+        provider.meterWithScope(makeScope("Abc"))
+        provider.meterWithScope(makeScope("abc"))
+
+        assertEquals(5, provider.meters.load().size)
+    }
+
+    @Test
+    fun sameMeterReusedSameScopeAttributes() {
+        val provider = SdkMeterProvider.builder().build()
+        fun makeScope(attributes: List<KeyValue>) =
+            io.github.kotlinmania.opentelemetrysdk.InstrumentationScope
+                .builder("test.meter")
+                .withVersion("v0.1.0")
+                .withSchemaUrl("http://example.com")
+                .withAttributes(attributes)
+                .build()
+
+        val meter1 = provider.meterWithScope(makeScope(listOf(KeyValue("key", "value1"))))
+        val meter2 = provider.meterWithScope(makeScope(listOf(KeyValue("key", "value1"))))
+        assertEquals(meter1, meter2)
+        assertEquals(1, provider.meters.load().size)
+
+        val meter3 =
+            provider.meterWithScope(
+                makeScope(
+                    listOf(
+                        KeyValue("key1", "value1"),
+                        KeyValue("key2", "value2"),
+                    ),
+                ),
+            )
+        val meter4 =
+            provider.meterWithScope(
+                makeScope(
+                    listOf(
+                        KeyValue("key2", "value2"),
+                        KeyValue("key1", "value1"),
+                    ),
+                ),
+            )
+        assertEquals(meter3, meter4)
+        assertEquals(2, provider.meters.load().size)
+    }
+
+    @Test
+    fun differentMeterDifferentAttributes() {
+        val provider = SdkMeterProvider.builder().build()
+        fun makeScope(attributes: List<KeyValue>) =
+            io.github.kotlinmania.opentelemetrysdk.InstrumentationScope
+                .builder("test.meter")
+                .withVersion("v0.1.0")
+                .withSchemaUrl("http://example.com")
+                .withAttributes(attributes)
+                .build()
+
+        provider.meterWithScope(makeScope(emptyList()))
+        provider.meterWithScope(makeScope(listOf(KeyValue("key1", "value1"))))
+        provider.meterWithScope(makeScope(listOf(KeyValue("Key1", "value1"))))
+        provider.meterWithScope(makeScope(listOf(KeyValue("key1", "Value1"))))
+        provider.meterWithScope(
+            makeScope(
+                listOf(
+                    KeyValue("key1", "value1"),
+                    KeyValue("key2", "value2"),
+                ),
+            ),
+        )
+
+        assertEquals(5, provider.meters.load().size)
+    }
+
+    // Note: upstream `test_shutdown_invoked_on_last_drop` tests Rust RAII Arc `Drop` semantics which does not apply to Kotlin GC runtimes.
 }

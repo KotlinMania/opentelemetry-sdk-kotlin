@@ -5,13 +5,13 @@ Based on AST analysis, here are the concrete next steps.
 ## Summary
 
 - **Files Present:** 72/72 (100.0%)
-- **Function parity:** 453/959 matched (target 775) — 47.2%
+- **Function parity:** 461/959 matched (target 787) — 48.1%
 - **Class/type parity:** 160/246 matched (target 314) — 65.0%
-- **Combined symbol parity:** 613/1205 matched (target 1089) — 50.9%
+- **Combined symbol parity:** 621/1205 matched (target 1101) — 51.5%
 - **Average inline-code cosine:** 0.46 (function body across 60 matched files)
 - **Average documentation cosine:** 0.55 (doc text across 60 matched files)
-- **Cheat-zeroed Files:** 13
-- **Critical Issues:** 58 files with <0.60 function similarity
+- **Cheat-zeroed Files:** 14
+- **Critical Issues:** 57 files with <0.60 function similarity
 
 ## Priority 1: Fix Incomplete High-Dependency Files
 
@@ -77,30 +77,18 @@ Every matched file is listed below with function and type symbol parity.
 
 ### 5. metrics.meter_provider
 
-- **Target:** `metrics.MeterProvider`
-- **Similarity:** 0.43
+- **Target:** `metrics.MeterProvider [ZERO]`
+- **Similarity:** 0.00
 - **Dependents:** 2
-- **Priority Score:** 2072405.6
-- **Functions:** 15/21 matched (target 15)
-- **Missing functions:** `drop`, `fmt`, `test_shutdown_invoked_on_last_drop`, `same_meter_reused_same_scope`, `same_meter_reused_same_scope_attributes`, `different_meter_different_attributes`
+- **Priority Score:** 2042410.0
+- **Functions:** 18/21 matched
+- **Missing functions:** `drop`, `fmt`, `test_shutdown_invoked_on_last_drop`
 - **Types:** 2/3 matched
 - **Missing types:** `SdkMeterProviderInner`
-- **Tests:** 3/7 matched
+- **Tests:** 6/7 matched
 - **Lint issues:** 1
 
-### 6. propagation.trace_context
-
-- **Target:** `propagation.TraceContext`
-- **Similarity:** 0.43
-- **Dependents:** 2
-- **Priority Score:** 2031505.8
-- **Functions:** 11/14 matched (target 21)
-- **Missing functions:** `extract_data`, `extract_data_invalid`, `inject_data`
-- **Types:** 1/1 matched (target 6)
-- **Missing types:** _none_
-- **Tests:** 5/5 matched
-
-### 7. runtime
+### 6. runtime
 
 - **Target:** `opentelemetrysdk.Runtime`
 - **Similarity:** 0.53
@@ -110,6 +98,18 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing functions:** _none_
 - **Types:** 8/9 matched (target 13)
 - **Missing types:** `Message`
+
+### 7. propagation.trace_context
+
+- **Target:** `propagation.TraceContext`
+- **Similarity:** 0.58
+- **Dependents:** 2
+- **Priority Score:** 2001504.2
+- **Functions:** 14/14 matched (target 24)
+- **Missing functions:** _none_
+- **Types:** 1/1 matched (target 6)
+- **Missing types:** _none_
+- **Tests:** 5/5 matched
 
 ### 8. metrics.periodic_reader
 
@@ -186,11 +186,11 @@ Every matched file is listed below with function and type symbol parity.
 ### 14. trace.tracer
 
 - **Target:** `trace.Tracer`
-- **Similarity:** 0.42
+- **Similarity:** 0.63
 - **Dependents:** 1
-- **Priority Score:** 1061405.8
-- **Functions:** 6/11 matched (target 19)
-- **Missing functions:** `fmt`, `instrumentation_scope`, `build_recording_span`, `id_generator`, `build_with_context`
+- **Priority Score:** 1041403.7
+- **Functions:** 8/11 matched (target 22)
+- **Missing functions:** `fmt`, `instrumentation_scope`, `build_recording_span`
 - **Types:** 2/3 matched (target 4)
 - **Missing types:** `Span`
 - **Tests:** 3/3 matched

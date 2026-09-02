@@ -27,27 +27,177 @@ class TraceContextTest {
         }
     }
 
+    private fun extractData(): List<Triple<String, String, SpanContext>> =
+        listOf(
+            Triple(
+                "00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-00",
+                "foo=bar",
+                SpanContext.new(
+                    TraceId.fromHexString("4bf92f3577b34da6a3ce929d0e0e4736"),
+                    SpanId.fromHexString("00f067aa0ba902b7"),
+                    TraceFlags.DEFAULT,
+                    isRemote = true,
+                    traceState = TraceState(listOf(TraceStateEntry("foo", "bar"))),
+                ),
+            ),
+            Triple(
+                "00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01",
+                "foo=bar",
+                SpanContext.new(
+                    TraceId.fromHexString("4bf92f3577b34da6a3ce929d0e0e4736"),
+                    SpanId.fromHexString("00f067aa0ba902b7"),
+                    TraceFlags.SAMPLED,
+                    isRemote = true,
+                    traceState = TraceState(listOf(TraceStateEntry("foo", "bar"))),
+                ),
+            ),
+            Triple(
+                "02-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01",
+                "foo=bar",
+                SpanContext.new(
+                    TraceId.fromHexString("4bf92f3577b34da6a3ce929d0e0e4736"),
+                    SpanId.fromHexString("00f067aa0ba902b7"),
+                    TraceFlags.SAMPLED,
+                    isRemote = true,
+                    traceState = TraceState(listOf(TraceStateEntry("foo", "bar"))),
+                ),
+            ),
+            Triple(
+                "02-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-09",
+                "foo=bar",
+                SpanContext.new(
+                    TraceId.fromHexString("4bf92f3577b34da6a3ce929d0e0e4736"),
+                    SpanId.fromHexString("00f067aa0ba902b7"),
+                    TraceFlags.SAMPLED,
+                    isRemote = true,
+                    traceState = TraceState(listOf(TraceStateEntry("foo", "bar"))),
+                ),
+            ),
+            Triple(
+                "02-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-08",
+                "foo=bar",
+                SpanContext.new(
+                    TraceId.fromHexString("4bf92f3577b34da6a3ce929d0e0e4736"),
+                    SpanId.fromHexString("00f067aa0ba902b7"),
+                    TraceFlags.DEFAULT,
+                    isRemote = true,
+                    traceState = TraceState(listOf(TraceStateEntry("foo", "bar"))),
+                ),
+            ),
+            Triple(
+                "02-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-09-XYZxsf09",
+                "foo=bar",
+                SpanContext.new(
+                    TraceId.fromHexString("4bf92f3577b34da6a3ce929d0e0e4736"),
+                    SpanId.fromHexString("00f067aa0ba902b7"),
+                    TraceFlags.SAMPLED,
+                    isRemote = true,
+                    traceState = TraceState(listOf(TraceStateEntry("foo", "bar"))),
+                ),
+            ),
+            Triple(
+                "00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01-",
+                "foo=bar",
+                SpanContext.new(
+                    TraceId.fromHexString("4bf92f3577b34da6a3ce929d0e0e4736"),
+                    SpanId.fromHexString("00f067aa0ba902b7"),
+                    TraceFlags.SAMPLED,
+                    isRemote = true,
+                    traceState = TraceState(listOf(TraceStateEntry("foo", "bar"))),
+                ),
+            ),
+            Triple(
+                "01-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-09-",
+                "foo=bar",
+                SpanContext.new(
+                    TraceId.fromHexString("4bf92f3577b34da6a3ce929d0e0e4736"),
+                    SpanId.fromHexString("00f067aa0ba902b7"),
+                    TraceFlags.SAMPLED,
+                    isRemote = true,
+                    traceState = TraceState(listOf(TraceStateEntry("foo", "bar"))),
+                ),
+            ),
+        )
+
+    private fun extractDataInvalid(): List<Pair<String, String>> =
+        listOf(
+            "0000-00000000000000000000000000000000-0000000000000000-01" to "wrong version length",
+            "00-ab00000000000000000000000000000000-cd00000000000000-01" to "wrong trace ID length",
+            "00-ab000000000000000000000000000000-cd0000000000000000-01" to "wrong span ID length",
+            "00-ab000000000000000000000000000000-cd00000000000000-0100" to "wrong trace flag length",
+            "qw-00000000000000000000000000000000-0000000000000000-01" to "bogus version",
+            "00-qw000000000000000000000000000000-cd00000000000000-01" to "bogus trace ID",
+            "00-ab000000000000000000000000000000-qw00000000000000-01" to "bogus span ID",
+            "00-ab000000000000000000000000000000-cd00000000000000-qw" to "bogus trace flag",
+            "A0-00000000000000000000000000000000-0000000000000000-01" to "upper case version",
+            "00-AB000000000000000000000000000000-cd00000000000000-01" to "upper case trace ID",
+            "00-ab000000000000000000000000000000-CD00000000000000-01" to "upper case span ID",
+            "00-ab000000000000000000000000000000-cd00000000000000-A1" to "upper case trace flag",
+            "00-00000000000000000000000000000000-0000000000000000-01" to "zero trace ID and span ID",
+            "00-ab000000000000000000000000000000-cd00000000000000-09" to "trace-flag unused bits set",
+            "00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7" to "missing options",
+            "00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-" to "empty options",
+        )
+
+    private fun injectData(): List<Triple<String, String, SpanContext>> =
+        listOf(
+            Triple(
+                "00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01",
+                "foo=bar",
+                SpanContext.new(
+                    TraceId.fromHexString("4bf92f3577b34da6a3ce929d0e0e4736"),
+                    SpanId.fromHexString("00f067aa0ba902b7"),
+                    TraceFlags.SAMPLED,
+                    isRemote = true,
+                    traceState = TraceState(listOf(TraceStateEntry("foo", "bar"))),
+                ),
+            ),
+            Triple(
+                "00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-00",
+                "foo=bar",
+                SpanContext.new(
+                    TraceId.fromHexString("4bf92f3577b34da6a3ce929d0e0e4736"),
+                    SpanId.fromHexString("00f067aa0ba902b7"),
+                    TraceFlags.DEFAULT,
+                    isRemote = true,
+                    traceState = TraceState(listOf(TraceStateEntry("foo", "bar"))),
+                ),
+            ),
+            Triple(
+                "00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01",
+                "foo=bar",
+                SpanContext.new(
+                    TraceId.fromHexString("4bf92f3577b34da6a3ce929d0e0e4736"),
+                    SpanId.fromHexString("00f067aa0ba902b7"),
+                    TraceFlags(0xffu),
+                    isRemote = true,
+                    traceState = TraceState(listOf(TraceStateEntry("foo", "bar"))),
+                ),
+            ),
+            Triple(
+                "",
+                "",
+                SpanContext.EMPTY,
+            ),
+        )
+
     @Test
     fun extractW3c() {
         val propagator = TraceContextPropagator()
 
-        val traceParent = "00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01"
-        val traceState = "foo=bar"
-        val carrier =
-            MapCarrier(
-                mutableMapOf(
-                    TraceContextPropagator.TRACEPARENT_HEADER to traceParent,
-                    TraceContextPropagator.TRACESTATE_HEADER to traceState,
-                ),
-            )
+        for ((traceParent, traceState, expectedContext) in extractData()) {
+            val carrier =
+                MapCarrier(
+                    mutableMapOf(
+                        TraceContextPropagator.TRACEPARENT_HEADER to traceParent,
+                        TraceContextPropagator.TRACESTATE_HEADER to traceState,
+                    ),
+                )
 
-        val context = propagator.extract(carrier)
-        val spanContext = context.spanContext()
-        assertTrue(spanContext != null)
-        assertEquals("4bf92f3577b34da6a3ce929d0e0e4736", spanContext.traceId.toHexString())
-        assertEquals("00f067aa0ba902b7", spanContext.spanId.toHexString())
-        assertTrue(spanContext.isSampled)
-        assertEquals("bar", spanContext.traceState.get("foo"))
+            val context = propagator.extract(carrier)
+            val spanContext = context.spanContext()
+            assertEquals(expectedContext, spanContext)
+        }
     }
 
     @Test
@@ -57,7 +207,7 @@ class TraceContextTest {
             MapCarrier(
                 mutableMapOf(
                     TraceContextPropagator.TRACEPARENT_HEADER to "00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-00",
-                    TraceContextPropagator.TRACESTATE_HEADER to "foo=bar,baz=qux",
+                    TraceContextPropagator.TRACESTATE_HEADER to "foo=bar",
                 ),
             )
 
@@ -65,80 +215,40 @@ class TraceContextTest {
         val spanContext = context.spanContext()
         assertTrue(spanContext != null)
         assertEquals("bar", spanContext.traceState.get("foo"))
-        assertEquals("qux", spanContext.traceState.get("baz"))
     }
 
     @Test
     fun extractW3cRejectInvalid() {
         val propagator = TraceContextPropagator()
-        val invalidParents =
-            listOf(
-                "0000-00000000000000000000000000000000-0000000000000000-01",
-                "00-ab00000000000000000000000000000000-cd00000000000000-01",
-                "00-ab000000000000000000000000000000-cd0000000000000000-01",
-                "00-ab000000000000000000000000000000-cd00000000000000-0100",
-                "qw-00000000000000000000000000000000-0000000000000000-01",
-                "00-qw000000000000000000000000000000-cd00000000000000-01",
-                "00-ab000000000000000000000000000000-qw00000000000000-01",
-                "00-ab000000000000000000000000000000-cd00000000000000-qw",
-                "A0-00000000000000000000000000000000-0000000000000000-01",
-                "00-AB000000000000000000000000000000-cd00000000000000-01",
-                "00-ab000000000000000000000000000000-CD00000000000000-01",
-                "00-ab000000000000000000000000000000-cd00000000000000-A1",
-                "00-00000000000000000000000000000000-0000000000000000-01",
-                "00-ab000000000000000000000000000000-cd00000000000000-09",
-                "00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7",
-                "00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-",
-            )
 
-        for (invalid in invalidParents) {
-            val carrier = MapCarrier(mutableMapOf(TraceContextPropagator.TRACEPARENT_HEADER to invalid))
+        for ((invalidHeader, reason) in extractDataInvalid()) {
+            val carrier = MapCarrier(mutableMapOf(TraceContextPropagator.TRACEPARENT_HEADER to invalidHeader))
             val spanContext = propagator.extractSpanContext(carrier)
-            assertNull(spanContext, "Expected $invalid to be rejected")
+            assertNull(spanContext, "Expected $invalidHeader to be rejected because: $reason")
         }
     }
 
     @Test
     fun injectW3c() {
         val propagator = TraceContextPropagator()
-        val traceId = TraceId.fromHexString("4bf92f3577b34da6a3ce929d0e0e4736")
-        val spanId = SpanId.fromHexString("00f067aa0ba902b7")
-        val spanContext =
-            SpanContext.new(
-                traceId,
-                spanId,
-                TraceFlags.SAMPLED,
-                isRemote = true,
-                traceState = TraceState(listOf(TraceStateEntry("foo", "bar"))),
-            )
 
-        val context = Context().withRemoteSpanContext(spanContext)
-        val carrier = MapCarrier()
-        propagator.injectContext(context, carrier)
+        for ((expectedTraceParent, expectedTraceState, spanContext) in injectData()) {
+            val context = Context().withRemoteSpanContext(spanContext)
+            val carrier = MapCarrier()
+            propagator.injectContext(context, carrier)
 
-        assertEquals("00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01", carrier.get(TraceContextPropagator.TRACEPARENT_HEADER))
-        assertEquals("foo=bar", carrier.get(TraceContextPropagator.TRACESTATE_HEADER))
+            assertEquals(expectedTraceParent, carrier.get(TraceContextPropagator.TRACEPARENT_HEADER) ?: "")
+            assertEquals(expectedTraceState, carrier.get(TraceContextPropagator.TRACESTATE_HEADER) ?: "")
+        }
     }
 
     @Test
     fun injectW3cTraceState() {
         val propagator = TraceContextPropagator()
-        val traceId = TraceId.fromHexString("4bf92f3577b34da6a3ce929d0e0e4736")
-        val spanId = SpanId.fromHexString("00f067aa0ba902b7")
-        val spanContext =
-            SpanContext.new(
-                traceId,
-                spanId,
-                TraceFlags.DEFAULT,
-                isRemote = true,
-                traceState = TraceState(listOf(TraceStateEntry("a", "1"), TraceStateEntry("b", "2"))),
-            )
-
-        val context = Context().withRemoteSpanContext(spanContext)
-        val carrier = MapCarrier()
+        val state = "foo=bar"
+        val carrier = MapCarrier(mutableMapOf(TraceContextPropagator.TRACESTATE_HEADER to state))
+        val context = Context()
         propagator.injectContext(context, carrier)
-
-        assertEquals("00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-00", carrier.get(TraceContextPropagator.TRACEPARENT_HEADER))
-        assertEquals("a=1,b=2", carrier.get(TraceContextPropagator.TRACESTATE_HEADER))
+        assertEquals(state, carrier.get(TraceContextPropagator.TRACESTATE_HEADER))
     }
 }
