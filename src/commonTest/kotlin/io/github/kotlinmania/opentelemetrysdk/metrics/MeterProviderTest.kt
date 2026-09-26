@@ -129,6 +129,7 @@ class MeterProviderTest {
     @Test
     fun sameMeterReusedSameScopeAttributes() {
         val provider = SdkMeterProvider.builder().build()
+
         fun makeScope(attributes: List<KeyValue>) =
             io.github.kotlinmania.opentelemetrysdk.InstrumentationScope
                 .builder("test.meter")
@@ -167,6 +168,7 @@ class MeterProviderTest {
     @Test
     fun differentMeterDifferentAttributes() {
         val provider = SdkMeterProvider.builder().build()
+
         fun makeScope(attributes: List<KeyValue>) =
             io.github.kotlinmania.opentelemetrysdk.InstrumentationScope
                 .builder("test.meter")
