@@ -1,4 +1,3 @@
-// port-lint: source resource/mod.rs
 package io.github.kotlinmania.opentelemetrysdk.resource
 
 /**
