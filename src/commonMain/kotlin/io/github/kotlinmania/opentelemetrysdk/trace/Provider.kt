@@ -1,9 +1,19 @@
 // port-lint: source trace/provider.rs
 package io.github.kotlinmania.opentelemetrysdk.trace
 
+import io.github.kotlinmania.opentelemetry.Context
+import io.github.kotlinmania.opentelemetry.InstrumentationScope
+import io.github.kotlinmania.opentelemetry.SpanId
+import io.github.kotlinmania.opentelemetry.TraceFlags
 import io.github.kotlinmania.opentelemetry.trace.SamplingDecision
-import io.github.kotlinmania.opentelemetrysdk.InstrumentationScope
+import io.github.kotlinmania.opentelemetry.trace.SpanBuilder
+import io.github.kotlinmania.opentelemetry.trace.SpanContext
+import io.github.kotlinmania.opentelemetry.trace.SpanKind
+import io.github.kotlinmania.opentelemetry.trace.TracerProvider
+import io.github.kotlinmania.opentelemetry.trace.hasActiveSpan
+import io.github.kotlinmania.opentelemetry.trace.span
 import io.github.kotlinmania.opentelemetrysdk.OTelSdkResult
+import io.github.kotlinmania.opentelemetrysdk.propagation.spanContext
 import io.github.kotlinmania.opentelemetrysdk.resource.Resource
 import kotlin.concurrent.atomics.AtomicBoolean
 import kotlin.concurrent.atomics.ExperimentalAtomicApi
@@ -18,7 +28,7 @@ import kotlin.time.Duration.Companion.seconds
 public class SdkTracerProvider internal constructor(
     private val processors: List<SpanProcessor>,
     private val config: Config,
-) {
+) : TracerProvider {
     private val isShutdownRef = AtomicBoolean(false)
 
     public fun isShutdown(): Boolean = isShutdownRef.load()
@@ -29,50 +39,64 @@ public class SdkTracerProvider internal constructor(
 
     public fun resource(): Resource = config.resource
 
-    public fun tracer(name: String): SdkTracer =
-        tracerWithScope(InstrumentationScope(name = name))
+    override fun tracer(name: String): SdkTracer =
+        tracerWithScope(InstrumentationScope(scopeName = name))
 
     public fun tracer(name: String, version: String?): SdkTracer =
-        tracerWithScope(InstrumentationScope(name = name, version = version))
+        tracerWithScope(InstrumentationScope(scopeName = name, scopeVersion = version))
 
-    public fun tracerWithScope(scope: InstrumentationScope): SdkTracer =
+    override fun tracerWithScope(scope: InstrumentationScope): SdkTracer =
         SdkTracer(instrumentationScope = scope, provider = this)
 
-    internal fun startSpanFromBuilder(builder: SpanBuilder, tracer: SdkTracer): Span {
+    internal fun startSpanFromBuilder(
+        builder: SpanBuilder,
+        tracer: SdkTracer,
+        parentCx: Context = Context.current(),
+    ): Span {
         if (isShutdown()) {
             return Span(
-                spanContext = SpanContext.EMPTY,
+                spanContext = SpanContext.NONE,
                 initialData = null,
                 tracer = tracer,
                 spanLimits = config.spanLimits,
             )
         }
 
-        val parentContext = builder.parentContext
+        val parentContext =
+            if (parentCx.hasActiveSpan()) {
+                parentCx.span().spanContext()
+            } else {
+                parentCx.spanContext()
+            }
         val traceId =
-            if (parentContext != null && parentContext.isValid) {
+            if (parentContext != null && parentContext.isValid()) {
                 parentContext.traceId
             } else {
-                config.idGenerator.newTraceId()
+                builder.traceId ?: config.idGenerator.newTraceId()
             }
-        val spanId = config.idGenerator.newSpanId()
+        val spanId = builder.spanId ?: config.idGenerator.newSpanId()
+        val spanKind = builder.spanKind ?: SpanKind.Internal
+        val builderAttributes = builder.attributes.orEmpty()
+        val builderLinks = builder.links.orEmpty()
+        val builderEvents = builder.events.orEmpty()
 
         val samplingResult =
-            config.sampler.shouldSample(
-                parentContext = parentContext,
-                traceId = traceId,
-                name = builder.name,
-                spanKind = builder.spanKind,
-                attributes = builder.attributes,
-                links = builder.links,
-            )
+            builder.samplingResult
+                ?: config.sampler.shouldSample(
+                    parentContext = parentContext,
+                    traceId = traceId,
+                    name = builder.name,
+                    spanKind = spanKind,
+                    attributes = builderAttributes,
+                    links = builderLinks,
+                )
 
         if (samplingResult.decision == SamplingDecision.Drop) {
             val sc =
                 SpanContext(
                     traceId = traceId,
                     spanId = spanId,
-                    traceFlags = TraceFlags.DEFAULT,
+                    traceFlags = TraceFlags.NOT_SAMPLED,
                     isRemote = false,
                     traceState = samplingResult.traceState,
                 )
@@ -88,7 +112,7 @@ public class SdkTracerProvider internal constructor(
             if (samplingResult.decision == SamplingDecision.RecordAndSample) {
                 TraceFlags.SAMPLED
             } else {
-                TraceFlags.DEFAULT
+                TraceFlags.NOT_SAMPLED
             }
 
         val spanContext =
@@ -100,16 +124,16 @@ public class SdkTracerProvider internal constructor(
                 traceState = samplingResult.traceState,
             )
 
-        val allAttributes = builder.attributes + samplingResult.attributes
+        val allAttributes = builderAttributes + samplingResult.attributes
         val maxAttrs = config.spanLimits.maxAttributesPerSpan.toInt()
         val droppedAttrs = if (allAttributes.size > maxAttrs) (allAttributes.size - maxAttrs).toUInt() else 0u
         val cappedAttrs = allAttributes.take(maxAttrs)
 
         val maxAttrsPerLink = config.spanLimits.maxAttributesPerLink.toInt()
         val maxLinks = config.spanLimits.maxLinksPerSpan.toInt()
-        val droppedLinks = if (builder.links.size > maxLinks) (builder.links.size - maxLinks).toUInt() else 0u
+        val droppedLinks = if (builderLinks.size > maxLinks) (builderLinks.size - maxLinks).toUInt() else 0u
         val cappedLinks =
-            builder.links.take(maxLinks).map { link ->
+            builderLinks.take(maxLinks).map { link ->
                 val dropped =
                     if (link.attributes.size > maxAttrsPerLink) {
                         (link.attributes.size - maxAttrsPerLink).toUInt() + link.droppedAttributesCount
@@ -124,9 +148,9 @@ public class SdkTracerProvider internal constructor(
 
         val maxAttrsPerEvent = config.spanLimits.maxAttributesPerEvent.toInt()
         val maxEvents = config.spanLimits.maxEventsPerSpan.toInt()
-        val droppedEvents = if (builder.events.size > maxEvents) (builder.events.size - maxEvents).toUInt() else 0u
+        val droppedEvents = if (builderEvents.size > maxEvents) (builderEvents.size - maxEvents).toUInt() else 0u
         val cappedEvents =
-            builder.events.take(maxEvents).map { event ->
+            builderEvents.take(maxEvents).map { event ->
                 val dropped =
                     if (event.attributes.size > maxAttrsPerEvent) {
                         (event.attributes.size - maxAttrsPerEvent).toUInt() + event.droppedAttributesCount
@@ -140,16 +164,17 @@ public class SdkTracerProvider internal constructor(
             }
 
         val startTime = builder.startTime ?: Clock.System.now()
+        val endTime = builder.endTime ?: startTime
 
         val spanData =
             SpanData(
                 spanContext = spanContext,
-                parentSpanId = parentContext?.spanId ?: SpanId.INVALID,
-                parentSpanIsRemote = parentContext?.isRemote ?: false,
-                spanKind = builder.spanKind,
+                parentSpanId = if (parentContext != null && parentContext.isValid()) parentContext.spanId else SpanId.INVALID,
+                parentSpanIsRemote = parentContext != null && parentContext.isValid() && parentContext.isRemote,
+                spanKind = spanKind,
                 name = builder.name,
                 startTime = startTime,
-                endTime = startTime,
+                endTime = endTime,
                 attributes = cappedAttrs,
                 droppedAttributesCount = droppedAttrs,
                 events = SpanEvents(cappedEvents, droppedEvents),

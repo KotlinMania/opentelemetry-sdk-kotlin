@@ -1,20 +1,7 @@
 // port-lint: source trace/links.rs
 package io.github.kotlinmania.opentelemetrysdk.trace
 
-import io.github.kotlinmania.opentelemetrysdk.resource.KeyValue
-
-/**
- * A link to another span.
- */
-public data class Link(
-    public val spanContext: SpanContext,
-    public val attributes: List<KeyValue> = emptyList(),
-    public val droppedAttributesCount: UInt = 0u,
-) {
-    public companion object {
-        public fun withContext(spanContext: SpanContext): Link = Link(spanContext)
-    }
-}
+import io.github.kotlinmania.opentelemetry.trace.Link
 
 /**
  * Stores span links along with dropped count.

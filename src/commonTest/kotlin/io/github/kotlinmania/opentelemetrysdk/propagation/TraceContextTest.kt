@@ -2,14 +2,14 @@
 package io.github.kotlinmania.opentelemetrysdk.propagation
 
 import io.github.kotlinmania.opentelemetry.Context
+import io.github.kotlinmania.opentelemetry.SpanId
+import io.github.kotlinmania.opentelemetry.TraceFlags
+import io.github.kotlinmania.opentelemetry.TraceId
 import io.github.kotlinmania.opentelemetry.propagation.Extractor
 import io.github.kotlinmania.opentelemetry.propagation.Injector
-import io.github.kotlinmania.opentelemetrysdk.trace.SpanContext
-import io.github.kotlinmania.opentelemetrysdk.trace.SpanId
-import io.github.kotlinmania.opentelemetrysdk.trace.TraceFlags
-import io.github.kotlinmania.opentelemetrysdk.trace.TraceId
-import io.github.kotlinmania.opentelemetrysdk.trace.TraceState
-import io.github.kotlinmania.opentelemetrysdk.trace.TraceStateEntry
+import io.github.kotlinmania.opentelemetry.trace.SpanContext
+import io.github.kotlinmania.opentelemetry.trace.TraceState
+import io.github.kotlinmania.opentelemetry.trace.TraceStateEntry
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
@@ -35,88 +35,88 @@ class TraceContextTest {
                 "00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-00",
                 "foo=bar",
                 SpanContext.new(
-                    TraceId.fromHexString("4bf92f3577b34da6a3ce929d0e0e4736"),
-                    SpanId.fromHexString("00f067aa0ba902b7"),
-                    TraceFlags.DEFAULT,
+                    TraceId.fromHex("4bf92f3577b34da6a3ce929d0e0e4736"),
+                    SpanId.fromHex("00f067aa0ba902b7"),
+                    TraceFlags.NOT_SAMPLED,
                     isRemote = true,
-                    traceState = TraceState(listOf(TraceStateEntry("foo", "bar"))),
+                    traceState = TraceState.fromEntries(listOf(TraceStateEntry("foo", "bar"))),
                 ),
             ),
             Triple(
                 "00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01",
                 "foo=bar",
                 SpanContext.new(
-                    TraceId.fromHexString("4bf92f3577b34da6a3ce929d0e0e4736"),
-                    SpanId.fromHexString("00f067aa0ba902b7"),
+                    TraceId.fromHex("4bf92f3577b34da6a3ce929d0e0e4736"),
+                    SpanId.fromHex("00f067aa0ba902b7"),
                     TraceFlags.SAMPLED,
                     isRemote = true,
-                    traceState = TraceState(listOf(TraceStateEntry("foo", "bar"))),
+                    traceState = TraceState.fromEntries(listOf(TraceStateEntry("foo", "bar"))),
                 ),
             ),
             Triple(
                 "02-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01",
                 "foo=bar",
                 SpanContext.new(
-                    TraceId.fromHexString("4bf92f3577b34da6a3ce929d0e0e4736"),
-                    SpanId.fromHexString("00f067aa0ba902b7"),
+                    TraceId.fromHex("4bf92f3577b34da6a3ce929d0e0e4736"),
+                    SpanId.fromHex("00f067aa0ba902b7"),
                     TraceFlags.SAMPLED,
                     isRemote = true,
-                    traceState = TraceState(listOf(TraceStateEntry("foo", "bar"))),
+                    traceState = TraceState.fromEntries(listOf(TraceStateEntry("foo", "bar"))),
                 ),
             ),
             Triple(
                 "02-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-09",
                 "foo=bar",
                 SpanContext.new(
-                    TraceId.fromHexString("4bf92f3577b34da6a3ce929d0e0e4736"),
-                    SpanId.fromHexString("00f067aa0ba902b7"),
+                    TraceId.fromHex("4bf92f3577b34da6a3ce929d0e0e4736"),
+                    SpanId.fromHex("00f067aa0ba902b7"),
                     TraceFlags.SAMPLED,
                     isRemote = true,
-                    traceState = TraceState(listOf(TraceStateEntry("foo", "bar"))),
+                    traceState = TraceState.fromEntries(listOf(TraceStateEntry("foo", "bar"))),
                 ),
             ),
             Triple(
                 "02-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-08",
                 "foo=bar",
                 SpanContext.new(
-                    TraceId.fromHexString("4bf92f3577b34da6a3ce929d0e0e4736"),
-                    SpanId.fromHexString("00f067aa0ba902b7"),
-                    TraceFlags.DEFAULT,
+                    TraceId.fromHex("4bf92f3577b34da6a3ce929d0e0e4736"),
+                    SpanId.fromHex("00f067aa0ba902b7"),
+                    TraceFlags.NOT_SAMPLED,
                     isRemote = true,
-                    traceState = TraceState(listOf(TraceStateEntry("foo", "bar"))),
+                    traceState = TraceState.fromEntries(listOf(TraceStateEntry("foo", "bar"))),
                 ),
             ),
             Triple(
                 "02-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-09-XYZxsf09",
                 "foo=bar",
                 SpanContext.new(
-                    TraceId.fromHexString("4bf92f3577b34da6a3ce929d0e0e4736"),
-                    SpanId.fromHexString("00f067aa0ba902b7"),
+                    TraceId.fromHex("4bf92f3577b34da6a3ce929d0e0e4736"),
+                    SpanId.fromHex("00f067aa0ba902b7"),
                     TraceFlags.SAMPLED,
                     isRemote = true,
-                    traceState = TraceState(listOf(TraceStateEntry("foo", "bar"))),
+                    traceState = TraceState.fromEntries(listOf(TraceStateEntry("foo", "bar"))),
                 ),
             ),
             Triple(
                 "00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01-",
                 "foo=bar",
                 SpanContext.new(
-                    TraceId.fromHexString("4bf92f3577b34da6a3ce929d0e0e4736"),
-                    SpanId.fromHexString("00f067aa0ba902b7"),
+                    TraceId.fromHex("4bf92f3577b34da6a3ce929d0e0e4736"),
+                    SpanId.fromHex("00f067aa0ba902b7"),
                     TraceFlags.SAMPLED,
                     isRemote = true,
-                    traceState = TraceState(listOf(TraceStateEntry("foo", "bar"))),
+                    traceState = TraceState.fromEntries(listOf(TraceStateEntry("foo", "bar"))),
                 ),
             ),
             Triple(
                 "01-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-09-",
                 "foo=bar",
                 SpanContext.new(
-                    TraceId.fromHexString("4bf92f3577b34da6a3ce929d0e0e4736"),
-                    SpanId.fromHexString("00f067aa0ba902b7"),
+                    TraceId.fromHex("4bf92f3577b34da6a3ce929d0e0e4736"),
+                    SpanId.fromHex("00f067aa0ba902b7"),
                     TraceFlags.SAMPLED,
                     isRemote = true,
-                    traceState = TraceState(listOf(TraceStateEntry("foo", "bar"))),
+                    traceState = TraceState.fromEntries(listOf(TraceStateEntry("foo", "bar"))),
                 ),
             ),
         )
@@ -147,39 +147,39 @@ class TraceContextTest {
                 "00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01",
                 "foo=bar",
                 SpanContext.new(
-                    TraceId.fromHexString("4bf92f3577b34da6a3ce929d0e0e4736"),
-                    SpanId.fromHexString("00f067aa0ba902b7"),
+                    TraceId.fromHex("4bf92f3577b34da6a3ce929d0e0e4736"),
+                    SpanId.fromHex("00f067aa0ba902b7"),
                     TraceFlags.SAMPLED,
                     isRemote = true,
-                    traceState = TraceState(listOf(TraceStateEntry("foo", "bar"))),
+                    traceState = TraceState.fromEntries(listOf(TraceStateEntry("foo", "bar"))),
                 ),
             ),
             Triple(
                 "00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-00",
                 "foo=bar",
                 SpanContext.new(
-                    TraceId.fromHexString("4bf92f3577b34da6a3ce929d0e0e4736"),
-                    SpanId.fromHexString("00f067aa0ba902b7"),
-                    TraceFlags.DEFAULT,
+                    TraceId.fromHex("4bf92f3577b34da6a3ce929d0e0e4736"),
+                    SpanId.fromHex("00f067aa0ba902b7"),
+                    TraceFlags.NOT_SAMPLED,
                     isRemote = true,
-                    traceState = TraceState(listOf(TraceStateEntry("foo", "bar"))),
+                    traceState = TraceState.fromEntries(listOf(TraceStateEntry("foo", "bar"))),
                 ),
             ),
             Triple(
                 "00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01",
                 "foo=bar",
                 SpanContext.new(
-                    TraceId.fromHexString("4bf92f3577b34da6a3ce929d0e0e4736"),
-                    SpanId.fromHexString("00f067aa0ba902b7"),
-                    TraceFlags(0xffu),
+                    TraceId.fromHex("4bf92f3577b34da6a3ce929d0e0e4736"),
+                    SpanId.fromHex("00f067aa0ba902b7"),
+                    TraceFlags(0xff.toByte()),
                     isRemote = true,
-                    traceState = TraceState(listOf(TraceStateEntry("foo", "bar"))),
+                    traceState = TraceState.fromEntries(listOf(TraceStateEntry("foo", "bar"))),
                 ),
             ),
             Triple(
                 "",
                 "",
-                SpanContext.EMPTY,
+                SpanContext.NONE,
             ),
         )
 

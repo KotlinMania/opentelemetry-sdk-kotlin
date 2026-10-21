@@ -1,13 +1,30 @@
 // port-lint: source logs/record.rs
 package io.github.kotlinmania.opentelemetrysdk.logs
 
+import io.github.kotlinmania.opentelemetry.Key
+import io.github.kotlinmania.opentelemetry.SpanId
+import io.github.kotlinmania.opentelemetry.TraceFlags
+import io.github.kotlinmania.opentelemetry.TraceId
+import io.github.kotlinmania.opentelemetry.logs.AnyValue
+import io.github.kotlinmania.opentelemetry.logs.LogRecord
 import io.github.kotlinmania.opentelemetry.logs.Severity
-import io.github.kotlinmania.opentelemetrysdk.resource.Key
-import io.github.kotlinmania.opentelemetrysdk.trace.SpanContext
-import io.github.kotlinmania.opentelemetrysdk.trace.SpanId
-import io.github.kotlinmania.opentelemetrysdk.trace.TraceFlags
-import io.github.kotlinmania.opentelemetrysdk.trace.TraceId
+import io.github.kotlinmania.opentelemetry.trace.SpanContext
 import kotlin.time.Instant
+
+/**
+ * An attribute key-value pair attached to a log record.
+ */
+public data class LogAttribute(
+    public val key: Key,
+    public val value: AnyValue,
+) {
+    public constructor(key: String, value: String) : this(Key(key), AnyValue.of(value))
+    public constructor(key: String, value: Long) : this(Key(key), AnyValue.of(value))
+    public constructor(key: String, value: Int) : this(Key(key), AnyValue.of(value.toLong()))
+    public constructor(key: String, value: Double) : this(Key(key), AnyValue.of(value))
+    public constructor(key: String, value: Boolean) : this(Key(key), AnyValue.of(value))
+    public constructor(key: String, value: AnyValue) : this(Key(key), value)
+}
 
 /**
  * Trace context for logs that have an associated span.
@@ -89,7 +106,13 @@ public class SdkLogRecord(
         this._body = body
     }
 
-    override fun addAttributes(attributes: List<LogAttribute>) {
+    override fun addAttributes(attributes: Iterable<Pair<Key, AnyValue>>) {
+        for ((key, value) in attributes) {
+            _attributes.add(LogAttribute(key, value))
+        }
+    }
+
+    public fun addAttributes(attributes: List<LogAttribute>) {
         _attributes.addAll(attributes)
     }
 
@@ -97,15 +120,15 @@ public class SdkLogRecord(
         _attributes.add(LogAttribute(key, value))
     }
 
-    override fun addAttribute(key: String, value: String) {
+    public fun addAttribute(key: String, value: String) {
         _attributes.add(LogAttribute(Key(key), AnyValue.of(value)))
     }
 
-    override fun addAttribute(key: String, value: AnyValue) {
+    public fun addAttribute(key: String, value: AnyValue) {
         _attributes.add(LogAttribute(Key(key), value))
     }
 
-    override fun addAttribute(attribute: LogAttribute) {
+    public fun addAttribute(attribute: LogAttribute) {
         _attributes.add(attribute)
     }
 

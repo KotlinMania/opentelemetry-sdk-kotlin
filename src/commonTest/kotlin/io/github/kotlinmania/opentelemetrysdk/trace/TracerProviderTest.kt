@@ -1,17 +1,18 @@
 // port-lint: tests trace/provider.rs
 package io.github.kotlinmania.opentelemetrysdk.trace
 
+import io.github.kotlinmania.opentelemetry.Key
+import io.github.kotlinmania.opentelemetry.KeyValue
+import io.github.kotlinmania.opentelemetry.Value
+import io.github.kotlinmania.opentelemetry.trace.SpanContext
 import io.github.kotlinmania.opentelemetrysdk.OTelSdkError
 import io.github.kotlinmania.opentelemetrysdk.OTelSdkResult
 import io.github.kotlinmania.opentelemetrysdk.OpenTelemetrySdk
-import io.github.kotlinmania.opentelemetrysdk.resource.Key
-import io.github.kotlinmania.opentelemetrysdk.resource.KeyValue
 import io.github.kotlinmania.opentelemetrysdk.resource.Resource
 import io.github.kotlinmania.opentelemetrysdk.resource.SERVICE_NAME
 import io.github.kotlinmania.opentelemetrysdk.resource.TELEMETRY_SDK_LANGUAGE
 import io.github.kotlinmania.opentelemetrysdk.resource.TELEMETRY_SDK_NAME
 import io.github.kotlinmania.opentelemetrysdk.resource.TELEMETRY_SDK_VERSION
-import io.github.kotlinmania.opentelemetrysdk.resource.Value
 import kotlin.concurrent.atomics.AtomicBoolean
 import kotlin.concurrent.atomics.AtomicInt
 import kotlin.concurrent.atomics.ExperimentalAtomicApi

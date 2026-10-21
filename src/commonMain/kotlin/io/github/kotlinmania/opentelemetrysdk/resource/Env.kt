@@ -1,6 +1,10 @@
 // port-lint: source resource/env.rs
 package io.github.kotlinmania.opentelemetrysdk.resource
 
+import io.github.kotlinmania.opentelemetry.Key
+import io.github.kotlinmania.opentelemetry.KeyValue
+import io.github.kotlinmania.opentelemetry.Value
+
 /** Environment variable for setting resource attributes. */
 public const val OTEL_RESOURCE_ATTRIBUTES: String = "OTEL_RESOURCE_ATTRIBUTES"
 

@@ -1,8 +1,11 @@
 package io.github.kotlinmania.opentelemetrysdk.trace
 
-import io.github.kotlinmania.opentelemetrysdk.resource.Key
-import io.github.kotlinmania.opentelemetrysdk.resource.KeyValue
-import io.github.kotlinmania.opentelemetrysdk.resource.Value
+import io.github.kotlinmania.opentelemetry.Key
+import io.github.kotlinmania.opentelemetry.KeyValue
+import io.github.kotlinmania.opentelemetry.Value
+import io.github.kotlinmania.opentelemetry.trace.Event
+import io.github.kotlinmania.opentelemetry.trace.Link
+import io.github.kotlinmania.opentelemetry.trace.SpanContext
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse

@@ -1,6 +1,6 @@
 package io.github.kotlinmania.opentelemetrysdk.metrics.internal
 
-import io.github.kotlinmania.opentelemetrysdk.resource.KeyValue
+import io.github.kotlinmania.opentelemetry.KeyValue
 import kotlinx.collections.immutable.PersistentMap
 import kotlinx.collections.immutable.persistentMapOf
 import kotlin.concurrent.atomics.AtomicBoolean

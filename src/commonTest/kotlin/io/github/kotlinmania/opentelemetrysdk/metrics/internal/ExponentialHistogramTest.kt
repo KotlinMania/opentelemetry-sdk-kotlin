@@ -1,11 +1,11 @@
 // port-lint: tests metrics/internal/exponential_histogram.rs
 package io.github.kotlinmania.opentelemetrysdk.metrics.internal
 
+import io.github.kotlinmania.opentelemetry.KeyValue
 import io.github.kotlinmania.opentelemetrysdk.metrics.Temporality
 import io.github.kotlinmania.opentelemetrysdk.metrics.data.AggregatedMetrics
 import io.github.kotlinmania.opentelemetrysdk.metrics.data.ExponentialHistogramDataPoint
 import io.github.kotlinmania.opentelemetrysdk.metrics.data.MetricData
-import io.github.kotlinmania.opentelemetrysdk.resource.KeyValue
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull

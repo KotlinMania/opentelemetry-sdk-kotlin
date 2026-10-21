@@ -3,12 +3,12 @@ package io.github.kotlinmania.opentelemetrysdk.propagation
 
 import io.github.kotlinmania.opentelemetry.BaggageMetadata
 import io.github.kotlinmania.opentelemetry.Context
+import io.github.kotlinmania.opentelemetry.KeyValue
 import io.github.kotlinmania.opentelemetry.KeyValueMetadata
 import io.github.kotlinmania.opentelemetry.propagation.Extractor
 import io.github.kotlinmania.opentelemetry.propagation.FieldIter
 import io.github.kotlinmania.opentelemetry.propagation.Injector
 import io.github.kotlinmania.opentelemetry.propagation.TextMapPropagator
-import io.github.kotlinmania.opentelemetrysdk.resource.KeyValue
 
 private data class SdkBaggageHolder(
     val entries: List<KeyValue>,

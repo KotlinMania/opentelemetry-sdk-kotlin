@@ -2,8 +2,10 @@
 package io.github.kotlinmania.opentelemetrysdk.logs
 
 import io.github.kotlinmania.opentelemetry.Context
+import io.github.kotlinmania.opentelemetry.InstrumentationScope
+import io.github.kotlinmania.opentelemetry.logs.LogRecord
+import io.github.kotlinmania.opentelemetry.logs.Logger
 import io.github.kotlinmania.opentelemetry.logs.Severity
-import io.github.kotlinmania.opentelemetrysdk.InstrumentationScope
 import kotlin.time.Clock
 
 /**
@@ -15,7 +17,13 @@ public class SdkLogger internal constructor(
 ) : Logger {
     override fun createLogRecord(): SdkLogRecord = SdkLogRecord.new()
 
-    override fun emit(record: SdkLogRecord) {
+    override fun emit(record: LogRecord) {
+        if (record is SdkLogRecord) {
+            emit(record)
+        }
+    }
+
+    public fun emit(record: SdkLogRecord) {
         if (Context.isCurrentTelemetrySuppressed()) {
             return
         }
@@ -27,7 +35,7 @@ public class SdkLogger internal constructor(
         }
     }
 
-    public fun eventEnabled(level: Severity, target: String, name: String? = null): Boolean {
+    override fun eventEnabled(level: Severity, target: String, name: String?): Boolean {
         if (Context.isCurrentTelemetrySuppressed()) {
             return false
         }

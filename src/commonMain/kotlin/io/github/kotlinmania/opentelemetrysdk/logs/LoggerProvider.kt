@@ -1,7 +1,8 @@
 // port-lint: source logs/logger_provider.rs
 package io.github.kotlinmania.opentelemetrysdk.logs
 
-import io.github.kotlinmania.opentelemetrysdk.InstrumentationScope
+import io.github.kotlinmania.opentelemetry.InstrumentationScope
+import io.github.kotlinmania.opentelemetry.logs.LoggerProvider
 import io.github.kotlinmania.opentelemetrysdk.OTelSdkError
 import io.github.kotlinmania.opentelemetrysdk.OTelSdkResult
 import io.github.kotlinmania.opentelemetrysdk.resource.Resource

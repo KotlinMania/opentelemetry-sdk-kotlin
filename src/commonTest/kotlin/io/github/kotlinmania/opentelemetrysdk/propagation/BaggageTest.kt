@@ -2,9 +2,9 @@
 package io.github.kotlinmania.opentelemetrysdk.propagation
 
 import io.github.kotlinmania.opentelemetry.Context
+import io.github.kotlinmania.opentelemetry.KeyValue
 import io.github.kotlinmania.opentelemetry.propagation.Extractor
 import io.github.kotlinmania.opentelemetry.propagation.Injector
-import io.github.kotlinmania.opentelemetrysdk.resource.KeyValue
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue

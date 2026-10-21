@@ -1,11 +1,12 @@
 // port-lint: tests metrics/meter_provider.rs
 package io.github.kotlinmania.opentelemetrysdk.metrics
 
+import io.github.kotlinmania.opentelemetry.InstrumentationScope
+import io.github.kotlinmania.opentelemetry.Key
+import io.github.kotlinmania.opentelemetry.KeyValue
+import io.github.kotlinmania.opentelemetry.Value
 import io.github.kotlinmania.opentelemetrysdk.OTelSdkError
-import io.github.kotlinmania.opentelemetrysdk.resource.Key
-import io.github.kotlinmania.opentelemetrysdk.resource.KeyValue
 import io.github.kotlinmania.opentelemetrysdk.resource.Resource
-import io.github.kotlinmania.opentelemetrysdk.resource.Value
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
@@ -78,15 +79,15 @@ class MeterProviderTest {
                 .build()
 
         assertEquals(
-            Value.StringValue("value1"),
+            Value.of("value1"),
             provider.resource.get(Key.fromStaticStr("key1")),
         )
         assertEquals(
-            Value.StringValue("value2"),
+            Value.of("value2"),
             provider.resource.get(Key.fromStaticStr("key2")),
         )
         assertEquals(
-            Value.StringValue("value3"),
+            Value.of("value3"),
             provider.resource.get(Key.fromStaticStr("key3")),
         )
         assertEquals("http://example.com", provider.resource.schemaUrl)
@@ -101,7 +102,7 @@ class MeterProviderTest {
         assertEquals(1, provider.meters.load().size)
 
         val scope =
-            io.github.kotlinmania.opentelemetrysdk.InstrumentationScope
+            InstrumentationScope
                 .builder("test")
                 .withVersion("1.0.0")
                 .withSchemaUrl("http://example.com")
@@ -113,7 +114,7 @@ class MeterProviderTest {
         assertEquals(2, provider.meters.load().size)
 
         fun makeScope(name: String) =
-            io.github.kotlinmania.opentelemetrysdk.InstrumentationScope
+            InstrumentationScope
                 .builder(name)
                 .withVersion("1.0.0")
                 .withSchemaUrl("http://example.com")
@@ -131,7 +132,7 @@ class MeterProviderTest {
         val provider = SdkMeterProvider.builder().build()
 
         fun makeScope(attributes: List<KeyValue>) =
-            io.github.kotlinmania.opentelemetrysdk.InstrumentationScope
+            InstrumentationScope
                 .builder("test.meter")
                 .withVersion("v0.1.0")
                 .withSchemaUrl("http://example.com")
@@ -170,7 +171,7 @@ class MeterProviderTest {
         val provider = SdkMeterProvider.builder().build()
 
         fun makeScope(attributes: List<KeyValue>) =
-            io.github.kotlinmania.opentelemetrysdk.InstrumentationScope
+            InstrumentationScope
                 .builder("test.meter")
                 .withVersion("v0.1.0")
                 .withSchemaUrl("http://example.com")
@@ -193,5 +194,5 @@ class MeterProviderTest {
         assertEquals(5, provider.meters.load().size)
     }
 
-    // Note: upstream `test_shutdown_invoked_on_last_drop` tests Rust RAII Arc `Drop` semantics which does not apply to Kotlin GC runtimes.
+    // Note: upstream testShutdownInvokedOnLastDrop tests Rust RAII Arc Drop semantics which does not apply to Kotlin GC runtimes.
 }

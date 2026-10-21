@@ -1,10 +1,10 @@
 // port-lint: tests metrics/pipeline.rs
 package io.github.kotlinmania.opentelemetrysdk.metrics
 
+import io.github.kotlinmania.opentelemetry.KeyValue
 import io.github.kotlinmania.opentelemetrysdk.metrics.data.AggregatedMetrics
 import io.github.kotlinmania.opentelemetrysdk.metrics.data.MetricData
 import io.github.kotlinmania.opentelemetrysdk.metrics.data.ResourceMetrics
-import io.github.kotlinmania.opentelemetrysdk.resource.KeyValue
 import io.github.kotlinmania.opentelemetrysdk.resource.Resource
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -34,7 +34,7 @@ class PipelineTest {
 
         assertEquals(1, rm.scopeMetrics.size)
         val sm = rm.scopeMetrics[0]
-        assertEquals("my-test-meter", sm.scope.name)
+        assertEquals("my-test-meter", sm.scope.name())
         assertEquals(1, sm.metrics.size)
 
         val metric = sm.metrics[0]

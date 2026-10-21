@@ -1,7 +1,7 @@
 // port-lint: source metrics/noop.rs
 package io.github.kotlinmania.opentelemetrysdk.metrics
 
-import io.github.kotlinmania.opentelemetrysdk.resource.KeyValue
+import io.github.kotlinmania.opentelemetry.KeyValue
 
 /**
  * A no-op instance of a Meter.

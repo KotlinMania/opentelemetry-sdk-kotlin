@@ -1,7 +1,11 @@
 // port-lint: tests trace/sampler.rs
 package io.github.kotlinmania.opentelemetrysdk.trace
 
+import io.github.kotlinmania.opentelemetry.SpanId
+import io.github.kotlinmania.opentelemetry.TraceFlags
+import io.github.kotlinmania.opentelemetry.TraceId
 import io.github.kotlinmania.opentelemetry.trace.SamplingDecision
+import io.github.kotlinmania.opentelemetry.trace.SpanContext
 import io.github.kotlinmania.opentelemetry.trace.SpanKind
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -12,7 +16,7 @@ class SamplerTest {
         val onResult =
             Sampler.AlwaysOn.shouldSample(
                 parentContext = null,
-                traceId = TraceId(1u, 1u),
+                traceId = TraceId.fromHex("00000000000000010000000000000001"),
                 name = "test",
                 spanKind = SpanKind.Internal,
                 attributes = emptyList(),
@@ -23,7 +27,7 @@ class SamplerTest {
         val offResult =
             Sampler.AlwaysOff.shouldSample(
                 parentContext = null,
-                traceId = TraceId(1u, 1u),
+                traceId = TraceId.fromHex("00000000000000010000000000000001"),
                 name = "test",
                 spanKind = SpanKind.Internal,
                 attributes = emptyList(),
@@ -40,7 +44,7 @@ class SamplerTest {
         val noParentResult =
             parentSampler.shouldSample(
                 parentContext = null,
-                traceId = TraceId(1u, 1u),
+                traceId = TraceId.fromHex("00000000000000010000000000000001"),
                 name = "test",
                 spanKind = SpanKind.Internal,
                 attributes = emptyList(),
@@ -51,14 +55,14 @@ class SamplerTest {
         // Sampled parent: should sample
         val sampledParent =
             SpanContext(
-                traceId = TraceId(1u, 1u),
-                spanId = SpanId(1u),
+                traceId = TraceId.fromHex("00000000000000010000000000000001"),
+                spanId = SpanId.from(1L),
                 traceFlags = TraceFlags.SAMPLED,
             )
         val sampledResult =
             parentSampler.shouldSample(
                 parentContext = sampledParent,
-                traceId = TraceId(1u, 1u),
+                traceId = TraceId.fromHex("00000000000000010000000000000001"),
                 name = "test",
                 spanKind = SpanKind.Internal,
                 attributes = emptyList(),
@@ -69,14 +73,14 @@ class SamplerTest {
         // Unsampled parent: should drop
         val unsampledParent =
             SpanContext(
-                traceId = TraceId(1u, 1u),
-                spanId = SpanId(1u),
-                traceFlags = TraceFlags.DEFAULT,
+                traceId = TraceId.fromHex("00000000000000010000000000000001"),
+                spanId = SpanId.from(1L),
+                traceFlags = TraceFlags.NOT_SAMPLED,
             )
         val unsampledResult =
             parentSampler.shouldSample(
                 parentContext = unsampledParent,
-                traceId = TraceId(1u, 1u),
+                traceId = TraceId.fromHex("00000000000000010000000000000001"),
                 name = "test",
                 spanKind = SpanKind.Internal,
                 attributes = emptyList(),
@@ -91,7 +95,7 @@ class SamplerTest {
         val resultOn =
             samplerOn.shouldSample(
                 parentContext = null,
-                traceId = TraceId(0u, 100u),
+                traceId = TraceId.fromHex("00000000000000000000000000000064"),
                 name = "test",
                 spanKind = SpanKind.Internal,
                 attributes = emptyList(),
@@ -103,7 +107,7 @@ class SamplerTest {
         val resultOff =
             samplerOff.shouldSample(
                 parentContext = null,
-                traceId = TraceId(0u, 100u),
+                traceId = TraceId.fromHex("00000000000000000000000000000064"),
                 name = "test",
                 spanKind = SpanKind.Internal,
                 attributes = emptyList(),

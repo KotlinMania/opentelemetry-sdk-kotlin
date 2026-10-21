@@ -1,8 +1,9 @@
 package io.github.kotlinmania.opentelemetrysdk
 
-import io.github.kotlinmania.opentelemetrysdk.resource.Key
-import io.github.kotlinmania.opentelemetrysdk.resource.KeyValue
-import io.github.kotlinmania.opentelemetrysdk.resource.Value
+import io.github.kotlinmania.opentelemetry.InstrumentationScope
+import io.github.kotlinmania.opentelemetry.Key
+import io.github.kotlinmania.opentelemetry.KeyValue
+import io.github.kotlinmania.opentelemetry.Value
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
@@ -18,18 +19,18 @@ class InstrumentationScopeTest {
                 .withAttributes(listOf(KeyValue(Key("scope.attr"), Value.of("scope-val"))))
                 .build()
 
-        assertEquals("test-scope", scope.name)
-        assertEquals("1.0.0", scope.version)
-        assertEquals("https://opentelemetry.io/schemas/1.0.0", scope.schemaUrl)
-        assertEquals(1, scope.attributes.size)
+        assertEquals("test-scope", scope.name())
+        assertEquals("1.0.0", scope.version())
+        assertEquals("https://opentelemetry.io/schemas/1.0.0", scope.schemaUrl())
+        assertEquals(1, scope.attributes().size)
     }
 
     @Test
     fun testEmpty() {
-        val scope = InstrumentationScope.EMPTY
-        assertEquals("", scope.name)
-        assertNull(scope.version)
-        assertNull(scope.schemaUrl)
-        assertEquals(0, scope.attributes.size)
+        val scope = InstrumentationScope.builder("").build()
+        assertEquals("", scope.name())
+        assertNull(scope.version())
+        assertNull(scope.schemaUrl())
+        assertEquals(0, scope.attributes().size)
     }
 }

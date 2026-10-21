@@ -1,6 +1,9 @@
 // port-lint: tests resource/env.rs
 package io.github.kotlinmania.opentelemetrysdk.resource
 
+import io.github.kotlinmania.opentelemetry.Key
+import io.github.kotlinmania.opentelemetry.KeyValue
+import io.github.kotlinmania.opentelemetry.Value
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue

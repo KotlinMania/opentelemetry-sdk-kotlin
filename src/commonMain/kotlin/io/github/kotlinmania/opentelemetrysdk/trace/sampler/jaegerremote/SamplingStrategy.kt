@@ -1,12 +1,12 @@
 // port-lint: source trace/sampler/jaeger_remote/sampling_strategy.rs
 package io.github.kotlinmania.opentelemetrysdk.trace.sampler.jaegerremote
 
+import io.github.kotlinmania.opentelemetry.TraceId
 import io.github.kotlinmania.opentelemetry.trace.SamplingDecision
+import io.github.kotlinmania.opentelemetry.trace.SamplingResult
+import io.github.kotlinmania.opentelemetry.trace.SpanContext
+import io.github.kotlinmania.opentelemetry.trace.TraceState
 import io.github.kotlinmania.opentelemetrysdk.trace.Sampler
-import io.github.kotlinmania.opentelemetrysdk.trace.SamplingResult
-import io.github.kotlinmania.opentelemetrysdk.trace.SpanContext
-import io.github.kotlinmania.opentelemetrysdk.trace.TraceId
-import io.github.kotlinmania.opentelemetrysdk.trace.TraceState
 import kotlin.concurrent.atomics.AtomicReference
 import kotlin.concurrent.atomics.ExperimentalAtomicApi
 
@@ -113,7 +113,7 @@ internal class Inner(
         return SamplingResult(
             decision = decision,
             attributes = emptyList(),
-            traceState = parentContext?.traceState ?: TraceState.DEFAULT,
+            traceState = parentContext?.traceState ?: TraceState.default(),
         )
     }
 }

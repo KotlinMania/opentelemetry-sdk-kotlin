@@ -1,7 +1,7 @@
 // port-lint: source logs/in_memory_exporter.rs
 package io.github.kotlinmania.opentelemetrysdk.logs
 
-import io.github.kotlinmania.opentelemetrysdk.InstrumentationScope
+import io.github.kotlinmania.opentelemetry.InstrumentationScope
 import io.github.kotlinmania.opentelemetrysdk.OTelSdkResult
 import io.github.kotlinmania.opentelemetrysdk.resource.Resource
 import kotlin.concurrent.atomics.AtomicBoolean

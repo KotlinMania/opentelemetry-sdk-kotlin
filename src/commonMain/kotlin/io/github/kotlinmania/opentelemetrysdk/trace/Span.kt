@@ -1,8 +1,11 @@
 // port-lint: source trace/span.rs
 package io.github.kotlinmania.opentelemetrysdk.trace
 
+import io.github.kotlinmania.opentelemetry.KeyValue
+import io.github.kotlinmania.opentelemetry.trace.Event
+import io.github.kotlinmania.opentelemetry.trace.Link
+import io.github.kotlinmania.opentelemetry.trace.SpanContext
 import io.github.kotlinmania.opentelemetry.trace.Status
-import io.github.kotlinmania.opentelemetrysdk.resource.KeyValue
 import kotlin.concurrent.atomics.AtomicReference
 import kotlin.concurrent.atomics.ExperimentalAtomicApi
 import kotlin.time.Clock
@@ -17,12 +20,14 @@ public class Span internal constructor(
     initialData: SpanData?,
     private val tracer: SdkTracer,
     private val spanLimits: SpanLimits,
-) {
+) : io.github.kotlinmania.opentelemetry.trace.Span {
     private val dataRef = AtomicReference(initialData)
 
-    public fun isRecording(): Boolean = dataRef.load() != null
+    override fun spanContext(): SpanContext = spanContext
 
-    public fun setAttribute(attribute: KeyValue) {
+    override fun isRecording(): Boolean = dataRef.load() != null
+
+    override fun setAttribute(attribute: KeyValue) {
         val spanAttributeLimit = spanLimits.maxAttributesPerSpan.toInt()
         while (true) {
             val current = dataRef.load() ?: return
@@ -38,20 +43,20 @@ public class Span internal constructor(
         }
     }
 
-    public fun setAttributes(attributes: Iterable<KeyValue>) {
+    override fun setAttributes(attributes: Iterable<KeyValue>) {
         for (attr in attributes) {
             setAttribute(attr)
         }
     }
 
-    public fun addEvent(name: String, attributes: List<KeyValue> = emptyList()) {
+    override fun addEvent(name: String, attributes: List<KeyValue>) {
         addEventWithTimestamp(name, Clock.System.now(), attributes)
     }
 
-    public fun addEventWithTimestamp(
+    override fun addEventWithTimestamp(
         name: String,
         timestamp: Instant,
-        attributes: List<KeyValue> = emptyList(),
+        attributes: List<KeyValue>,
     ) {
         val maxEvents = spanLimits.maxEventsPerSpan.toInt()
         val maxAttrsPerEvent = spanLimits.maxAttributesPerEvent.toInt()
@@ -74,7 +79,7 @@ public class Span internal constructor(
         }
     }
 
-    public fun addLink(spanContext: SpanContext, attributes: List<KeyValue> = emptyList()) {
+    override fun addLink(spanContext: SpanContext, attributes: List<KeyValue>) {
         val maxLinks = spanLimits.maxLinksPerSpan.toInt()
         val maxAttrsPerLink = spanLimits.maxAttributesPerLink.toInt()
         while (true) {
@@ -96,7 +101,7 @@ public class Span internal constructor(
         }
     }
 
-    public fun setStatus(status: Status) {
+    override fun setStatus(status: Status) {
         while (true) {
             val current = dataRef.load() ?: return
             if (status > current.status) {
@@ -110,7 +115,7 @@ public class Span internal constructor(
         }
     }
 
-    public fun updateName(newName: String) {
+    override fun updateName(newName: String) {
         while (true) {
             val current = dataRef.load() ?: return
             val next = current.copy(name = newName)
@@ -120,15 +125,15 @@ public class Span internal constructor(
         }
     }
 
-    public fun endWithTimestamp(timestamp: Instant) {
+    override fun endWithTimestamp(timestamp: Instant) {
         ensureEndedAndExported(timestamp)
     }
 
-    public fun end() {
+    override fun end() {
         ensureEndedAndExported(null)
     }
 
-    public fun recordError(err: Throwable) {
+    override fun recordError(err: Throwable) {
         val message = err.message ?: err.toString()
         val attributes = listOf(KeyValue("exception.message", message))
         addEventWithTimestamp("exception", Clock.System.now(), attributes)

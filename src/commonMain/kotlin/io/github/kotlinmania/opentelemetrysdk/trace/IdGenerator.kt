@@ -1,5 +1,7 @@
 package io.github.kotlinmania.opentelemetrysdk.trace
 
+import io.github.kotlinmania.opentelemetry.SpanId
+import io.github.kotlinmania.opentelemetry.TraceId
 import kotlin.random.Random
 
 /**
@@ -18,19 +20,17 @@ public interface IdGenerator {
  */
 public class RandomIdGenerator : IdGenerator {
     override fun newTraceId(): TraceId {
-        var high = Random.nextLong().toULong()
-        var low = Random.nextLong().toULong()
-        while (high == 0uL && low == 0uL) {
-            high = Random.nextLong().toULong()
-            low = Random.nextLong().toULong()
+        val bytes = ByteArray(16)
+        while (bytes.all { it == 0.toByte() }) {
+            Random.nextBytes(bytes)
         }
-        return TraceId(high, low)
+        return TraceId.fromBytes(bytes)
     }
 
     override fun newSpanId(): SpanId {
-        var value = Random.nextLong().toULong()
-        while (value == 0uL) {
-            value = Random.nextLong().toULong()
+        var value = Random.nextLong()
+        while (value == 0L) {
+            value = Random.nextLong()
         }
         return SpanId(value)
     }

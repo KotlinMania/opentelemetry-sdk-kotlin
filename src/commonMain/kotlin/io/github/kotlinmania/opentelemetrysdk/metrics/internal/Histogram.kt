@@ -1,12 +1,12 @@
 // port-lint: source metrics/internal/histogram.rs
 package io.github.kotlinmania.opentelemetrysdk.metrics.internal
 
+import io.github.kotlinmania.opentelemetry.KeyValue
 import io.github.kotlinmania.opentelemetrysdk.metrics.Temporality
 import io.github.kotlinmania.opentelemetrysdk.metrics.data.AggregatedMetrics
 import io.github.kotlinmania.opentelemetrysdk.metrics.data.Histogram
 import io.github.kotlinmania.opentelemetrysdk.metrics.data.HistogramDataPoint
 import io.github.kotlinmania.opentelemetrysdk.metrics.data.MetricData
-import io.github.kotlinmania.opentelemetrysdk.resource.KeyValue
 import kotlin.concurrent.atomics.AtomicReference
 import kotlin.concurrent.atomics.ExperimentalAtomicApi
 

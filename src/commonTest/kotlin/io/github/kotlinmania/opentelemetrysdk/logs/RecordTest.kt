@@ -1,11 +1,12 @@
 // port-lint: source logs/record.rs
 package io.github.kotlinmania.opentelemetrysdk.logs
 
+import io.github.kotlinmania.opentelemetry.Key
+import io.github.kotlinmania.opentelemetry.SpanId
+import io.github.kotlinmania.opentelemetry.TraceFlags
+import io.github.kotlinmania.opentelemetry.TraceId
+import io.github.kotlinmania.opentelemetry.logs.AnyValue
 import io.github.kotlinmania.opentelemetry.logs.Severity
-import io.github.kotlinmania.opentelemetrysdk.resource.Key
-import io.github.kotlinmania.opentelemetrysdk.trace.SpanId
-import io.github.kotlinmania.opentelemetrysdk.trace.TraceFlags
-import io.github.kotlinmania.opentelemetrysdk.trace.TraceId
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
@@ -88,18 +89,18 @@ class RecordTest {
     fun compareTraceContext() {
         val traceContext =
             TraceContext(
-                traceId = TraceId(1u, 1u),
-                spanId = SpanId(1u),
-                traceFlags = TraceFlags.DEFAULT,
+                traceId = TraceId.fromHex("00000000000000010000000000000001"),
+                spanId = SpanId.from(1L),
+                traceFlags = TraceFlags.NOT_SAMPLED,
             )
         val traceContextCloned = traceContext.copy()
         assertEquals(traceContext, traceContextCloned)
 
         val traceContextDifferent =
             TraceContext(
-                traceId = TraceId(2u, 2u),
-                spanId = SpanId(2u),
-                traceFlags = TraceFlags.DEFAULT,
+                traceId = TraceId.fromHex("00000000000000020000000000000002"),
+                spanId = SpanId.from(2L),
+                traceFlags = TraceFlags.NOT_SAMPLED,
             )
         assertNotEquals(traceContext, traceContextDifferent)
     }
@@ -118,9 +119,9 @@ class RecordTest {
                 body = AnyValue.of("Test body"),
                 traceContext =
                     TraceContext(
-                        traceId = TraceId(1u, 1u),
-                        spanId = SpanId(1u),
-                        traceFlags = TraceFlags.DEFAULT,
+                        traceId = TraceId.fromHex("00000000000000010000000000000001"),
+                        spanId = SpanId.from(1L),
+                        traceFlags = TraceFlags.NOT_SAMPLED,
                     ),
             )
         logRecord.addAttribute(Key("key"), AnyValue.of("value"))

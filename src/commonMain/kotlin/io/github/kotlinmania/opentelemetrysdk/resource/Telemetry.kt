@@ -1,6 +1,9 @@
 // port-lint: source resource/telemetry.rs
 package io.github.kotlinmania.opentelemetrysdk.resource
 
+import io.github.kotlinmania.opentelemetry.Key
+import io.github.kotlinmania.opentelemetry.KeyValue
+import io.github.kotlinmania.opentelemetry.Value
 import io.github.kotlinmania.opentelemetrysdk.OpenTelemetrySdk
 
 /**

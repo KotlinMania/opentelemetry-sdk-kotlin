@@ -1,11 +1,13 @@
 // port-lint: source trace/export.rs
 package io.github.kotlinmania.opentelemetrysdk.trace
 
+import io.github.kotlinmania.opentelemetry.InstrumentationScope
+import io.github.kotlinmania.opentelemetry.KeyValue
+import io.github.kotlinmania.opentelemetry.SpanId
+import io.github.kotlinmania.opentelemetry.trace.SpanContext
 import io.github.kotlinmania.opentelemetry.trace.SpanKind
 import io.github.kotlinmania.opentelemetry.trace.Status
-import io.github.kotlinmania.opentelemetrysdk.InstrumentationScope
 import io.github.kotlinmania.opentelemetrysdk.OTelSdkResult
-import io.github.kotlinmania.opentelemetrysdk.resource.KeyValue
 import io.github.kotlinmania.opentelemetrysdk.resource.Resource
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
@@ -28,7 +30,7 @@ public data class SpanData(
     public val events: SpanEvents = SpanEvents.EMPTY,
     public val links: SpanLinks = SpanLinks.EMPTY,
     public val status: Status = Status.Unset,
-    public val instrumentationScope: InstrumentationScope = InstrumentationScope.EMPTY,
+    public val instrumentationScope: InstrumentationScope = InstrumentationScope.builder("").build(),
 )
 
 /**

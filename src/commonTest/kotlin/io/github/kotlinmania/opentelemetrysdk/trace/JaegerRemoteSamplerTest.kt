@@ -1,5 +1,6 @@
 package io.github.kotlinmania.opentelemetrysdk.trace
 
+import io.github.kotlinmania.opentelemetry.TraceId
 import io.github.kotlinmania.opentelemetry.trace.SamplingDecision
 import io.github.kotlinmania.opentelemetrysdk.Tokio
 import io.github.kotlinmania.opentelemetrysdk.trace.sampler.jaegerremote.Inner
@@ -73,7 +74,7 @@ class JaegerRemoteSamplerTest {
     @Test
     fun testInnerSamplingDecisions() {
         val inner = Inner(leakyBucketSize = 10.0)
-        val traceId = TraceId.from(1uL, 2uL)
+        val traceId = TraceId.fromHex("00000000000000010000000000000002")
 
         // No strategy yet -> null
         assertEquals(null, inner.shouldSample(null, traceId, "test"))
