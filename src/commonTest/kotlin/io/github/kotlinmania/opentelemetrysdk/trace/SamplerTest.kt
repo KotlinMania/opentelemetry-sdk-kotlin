@@ -1,6 +1,8 @@
 // port-lint: tests trace/sampler.rs
 package io.github.kotlinmania.opentelemetrysdk.trace
 
+import io.github.kotlinmania.opentelemetry.trace.SamplingDecision
+import io.github.kotlinmania.opentelemetry.trace.SpanKind
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -12,22 +14,22 @@ class SamplerTest {
                 parentContext = null,
                 traceId = TraceId(1u, 1u),
                 name = "test",
-                spanKind = SpanKind.INTERNAL,
+                spanKind = SpanKind.Internal,
                 attributes = emptyList(),
                 links = emptyList(),
             )
-        assertEquals(SamplingDecision.RECORD_AND_SAMPLE, onResult.decision)
+        assertEquals(SamplingDecision.RecordAndSample, onResult.decision)
 
         val offResult =
             Sampler.AlwaysOff.shouldSample(
                 parentContext = null,
                 traceId = TraceId(1u, 1u),
                 name = "test",
-                spanKind = SpanKind.INTERNAL,
+                spanKind = SpanKind.Internal,
                 attributes = emptyList(),
                 links = emptyList(),
             )
-        assertEquals(SamplingDecision.DROP, offResult.decision)
+        assertEquals(SamplingDecision.Drop, offResult.decision)
     }
 
     @Test
@@ -40,11 +42,11 @@ class SamplerTest {
                 parentContext = null,
                 traceId = TraceId(1u, 1u),
                 name = "test",
-                spanKind = SpanKind.INTERNAL,
+                spanKind = SpanKind.Internal,
                 attributes = emptyList(),
                 links = emptyList(),
             )
-        assertEquals(SamplingDecision.RECORD_AND_SAMPLE, noParentResult.decision)
+        assertEquals(SamplingDecision.RecordAndSample, noParentResult.decision)
 
         // Sampled parent: should sample
         val sampledParent =
@@ -58,11 +60,11 @@ class SamplerTest {
                 parentContext = sampledParent,
                 traceId = TraceId(1u, 1u),
                 name = "test",
-                spanKind = SpanKind.INTERNAL,
+                spanKind = SpanKind.Internal,
                 attributes = emptyList(),
                 links = emptyList(),
             )
-        assertEquals(SamplingDecision.RECORD_AND_SAMPLE, sampledResult.decision)
+        assertEquals(SamplingDecision.RecordAndSample, sampledResult.decision)
 
         // Unsampled parent: should drop
         val unsampledParent =
@@ -76,11 +78,11 @@ class SamplerTest {
                 parentContext = unsampledParent,
                 traceId = TraceId(1u, 1u),
                 name = "test",
-                spanKind = SpanKind.INTERNAL,
+                spanKind = SpanKind.Internal,
                 attributes = emptyList(),
                 links = emptyList(),
             )
-        assertEquals(SamplingDecision.DROP, unsampledResult.decision)
+        assertEquals(SamplingDecision.Drop, unsampledResult.decision)
     }
 
     @Test
@@ -91,11 +93,11 @@ class SamplerTest {
                 parentContext = null,
                 traceId = TraceId(0u, 100u),
                 name = "test",
-                spanKind = SpanKind.INTERNAL,
+                spanKind = SpanKind.Internal,
                 attributes = emptyList(),
                 links = emptyList(),
             )
-        assertEquals(SamplingDecision.RECORD_AND_SAMPLE, resultOn.decision)
+        assertEquals(SamplingDecision.RecordAndSample, resultOn.decision)
 
         val samplerOff = Sampler.TraceIdRatioBased(0.0)
         val resultOff =
@@ -103,10 +105,10 @@ class SamplerTest {
                 parentContext = null,
                 traceId = TraceId(0u, 100u),
                 name = "test",
-                spanKind = SpanKind.INTERNAL,
+                spanKind = SpanKind.Internal,
                 attributes = emptyList(),
                 links = emptyList(),
             )
-        assertEquals(SamplingDecision.DROP, resultOff.decision)
+        assertEquals(SamplingDecision.Drop, resultOff.decision)
     }
 }

@@ -1,6 +1,7 @@
 // port-lint: source logs/record.rs
 package io.github.kotlinmania.opentelemetrysdk.logs
 
+import io.github.kotlinmania.opentelemetry.logs.Severity
 import io.github.kotlinmania.opentelemetrysdk.resource.Key
 import io.github.kotlinmania.opentelemetrysdk.trace.SpanId
 import io.github.kotlinmania.opentelemetrysdk.trace.TraceFlags

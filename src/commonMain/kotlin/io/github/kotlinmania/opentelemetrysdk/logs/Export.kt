@@ -1,6 +1,7 @@
 // port-lint: source logs/export.rs
 package io.github.kotlinmania.opentelemetrysdk.logs
 
+import io.github.kotlinmania.opentelemetry.logs.Severity
 import io.github.kotlinmania.opentelemetrysdk.OTelSdkResult
 import io.github.kotlinmania.opentelemetrysdk.resource.Resource
 import kotlin.time.Duration

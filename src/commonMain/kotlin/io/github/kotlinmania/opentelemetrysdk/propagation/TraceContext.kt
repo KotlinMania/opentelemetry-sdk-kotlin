@@ -1,7 +1,11 @@
 // port-lint: source propagation/trace_context.rs
 package io.github.kotlinmania.opentelemetrysdk.propagation
 
-import io.github.kotlinmania.opentelemetrysdk.Context
+import io.github.kotlinmania.opentelemetry.Context
+import io.github.kotlinmania.opentelemetry.propagation.Extractor
+import io.github.kotlinmania.opentelemetry.propagation.FieldIter
+import io.github.kotlinmania.opentelemetry.propagation.Injector
+import io.github.kotlinmania.opentelemetry.propagation.TextMapPropagator
 import io.github.kotlinmania.opentelemetrysdk.trace.Span
 import io.github.kotlinmania.opentelemetrysdk.trace.SpanContext
 import io.github.kotlinmania.opentelemetrysdk.trace.SpanId
@@ -11,50 +15,28 @@ import io.github.kotlinmania.opentelemetrysdk.trace.TraceState
 import io.github.kotlinmania.opentelemetrysdk.trace.TraceStateEntry
 
 /**
- * Extractor interface for extracting string headers from carrier maps.
- */
-public interface Extractor {
-    public fun get(key: String): String?
-
-    public fun keys(): List<String> = emptyList()
-}
-
-/**
- * Injector interface for injecting string headers into carrier maps.
- */
-public interface Injector {
-    public fun set(key: String, value: String)
-}
-
-/**
- * Text map propagator interface for cross-cutting context injection and extraction.
- */
-public interface TextMapPropagator {
-    public fun injectContext(context: Context, injector: Injector)
-
-    public fun extractWithContext(context: Context, extractor: Extractor): Context
-
-    public fun extract(extractor: Extractor): Context =
-        extractWithContext(Context.current(), extractor)
-
-    public fun fields(): List<String>
-}
-
-/**
  * Extension helpers on [Context] for remote span contexts.
  */
 public const val REMOTE_SPAN_CONTEXT_KEY: String = "opentelemetry.remote_span_context"
 public const val SPAN_CONTEXT_KEY: String = "opentelemetry.active_span"
 
+private data class RemoteSpanContextHolder(
+    val spanContext: SpanContext,
+)
+
+private data class ActiveSpanHolder(
+    val span: Span,
+)
+
 public fun Context.withRemoteSpanContext(spanContext: SpanContext): Context =
-    withValue(REMOTE_SPAN_CONTEXT_KEY, spanContext)
+    withValue(RemoteSpanContextHolder(spanContext))
 
 public fun Context.spanContext(): SpanContext? =
-    (get(REMOTE_SPAN_CONTEXT_KEY) as? SpanContext)
-        ?: (get(SPAN_CONTEXT_KEY) as? Span)?.spanContext
+    get<RemoteSpanContextHolder>()?.spanContext
+        ?: get<ActiveSpanHolder>()?.span?.spanContext
 
 public fun Context.withSpan(span: Span): Context =
-    withValue(SPAN_CONTEXT_KEY, span)
+    withValue(ActiveSpanHolder(span))
 
 /**
  * Propagates `SpanContext`s in W3C TraceContext format under `traceparent` and `tracestate` headers.
@@ -101,8 +83,8 @@ public class TraceContextPropagator : TextMapPropagator {
         return if (spanContext.isValid) spanContext else null
     }
 
-    override fun injectContext(context: Context, injector: Injector) {
-        val spanContext = context.spanContext() ?: return
+    override fun injectContext(cx: Context, injector: Injector) {
+        val spanContext = cx.spanContext() ?: return
         if (spanContext.isValid) {
             val flags = if (spanContext.isSampled) 1 else 0
             val flagsHex = flags.toString(16).padStart(2, '0')
@@ -115,16 +97,16 @@ public class TraceContextPropagator : TextMapPropagator {
         }
     }
 
-    override fun extractWithContext(context: Context, extractor: Extractor): Context {
+    override fun extractWithContext(cx: Context, extractor: Extractor): Context {
         val spanContext = extractSpanContext(extractor)
         return if (spanContext != null) {
-            context.withRemoteSpanContext(spanContext)
+            cx.withRemoteSpanContext(spanContext)
         } else {
-            context
+            cx
         }
     }
 
-    override fun fields(): List<String> = listOf(TRACEPARENT_HEADER, TRACESTATE_HEADER)
+    override fun fields(): FieldIter = FieldIter.new(listOf(TRACEPARENT_HEADER, TRACESTATE_HEADER))
 
     public companion object {
         public const val SUPPORTED_VERSION: Int = 0

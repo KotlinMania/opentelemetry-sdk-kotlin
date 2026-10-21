@@ -1,6 +1,8 @@
 // port-lint: source trace/export.rs
 package io.github.kotlinmania.opentelemetrysdk.trace
 
+import io.github.kotlinmania.opentelemetry.trace.SpanKind
+import io.github.kotlinmania.opentelemetry.trace.Status
 import io.github.kotlinmania.opentelemetrysdk.InstrumentationScope
 import io.github.kotlinmania.opentelemetrysdk.OTelSdkResult
 import io.github.kotlinmania.opentelemetrysdk.resource.KeyValue
@@ -17,7 +19,7 @@ public data class SpanData(
     public val spanContext: SpanContext,
     public val parentSpanId: SpanId = SpanId.INVALID,
     public val parentSpanIsRemote: Boolean = false,
-    public val spanKind: SpanKind = SpanKind.INTERNAL,
+    public val spanKind: SpanKind = SpanKind.Internal,
     public val name: String,
     public val startTime: Instant,
     public val endTime: Instant,

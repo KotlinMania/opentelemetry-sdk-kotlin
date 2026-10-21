@@ -1,7 +1,9 @@
 // port-lint: tests propagation/baggage.rs
 package io.github.kotlinmania.opentelemetrysdk.propagation
 
-import io.github.kotlinmania.opentelemetrysdk.Context
+import io.github.kotlinmania.opentelemetry.Context
+import io.github.kotlinmania.opentelemetry.propagation.Extractor
+import io.github.kotlinmania.opentelemetry.propagation.Injector
 import io.github.kotlinmania.opentelemetrysdk.resource.KeyValue
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -53,7 +55,7 @@ class BaggageTest {
     fun injectBaggage() {
         val propagator = BaggagePropagator.new()
         for ((kvs, headerParts) in validInjectData()) {
-            val context = Context(baggage = kvs)
+            val context = Context.new().withBaggage(kvs)
             val carrier = MapCarrier()
             propagator.injectContext(context, carrier)
             val headerValue = carrier.get(BaggagePropagator.BAGGAGE_HEADER)
@@ -71,7 +73,7 @@ class BaggageTest {
     fun injectBaggageWithMetadata() {
         val propagator = BaggagePropagator.new()
         for ((kvs, headerParts) in validInjectDataMetadata()) {
-            val context = Context(baggage = kvs)
+            val context = Context.new().withBaggage(kvs)
             val carrier = MapCarrier()
             propagator.injectContext(context, carrier)
             val headerValue = carrier.get(BaggagePropagator.BAGGAGE_HEADER)

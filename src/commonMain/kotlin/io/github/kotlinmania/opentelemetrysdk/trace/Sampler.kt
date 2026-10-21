@@ -1,16 +1,9 @@
 // port-lint: source trace/sampler.rs
 package io.github.kotlinmania.opentelemetrysdk.trace
 
+import io.github.kotlinmania.opentelemetry.trace.SamplingDecision
+import io.github.kotlinmania.opentelemetry.trace.SpanKind
 import io.github.kotlinmania.opentelemetrysdk.resource.KeyValue
-
-/**
- * Sampling decision.
- */
-public enum class SamplingDecision {
-    DROP,
-    RECORD_ONLY,
-    RECORD_AND_SAMPLE,
-}
 
 /**
  * Sampling result containing a decision, attributes, and trace state.
@@ -57,7 +50,7 @@ public sealed class Sampler : ShouldSample {
             links: List<Link>,
         ): SamplingResult =
             SamplingResult(
-                decision = SamplingDecision.RECORD_AND_SAMPLE,
+                decision = SamplingDecision.RecordAndSample,
                 traceState = parentContext?.traceState ?: TraceState.DEFAULT,
             )
     }
@@ -75,7 +68,7 @@ public sealed class Sampler : ShouldSample {
             links: List<Link>,
         ): SamplingResult =
             SamplingResult(
-                decision = SamplingDecision.DROP,
+                decision = SamplingDecision.Drop,
                 traceState = parentContext?.traceState ?: TraceState.DEFAULT,
             )
     }
@@ -97,9 +90,9 @@ public sealed class Sampler : ShouldSample {
             if (parentContext != null && parentContext.isValid) {
                 val decision =
                     if (parentContext.traceFlags.isSampled) {
-                        SamplingDecision.RECORD_AND_SAMPLE
+                        SamplingDecision.RecordAndSample
                     } else {
-                        SamplingDecision.DROP
+                        SamplingDecision.Drop
                     }
                 return SamplingResult(
                     decision = decision,
@@ -137,18 +130,18 @@ public sealed class Sampler : ShouldSample {
              */
             public fun sampleBasedOnProbability(prob: Double, traceId: TraceId): SamplingDecision {
                 if (prob >= 1.0) {
-                    return SamplingDecision.RECORD_AND_SAMPLE
+                    return SamplingDecision.RecordAndSample
                 }
                 if (prob <= 0.0) {
-                    return SamplingDecision.DROP
+                    return SamplingDecision.Drop
                 }
                 val probUpperBound = (prob * 9223372036854775807.0).toLong().toULong()
                 val traceIdLow = traceId.low
                 val rnd = traceIdLow shr 1
                 return if (rnd < probUpperBound) {
-                    SamplingDecision.RECORD_AND_SAMPLE
+                    SamplingDecision.RecordAndSample
                 } else {
-                    SamplingDecision.DROP
+                    SamplingDecision.Drop
                 }
             }
         }

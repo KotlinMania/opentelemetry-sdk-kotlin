@@ -10,14 +10,15 @@ ktlint = "14.2.0"
 ktlintEngine = "1.8.0"
 kotlinxBenchmark = "0.5.0"
 
-opentelemetry = "0.1.1"
+opentelemetry = "0.2.0"
 thiserror = "0.2.1"
 rand = "0.2.0"
 futures = "0.2.1"
 tokio = "0.1.1"
 serde = "0.1.11"
 serdeJson = "0.1.1"
-http = "0.1.3"
+http = "0.2.1"
+procMacro = "0.1.4"
 
 [plugins]
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
@@ -43,6 +44,7 @@ tokio-core = { module = "io.github.kotlinmania:tokio-kotlin", version.ref = "tok
 serde-core = { module = "io.github.kotlinmania:serde-kotlin", version.ref = "serde" }
 serde-json = { module = "io.github.kotlinmania:serde-json-kotlin", version.ref = "serdeJson" }
 http-core = { module = "io.github.kotlinmania:http-kotlin", version.ref = "http" }
+proc-macro-core = { module = "io.github.kotlinmania:proc-macro-kotlin", version.ref = "procMacro" }
 
 [bundles]
 opentelemetry-sdk-commonMain = [
@@ -51,12 +53,15 @@ opentelemetry-sdk-commonMain = [
   "kotlinx-serialization-json",
   "kotlinx-datetime",
   "collections-immutable",
+  "opentelemetry-core",
   "thiserror-core",
   "rand-core",
   "futures-core",
   "tokio-core",
   "serde-core",
   "serde-json",
+  "http-core",
+  "proc-macro-core",
 ]
 
 

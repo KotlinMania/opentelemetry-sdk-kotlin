@@ -1,9 +1,11 @@
-// port-lint: tests logs/mod.rs
 package io.github.kotlinmania.opentelemetrysdk.logs
 
-import io.github.kotlinmania.opentelemetrysdk.Context
+import io.github.kotlinmania.opentelemetry.Context
+import io.github.kotlinmania.opentelemetry.logs.Severity
 import io.github.kotlinmania.opentelemetrysdk.InstrumentationScope
 import io.github.kotlinmania.opentelemetrysdk.OTelSdkResult
+import io.github.kotlinmania.opentelemetrysdk.propagation.baggage
+import io.github.kotlinmania.opentelemetrysdk.propagation.currentWithBaggage
 import io.github.kotlinmania.opentelemetrysdk.resource.Key
 import io.github.kotlinmania.opentelemetrysdk.resource.KeyValue
 import io.github.kotlinmania.opentelemetrysdk.resource.Resource

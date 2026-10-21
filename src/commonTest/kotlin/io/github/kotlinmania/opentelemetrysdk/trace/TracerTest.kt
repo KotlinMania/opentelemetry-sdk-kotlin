@@ -1,6 +1,8 @@
 // port-lint: tests trace/tracer.rs
 package io.github.kotlinmania.opentelemetrysdk.trace
 
+import io.github.kotlinmania.opentelemetry.trace.SamplingDecision
+import io.github.kotlinmania.opentelemetry.trace.SpanKind
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
@@ -17,7 +19,7 @@ class TracerTest {
         ): SamplingResult {
             val traceState = parentContext?.traceState ?: TraceState.empty()
             return SamplingResult(
-                decision = SamplingDecision.RECORD_AND_SAMPLE,
+                decision = SamplingDecision.RecordAndSample,
                 traceState = traceState.insert("foo", "notbar").getOrThrow(),
             )
         }
