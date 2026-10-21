@@ -1,4 +1,3 @@
-// port-lint: source trace/id_generator/mod.rs
 package io.github.kotlinmania.opentelemetrysdk.trace
 
 import kotlin.random.Random
