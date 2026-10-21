@@ -1,15 +1,15 @@
 // port-lint: source trace/sampler/jaeger_remote/sampler.rs
 package io.github.kotlinmania.opentelemetrysdk.trace.sampler.jaegerremote
 
+import io.github.kotlinmania.opentelemetry.KeyValue
+import io.github.kotlinmania.opentelemetry.TraceId
+import io.github.kotlinmania.opentelemetry.trace.Link
+import io.github.kotlinmania.opentelemetry.trace.SamplingResult
+import io.github.kotlinmania.opentelemetry.trace.SpanContext
 import io.github.kotlinmania.opentelemetry.trace.SpanKind
 import io.github.kotlinmania.opentelemetrysdk.RuntimeChannel
-import io.github.kotlinmania.opentelemetrysdk.resource.KeyValue
-import io.github.kotlinmania.opentelemetrysdk.trace.Link
 import io.github.kotlinmania.opentelemetrysdk.trace.Sampler
-import io.github.kotlinmania.opentelemetrysdk.trace.SamplingResult
 import io.github.kotlinmania.opentelemetrysdk.trace.ShouldSample
-import io.github.kotlinmania.opentelemetrysdk.trace.SpanContext
-import io.github.kotlinmania.opentelemetrysdk.trace.TraceId
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.minutes
 

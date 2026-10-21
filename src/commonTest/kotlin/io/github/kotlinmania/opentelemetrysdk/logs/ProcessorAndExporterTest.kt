@@ -1,17 +1,18 @@
 package io.github.kotlinmania.opentelemetrysdk.logs
 
 import io.github.kotlinmania.opentelemetry.Context
+import io.github.kotlinmania.opentelemetry.InstrumentationScope
+import io.github.kotlinmania.opentelemetry.Key
+import io.github.kotlinmania.opentelemetry.KeyValue
+import io.github.kotlinmania.opentelemetry.SpanId
+import io.github.kotlinmania.opentelemetry.TraceFlags
+import io.github.kotlinmania.opentelemetry.TraceId
+import io.github.kotlinmania.opentelemetry.logs.AnyValue
 import io.github.kotlinmania.opentelemetry.logs.Severity
-import io.github.kotlinmania.opentelemetrysdk.InstrumentationScope
 import io.github.kotlinmania.opentelemetrysdk.OTelSdkResult
 import io.github.kotlinmania.opentelemetrysdk.propagation.baggage
 import io.github.kotlinmania.opentelemetrysdk.propagation.currentWithBaggage
-import io.github.kotlinmania.opentelemetrysdk.resource.Key
-import io.github.kotlinmania.opentelemetrysdk.resource.KeyValue
 import io.github.kotlinmania.opentelemetrysdk.resource.Resource
-import io.github.kotlinmania.opentelemetrysdk.trace.SpanId
-import io.github.kotlinmania.opentelemetrysdk.trace.TraceFlags
-import io.github.kotlinmania.opentelemetrysdk.trace.TraceId
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -65,7 +66,7 @@ class ProcessorAndExporterTest {
         val exportedLogs = exporter.getEmittedLogs().getOrThrow()
         assertEquals(1, exportedLogs.size)
         val log = exportedLogs.first()
-        assertEquals("test-logger", log.instrumentation.name)
+        assertEquals("test-logger", log.instrumentation.name())
         assertEquals(Severity.Error, log.record.severityNumber)
         assertEquals(10, log.record.attributesLen())
         for (i in 1..10) {
@@ -103,9 +104,9 @@ class ProcessorAndExporterTest {
         assertEquals(1, exportedLogs.size)
         val log = exportedLogs.first()
         assertEquals(Severity.Error, log.record.severityNumber)
-        assertEquals("test_logger", log.instrumentation.name)
-        assertEquals("https://opentelemetry.io/schema/1.0.0", log.instrumentation.schemaUrl)
-        assertEquals(listOf(KeyValue("test_k", "test_v")), log.instrumentation.attributes)
+        assertEquals("test_logger", log.instrumentation.name())
+        assertEquals("https://opentelemetry.io/schema/1.0.0", log.instrumentation.schemaUrl())
+        assertEquals(listOf(KeyValue("test_k", "test_v")), log.instrumentation.attributes())
     }
 
     private class EnrichWithBaggageProcessor : LogProcessor {
@@ -144,7 +145,7 @@ class ProcessorAndExporterTest {
         val exportedLogs = exporter.getEmittedLogs().getOrThrow()
         assertEquals(1, exportedLogs.size)
         val log = exportedLogs.first()
-        assertEquals("test-logger", log.instrumentation.name)
+        assertEquals("test-logger", log.instrumentation.name())
         assertEquals(2, log.record.attributesLen())
         assertTrue(log.record.attributesContains(Key("key"), AnyValue.of("value")))
         assertTrue(log.record.attributesContains(Key("key-from-bag"), AnyValue.of("value-from-bag")))
@@ -276,8 +277,8 @@ class ProcessorAndExporterTest {
 
         val explicitCtxt =
             TraceContext(
-                traceId = TraceId(0u, 13u),
-                spanId = SpanId(14u),
+                traceId = TraceId.fromHex("0000000000000000000000000000000d"),
+                spanId = SpanId.from(14L),
                 traceFlags = TraceFlags.SAMPLED,
             )
 

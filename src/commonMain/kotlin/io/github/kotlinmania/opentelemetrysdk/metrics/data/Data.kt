@@ -1,8 +1,8 @@
 package io.github.kotlinmania.opentelemetrysdk.metrics.data
 
-import io.github.kotlinmania.opentelemetrysdk.InstrumentationScope
+import io.github.kotlinmania.opentelemetry.InstrumentationScope
+import io.github.kotlinmania.opentelemetry.KeyValue
 import io.github.kotlinmania.opentelemetrysdk.metrics.Temporality
-import io.github.kotlinmania.opentelemetrysdk.resource.KeyValue
 import io.github.kotlinmania.opentelemetrysdk.resource.Resource
 import kotlin.time.Instant
 
@@ -22,7 +22,7 @@ public data class ResourceMetrics(
  * A collection of metrics produced by a meter.
  */
 public data class ScopeMetrics(
-    public var scope: InstrumentationScope = InstrumentationScope.EMPTY,
+    public var scope: InstrumentationScope = InstrumentationScope.builder("").build(),
     public var metrics: List<Metric> = emptyList(),
 ) {
     public companion object {

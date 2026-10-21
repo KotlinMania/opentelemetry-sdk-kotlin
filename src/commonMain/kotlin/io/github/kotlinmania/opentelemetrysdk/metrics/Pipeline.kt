@@ -1,7 +1,8 @@
 // port-lint: source metrics/pipeline.rs
 package io.github.kotlinmania.opentelemetrysdk.metrics
 
-import io.github.kotlinmania.opentelemetrysdk.InstrumentationScope
+import io.github.kotlinmania.opentelemetry.InstrumentationScope
+import io.github.kotlinmania.opentelemetry.KeyValue
 import io.github.kotlinmania.opentelemetrysdk.OTelSdkError
 import io.github.kotlinmania.opentelemetrysdk.OTelSdkResult
 import io.github.kotlinmania.opentelemetrysdk.metrics.data.Metric
@@ -12,7 +13,6 @@ import io.github.kotlinmania.opentelemetrysdk.metrics.internal.AggregateFns
 import io.github.kotlinmania.opentelemetrysdk.metrics.internal.ComputeAggregation
 import io.github.kotlinmania.opentelemetrysdk.metrics.internal.Measure
 import io.github.kotlinmania.opentelemetrysdk.metrics.internal.NumberOps
-import io.github.kotlinmania.opentelemetrysdk.resource.KeyValue
 import io.github.kotlinmania.opentelemetrysdk.resource.Resource
 import kotlinx.collections.immutable.PersistentMap
 import kotlinx.collections.immutable.persistentMapOf

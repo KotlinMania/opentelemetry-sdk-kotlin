@@ -1,10 +1,17 @@
 package io.github.kotlinmania.opentelemetrysdk.trace
 
+import io.github.kotlinmania.opentelemetry.Context
+import io.github.kotlinmania.opentelemetry.Key
+import io.github.kotlinmania.opentelemetry.KeyValue
+import io.github.kotlinmania.opentelemetry.SpanId
+import io.github.kotlinmania.opentelemetry.TraceFlags
+import io.github.kotlinmania.opentelemetry.TraceId
+import io.github.kotlinmania.opentelemetry.Value
+import io.github.kotlinmania.opentelemetry.trace.SpanContext
 import io.github.kotlinmania.opentelemetry.trace.SpanKind
 import io.github.kotlinmania.opentelemetry.trace.Status
-import io.github.kotlinmania.opentelemetrysdk.resource.Key
-import io.github.kotlinmania.opentelemetrysdk.resource.KeyValue
-import io.github.kotlinmania.opentelemetrysdk.resource.Value
+import io.github.kotlinmania.opentelemetry.trace.getActiveSpan
+import io.github.kotlinmania.opentelemetrysdk.propagation.withRemoteSpanContext
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -21,39 +28,41 @@ class TracePipelineTest {
                 .build()
 
         val tracer = provider.tracer("test_tracer")
-        tracer.inSpan("span_name") { span ->
-            assertTrue(span.isRecording())
-            span.updateName("span_name_updated")
-            span.setAttribute(KeyValue(Key("attribute1"), Value.of("value1")))
-            span.addEvent("test-event", emptyList())
-            span.addLink(
-                SpanContext(
-                    traceId = TraceId(0u, 47u),
-                    spanId = SpanId(11u),
-                ),
-            )
+        tracer.inSpan("span_name") {
+            getActiveSpan { span ->
+                assertTrue(span.isRecording())
+                span.updateName("span_name_updated")
+                span.setAttribute(KeyValue(Key("attribute1"), Value.of("value1")))
+                span.addEvent("test-event", emptyList())
+                span.addLink(
+                    SpanContext(
+                        traceId = TraceId.fromHex("0000000000000000000000000000002f"),
+                        spanId = SpanId.from(11L),
+                    ),
+                )
+            }
         }
 
         val spans = exporter.getFinishedSpans().getOrThrow()
         assertEquals(1, spans.size)
         val span = spans[0]
         assertEquals("span_name_updated", span.name)
-        assertEquals("test_tracer", span.instrumentationScope.name)
+        assertEquals("test_tracer", span.instrumentationScope.name())
         assertEquals(1, span.attributes.size)
         assertEquals(1, span.events.events.size)
         assertEquals("test-event", span.events.events[0].name)
         assertEquals(1, span.links.links.size)
         assertEquals(
-            TraceId(0u, 47u),
+            TraceId.fromHex("0000000000000000000000000000002f"),
             span.links.links[0]
                 .spanContext.traceId,
         )
         assertEquals(
-            SpanId(11u),
+            SpanId.from(11L),
             span.links.links[0]
                 .spanContext.spanId,
         )
-        assertTrue(span.spanContext.traceFlags.isSampled)
+        assertTrue(span.spanContext.traceFlags.isSampled())
         assertFalse(span.spanContext.isRemote)
         assertEquals(Status.Unset, span.status)
     }
@@ -99,19 +108,19 @@ class TracePipelineTest {
 
         val parentContext =
             SpanContext(
-                traceId = TraceId(1u, 2u),
-                spanId = SpanId(3u),
+                traceId = TraceId.fromHex("00000000000000010000000000000002"),
+                spanId = SpanId.from(3L),
                 traceFlags = TraceFlags.SAMPLED,
             )
 
         val tracer = provider.tracer("test_tracer")
+        val parentCx = Context.current().withRemoteSpanContext(parentContext)
         val span =
             tracer
                 .spanBuilder("server_span")
                 .withKind(SpanKind.Server)
-                .withParent(parentContext)
                 .withAttribute(KeyValue(Key("k"), Value.of("v")))
-                .start()
+                .startWithContext(tracer, parentCx)
 
         span.end()
 
@@ -153,9 +162,9 @@ class TracePipelineTest {
         span.addEvent("e3")
 
         // Add 3 links (limit is 2)
-        span.addLink(SpanContext(TraceId(1u, 1u), SpanId(1u)))
-        span.addLink(SpanContext(TraceId(1u, 2u), SpanId(2u)))
-        span.addLink(SpanContext(TraceId(1u, 3u), SpanId(3u)))
+        span.addLink(SpanContext(TraceId.fromHex("00000000000000010000000000000001"), SpanId.from(1L)))
+        span.addLink(SpanContext(TraceId.fromHex("00000000000000010000000000000002"), SpanId.from(2L)))
+        span.addLink(SpanContext(TraceId.fromHex("00000000000000010000000000000003"), SpanId.from(3L)))
 
         span.end()
 

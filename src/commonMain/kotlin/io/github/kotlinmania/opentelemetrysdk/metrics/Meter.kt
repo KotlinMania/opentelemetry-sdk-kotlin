@@ -1,13 +1,18 @@
 // port-lint: source metrics/meter.rs
 package io.github.kotlinmania.opentelemetrysdk.metrics
 
-import io.github.kotlinmania.opentelemetrysdk.InstrumentationScope
+import io.github.kotlinmania.opentelemetry.InstrumentationScope
+import io.github.kotlinmania.opentelemetry.KeyValue
+import io.github.kotlinmania.opentelemetry.metrics.instruments.Counter
+import io.github.kotlinmania.opentelemetry.metrics.instruments.Gauge
+import io.github.kotlinmania.opentelemetry.metrics.instruments.Histogram
+import io.github.kotlinmania.opentelemetry.metrics.instruments.SyncInstrument
+import io.github.kotlinmania.opentelemetry.metrics.instruments.UpDownCounter
 import io.github.kotlinmania.opentelemetrysdk.OTelSdkError
 import io.github.kotlinmania.opentelemetrysdk.metrics.internal.DoubleOps
 import io.github.kotlinmania.opentelemetrysdk.metrics.internal.LongOps
 import io.github.kotlinmania.opentelemetrysdk.metrics.internal.Measure
 import io.github.kotlinmania.opentelemetrysdk.metrics.internal.ULongOps
-import io.github.kotlinmania.opentelemetrysdk.resource.KeyValue
 import kotlinx.collections.immutable.PersistentMap
 import kotlin.concurrent.atomics.AtomicReference
 import kotlin.concurrent.atomics.ExperimentalAtomicApi
@@ -44,58 +49,15 @@ internal fun validateInstrumentConfig(
     return Result.success(Unit)
 }
 
-// generic by design: callers choose the instrument numeric type.
-public class Counter<T> internal constructor(
+internal class ResolvedMeasures<T>(
     private val measures: List<Measure<T>>,
-) {
-    public fun add(
-        value: T,
-        attributes: List<KeyValue> = emptyList(),
+) : SyncInstrument<T> {
+    override fun measure(
+        measurement: T,
+        attributes: List<KeyValue>,
     ) {
         for (m in measures) {
-            m.call(value, attributes)
-        }
-    }
-}
-
-// generic by design: callers choose the instrument numeric type.
-public class UpDownCounter<T> internal constructor(
-    private val measures: List<Measure<T>>,
-) {
-    public fun add(
-        value: T,
-        attributes: List<KeyValue> = emptyList(),
-    ) {
-        for (m in measures) {
-            m.call(value, attributes)
-        }
-    }
-}
-
-// generic by design: callers choose the instrument numeric type.
-public class Gauge<T> internal constructor(
-    private val measures: List<Measure<T>>,
-) {
-    public fun record(
-        value: T,
-        attributes: List<KeyValue> = emptyList(),
-    ) {
-        for (m in measures) {
-            m.call(value, attributes)
-        }
-    }
-}
-
-// generic by design: callers choose the instrument numeric type.
-public class Histogram<T> internal constructor(
-    private val measures: List<Measure<T>>,
-) {
-    public fun record(
-        value: T,
-        attributes: List<KeyValue> = emptyList(),
-    ) {
-        for (m in measures) {
-            m.call(value, attributes)
+            m.call(measurement, attributes)
         }
     }
 }
@@ -132,7 +94,7 @@ public class SdkMeter internal constructor(
     ): Counter<Long> {
         val validation = validateInstrumentConfig(name, unit)
         if (validation.isFailure) {
-            return Counter(emptyList())
+            return Counter.new(ResolvedMeasures(emptyList()))
         }
         val inst =
             Instrument(
@@ -143,7 +105,7 @@ public class SdkMeter internal constructor(
                 scope = scope,
             )
         val measures = i64Resolver.measures(inst, null).getOrDefault(emptyList())
-        return Counter(measures)
+        return Counter.new(ResolvedMeasures(measures))
     }
 
     public fun counterU64(
@@ -153,7 +115,7 @@ public class SdkMeter internal constructor(
     ): Counter<ULong> {
         val validation = validateInstrumentConfig(name, unit)
         if (validation.isFailure) {
-            return Counter(emptyList())
+            return Counter.new(ResolvedMeasures(emptyList()))
         }
         val inst =
             Instrument(
@@ -164,7 +126,7 @@ public class SdkMeter internal constructor(
                 scope = scope,
             )
         val measures = u64Resolver.measures(inst, null).getOrDefault(emptyList())
-        return Counter(measures)
+        return Counter.new(ResolvedMeasures(measures))
     }
 
     public fun counterF64(
@@ -174,7 +136,7 @@ public class SdkMeter internal constructor(
     ): Counter<Double> {
         val validation = validateInstrumentConfig(name, unit)
         if (validation.isFailure) {
-            return Counter(emptyList())
+            return Counter.new(ResolvedMeasures(emptyList()))
         }
         val inst =
             Instrument(
@@ -185,7 +147,7 @@ public class SdkMeter internal constructor(
                 scope = scope,
             )
         val measures = f64Resolver.measures(inst, null).getOrDefault(emptyList())
-        return Counter(measures)
+        return Counter.new(ResolvedMeasures(measures))
     }
 
     public fun upDownCounter(
@@ -195,7 +157,7 @@ public class SdkMeter internal constructor(
     ): UpDownCounter<Long> {
         val validation = validateInstrumentConfig(name, unit)
         if (validation.isFailure) {
-            return UpDownCounter(emptyList())
+            return UpDownCounter.new(ResolvedMeasures(emptyList()))
         }
         val inst =
             Instrument(
@@ -206,7 +168,7 @@ public class SdkMeter internal constructor(
                 scope = scope,
             )
         val measures = i64Resolver.measures(inst, null).getOrDefault(emptyList())
-        return UpDownCounter(measures)
+        return UpDownCounter.new(ResolvedMeasures(measures))
     }
 
     public fun upDownCounterF64(
@@ -216,7 +178,7 @@ public class SdkMeter internal constructor(
     ): UpDownCounter<Double> {
         val validation = validateInstrumentConfig(name, unit)
         if (validation.isFailure) {
-            return UpDownCounter(emptyList())
+            return UpDownCounter.new(ResolvedMeasures(emptyList()))
         }
         val inst =
             Instrument(
@@ -227,7 +189,7 @@ public class SdkMeter internal constructor(
                 scope = scope,
             )
         val measures = f64Resolver.measures(inst, null).getOrDefault(emptyList())
-        return UpDownCounter(measures)
+        return UpDownCounter.new(ResolvedMeasures(measures))
     }
 
     public fun gauge(
@@ -237,7 +199,7 @@ public class SdkMeter internal constructor(
     ): Gauge<Double> {
         val validation = validateInstrumentConfig(name, unit)
         if (validation.isFailure) {
-            return Gauge(emptyList())
+            return Gauge.new(ResolvedMeasures(emptyList()))
         }
         val inst =
             Instrument(
@@ -248,7 +210,7 @@ public class SdkMeter internal constructor(
                 scope = scope,
             )
         val measures = f64Resolver.measures(inst, null).getOrDefault(emptyList())
-        return Gauge(measures)
+        return Gauge.new(ResolvedMeasures(measures))
     }
 
     public fun gaugeI64(
@@ -258,7 +220,7 @@ public class SdkMeter internal constructor(
     ): Gauge<Long> {
         val validation = validateInstrumentConfig(name, unit)
         if (validation.isFailure) {
-            return Gauge(emptyList())
+            return Gauge.new(ResolvedMeasures(emptyList()))
         }
         val inst =
             Instrument(
@@ -269,7 +231,7 @@ public class SdkMeter internal constructor(
                 scope = scope,
             )
         val measures = i64Resolver.measures(inst, null).getOrDefault(emptyList())
-        return Gauge(measures)
+        return Gauge.new(ResolvedMeasures(measures))
     }
 
     public fun histogram(
@@ -280,7 +242,7 @@ public class SdkMeter internal constructor(
     ): Histogram<Double> {
         val validation = validateInstrumentConfig(name, unit)
         if (validation.isFailure) {
-            return Histogram(emptyList())
+            return Histogram.new(ResolvedMeasures(emptyList()))
         }
         val inst =
             Instrument(
@@ -291,7 +253,7 @@ public class SdkMeter internal constructor(
                 scope = scope,
             )
         val measures = f64Resolver.measures(inst, boundaries).getOrDefault(emptyList())
-        return Histogram(measures)
+        return Histogram.new(ResolvedMeasures(measures))
     }
 
     public fun histogramI64(
@@ -302,7 +264,7 @@ public class SdkMeter internal constructor(
     ): Histogram<Long> {
         val validation = validateInstrumentConfig(name, unit)
         if (validation.isFailure) {
-            return Histogram(emptyList())
+            return Histogram.new(ResolvedMeasures(emptyList()))
         }
         val inst =
             Instrument(
@@ -313,7 +275,7 @@ public class SdkMeter internal constructor(
                 scope = scope,
             )
         val measures = i64Resolver.measures(inst, boundaries).getOrDefault(emptyList())
-        return Histogram(measures)
+        return Histogram.new(ResolvedMeasures(measures))
     }
 
     public fun registerCallback(

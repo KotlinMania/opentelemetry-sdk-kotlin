@@ -1,19 +1,19 @@
 // port-lint: source testing/trace/span_exporters.rs
 package io.github.kotlinmania.opentelemetrysdk.testing.trace
 
+import io.github.kotlinmania.opentelemetry.InstrumentationScope
+import io.github.kotlinmania.opentelemetry.SpanId
+import io.github.kotlinmania.opentelemetry.TraceFlags
+import io.github.kotlinmania.opentelemetry.TraceId
+import io.github.kotlinmania.opentelemetry.trace.SpanContext
 import io.github.kotlinmania.opentelemetry.trace.SpanKind
 import io.github.kotlinmania.opentelemetry.trace.Status
-import io.github.kotlinmania.opentelemetrysdk.InstrumentationScope
+import io.github.kotlinmania.opentelemetry.trace.TraceState
 import io.github.kotlinmania.opentelemetrysdk.OTelSdkResult
-import io.github.kotlinmania.opentelemetrysdk.trace.SpanContext
 import io.github.kotlinmania.opentelemetrysdk.trace.SpanData
 import io.github.kotlinmania.opentelemetrysdk.trace.SpanEvents
 import io.github.kotlinmania.opentelemetrysdk.trace.SpanExporter
-import io.github.kotlinmania.opentelemetrysdk.trace.SpanId
 import io.github.kotlinmania.opentelemetrysdk.trace.SpanLinks
-import io.github.kotlinmania.opentelemetrysdk.trace.TraceFlags
-import io.github.kotlinmania.opentelemetrysdk.trace.TraceId
-import io.github.kotlinmania.opentelemetrysdk.trace.TraceState
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.SendChannel
@@ -28,11 +28,11 @@ public fun newTestExportSpanData(): SpanData {
     return SpanData(
         spanContext =
             SpanContext(
-                traceId = TraceId.from(1uL),
-                spanId = SpanId.from(1uL),
+                traceId = TraceId.fromHex("00000000000000000000000000000001"),
+                spanId = SpanId.from(1L),
                 traceFlags = TraceFlags.SAMPLED,
                 isRemote = false,
-                traceState = TraceState.DEFAULT,
+                traceState = TraceState.default(),
             ),
         parentSpanId = SpanId.INVALID,
         parentSpanIsRemote = false,
@@ -45,7 +45,7 @@ public fun newTestExportSpanData(): SpanData {
         events = SpanEvents.EMPTY,
         links = SpanLinks.EMPTY,
         status = Status.Unset,
-        instrumentationScope = InstrumentationScope.EMPTY,
+        instrumentationScope = InstrumentationScope.builder("").build(),
     )
 }
 

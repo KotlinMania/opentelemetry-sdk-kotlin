@@ -1,10 +1,15 @@
 // port-lint: tests trace/span.rs
 package io.github.kotlinmania.opentelemetrysdk.trace
 
+import io.github.kotlinmania.opentelemetry.InstrumentationScope
+import io.github.kotlinmania.opentelemetry.KeyValue
+import io.github.kotlinmania.opentelemetry.SpanId
+import io.github.kotlinmania.opentelemetry.TraceId
+import io.github.kotlinmania.opentelemetry.trace.Event
+import io.github.kotlinmania.opentelemetry.trace.Link
+import io.github.kotlinmania.opentelemetry.trace.SpanContext
 import io.github.kotlinmania.opentelemetry.trace.SpanKind
 import io.github.kotlinmania.opentelemetry.trace.Status
-import io.github.kotlinmania.opentelemetrysdk.InstrumentationScope
-import io.github.kotlinmania.opentelemetrysdk.resource.KeyValue
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -20,7 +25,7 @@ class SpanTest {
         val now = Clock.System.now()
         val data =
             SpanData(
-                spanContext = SpanContext.EMPTY,
+                spanContext = SpanContext.NONE,
                 parentSpanId = SpanId.INVALID,
                 parentSpanIsRemote = false,
                 spanKind = SpanKind.Internal,
@@ -32,7 +37,7 @@ class SpanTest {
                 events = SpanEvents.EMPTY,
                 links = SpanLinks.EMPTY,
                 status = Status.Unset,
-                instrumentationScope = InstrumentationScope.EMPTY,
+                instrumentationScope = InstrumentationScope.builder("").build(),
             )
         return Pair(tracer, data)
     }
@@ -40,7 +45,7 @@ class SpanTest {
     private fun createSpan(): Span {
         val (tracer, data) = initTracerAndData()
         return Span.new(
-            spanContext = SpanContext.EMPTY,
+            spanContext = SpanContext.NONE,
             data = data,
             tracer = tracer,
             spanLimits = SpanLimits.DEFAULT,
@@ -52,7 +57,7 @@ class SpanTest {
         val (tracer, _) = initTracerAndData()
         val span =
             Span.new(
-                spanContext = SpanContext.EMPTY,
+                spanContext = SpanContext.NONE,
                 data = null,
                 tracer = tracer,
                 spanLimits = SpanLimits.DEFAULT,
@@ -67,7 +72,7 @@ class SpanTest {
         val (tracer, data) = initTracerAndData()
         val span =
             Span.new(
-                spanContext = SpanContext.EMPTY,
+                spanContext = SpanContext.NONE,
                 data = data,
                 tracer = tracer,
                 spanLimits = SpanLimits.DEFAULT,
@@ -202,7 +207,7 @@ class SpanTest {
     fun allowsToGetSpanContextAfterEnd() {
         val span = createSpan()
         span.end()
-        assertEquals(SpanContext.EMPTY, span.spanContext)
+        assertEquals(SpanContext.NONE, span.spanContext)
     }
 
     @Test
@@ -250,7 +255,7 @@ class SpanTest {
             (0..DEFAULT_MAX_ATTRIBUTES_PER_SPAN.toInt()).map { i ->
                 KeyValue("key $i", i.toString())
             }
-        val span = tracer.spanBuilder("test_span").withAttributes(initialAttributes).start()
+        val span = tracer.build(tracer.spanBuilder("test_span").withAttributes(initialAttributes))
         span.setAttribute(KeyValue("key3", "value3"))
         span.setAttributes(listOf(KeyValue("foo", "1"), KeyValue("bar", "2")))
 
@@ -268,9 +273,9 @@ class SpanTest {
             (0 until (DEFAULT_MAX_ATTRIBUTES_PER_EVENT.toInt() * 2)).map { i ->
                 KeyValue("key $i", i.toString())
             }
-        val event1 = Event("test event", Clock.System.now(), event1Attrs)
+        val event1 = Event.new("test event", Clock.System.now(), event1Attrs, 0u)
 
-        val span = tracer.spanBuilder("test").withEvents(listOf(event1)).start()
+        val span = tracer.build(tracer.spanBuilder("test").withEvents(listOf(event1)))
         span.addEvent("another test event", event1Attrs)
 
         val eventQueue = span.withData { it.events }!!
@@ -285,13 +290,18 @@ class SpanTest {
         val provider = SdkTracerProvider.builder().build()
         val tracer = provider.tracer("opentelemetry-test")
 
+        val validLinkContext =
+            SpanContext(
+                traceId = TraceId.fromHex("00000000000000000000000000000001"),
+                spanId = SpanId.from(1L),
+            )
         val linkAttrs =
             (0 until (DEFAULT_MAX_ATTRIBUTES_PER_LINK.toInt() * 2)).map { i ->
                 KeyValue("key $i", i.toString())
             }
-        val link = Link(SpanContext.EMPTY, linkAttrs)
+        val link = Link.new(validLinkContext, linkAttrs, 0u)
 
-        val span = tracer.spanBuilder("test").withLinks(listOf(link)).start()
+        val span = tracer.build(tracer.spanBuilder("test").withLinks(listOf(link)))
         val linkQueue = span.withData { it.links }!!
         val processedLink = linkQueue.links.first()
         assertEquals(128, processedLink.attributes.size)
@@ -302,12 +312,17 @@ class SpanTest {
         val provider = SdkTracerProvider.builder().build()
         val tracer = provider.tracer("opentelemetry-test")
 
+        val validLinkContext =
+            SpanContext(
+                traceId = TraceId.fromHex("00000000000000000000000000000001"),
+                spanId = SpanId.from(1L),
+            )
         val links =
             (0 until (DEFAULT_MAX_LINKS_PER_SPAN.toInt() * 2)).map {
-                Link(SpanContext.EMPTY)
+                Link.withContext(validLinkContext)
             }
-        val span = tracer.spanBuilder("test").withLinks(links).start()
-        span.addLink(SpanContext.EMPTY)
+        val span = tracer.build(tracer.spanBuilder("test").withLinks(links))
+        span.addLink(validLinkContext)
 
         val linkQueue = span.withData { it.links }!!
         assertEquals(DEFAULT_MAX_LINKS_PER_SPAN.toInt(), linkQueue.links.size)
@@ -320,9 +335,9 @@ class SpanTest {
 
         val events =
             (0 until (DEFAULT_MAX_EVENT_PER_SPAN.toInt() * 2)).map {
-                Event("test event", Clock.System.now())
+                Event.new("test event", Clock.System.now(), emptyList(), 0u)
             }
-        val span = tracer.spanBuilder("test").withEvents(events).start()
+        val span = tracer.build(tracer.spanBuilder("test").withEvents(events))
         span.addEvent("test event again, after span builder")
         span.addEvent("test event once again, after span builder")
 

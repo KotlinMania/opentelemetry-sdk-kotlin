@@ -1,28 +1,7 @@
 // port-lint: source trace/events.rs
 package io.github.kotlinmania.opentelemetrysdk.trace
 
-import io.github.kotlinmania.opentelemetrysdk.resource.KeyValue
-import kotlin.time.Instant
-
-/**
- * An event recorded on a span.
- */
-public data class Event(
-    public val name: String,
-    public val timestamp: Instant,
-    public val attributes: List<KeyValue> = emptyList(),
-    public val droppedAttributesCount: UInt = 0u,
-) {
-    public companion object {
-        public fun withName(name: String): Event =
-            Event(
-                name = name,
-                timestamp =
-                    kotlin.time.Clock.System
-                        .now(),
-            )
-    }
-}
+import io.github.kotlinmania.opentelemetry.trace.Event
 
 /**
  * Stores span events along with dropped count.

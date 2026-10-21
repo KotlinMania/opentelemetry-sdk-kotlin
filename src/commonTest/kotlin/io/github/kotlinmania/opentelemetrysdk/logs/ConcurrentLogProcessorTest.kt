@@ -1,7 +1,8 @@
 package io.github.kotlinmania.opentelemetrysdk.logs
 
+import io.github.kotlinmania.opentelemetry.InstrumentationScope
+import io.github.kotlinmania.opentelemetry.logs.AnyValue
 import io.github.kotlinmania.opentelemetry.logs.Severity
-import io.github.kotlinmania.opentelemetrysdk.InstrumentationScope
 import io.github.kotlinmania.opentelemetrysdk.Tokio
 import kotlin.test.Test
 import kotlin.test.assertEquals

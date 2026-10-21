@@ -14,8 +14,8 @@ class TestingSpanExportersTest {
     fun testNewTestExportSpanData() {
         val spanData = newTestExportSpanData()
         assertEquals("opentelemetry", spanData.name)
-        assertTrue(spanData.spanContext.isValid)
-        assertTrue(spanData.spanContext.isSampled)
+        assertTrue(spanData.spanContext.isValid())
+        assertTrue(spanData.spanContext.isSampled())
     }
 
     @Test

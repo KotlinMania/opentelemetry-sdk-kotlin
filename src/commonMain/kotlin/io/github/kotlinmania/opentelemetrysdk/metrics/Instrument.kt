@@ -1,8 +1,8 @@
 // port-lint: source metrics/instrument.rs
 package io.github.kotlinmania.opentelemetrysdk.metrics
 
-import io.github.kotlinmania.opentelemetrysdk.InstrumentationScope
-import io.github.kotlinmania.opentelemetrysdk.resource.Key
+import io.github.kotlinmania.opentelemetry.InstrumentationScope
+import io.github.kotlinmania.opentelemetry.Key
 
 public const val INSTRUMENT_NAME_MAX_LENGTH: Int = 255
 public const val INSTRUMENT_UNIT_NAME_MAX_LENGTH: Int = 63
@@ -93,7 +93,7 @@ public data class Instrument(
     public val descriptionText: String = "",
     public val kind: InstrumentKind,
     public val unit: String = "",
-    public val scope: InstrumentationScope = InstrumentationScope.EMPTY,
+    public val scope: InstrumentationScope = InstrumentationScope.builder("").build(),
 ) {
     public fun description(): String = descriptionText
 }

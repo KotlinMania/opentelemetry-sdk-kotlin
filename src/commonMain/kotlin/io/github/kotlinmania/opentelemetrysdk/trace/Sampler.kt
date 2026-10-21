@@ -1,18 +1,14 @@
 // port-lint: source trace/sampler.rs
 package io.github.kotlinmania.opentelemetrysdk.trace
 
+import io.github.kotlinmania.opentelemetry.KeyValue
+import io.github.kotlinmania.opentelemetry.TraceId
+import io.github.kotlinmania.opentelemetry.trace.Link
 import io.github.kotlinmania.opentelemetry.trace.SamplingDecision
+import io.github.kotlinmania.opentelemetry.trace.SamplingResult
+import io.github.kotlinmania.opentelemetry.trace.SpanContext
 import io.github.kotlinmania.opentelemetry.trace.SpanKind
-import io.github.kotlinmania.opentelemetrysdk.resource.KeyValue
-
-/**
- * Sampling result containing a decision, attributes, and trace state.
- */
-public data class SamplingResult(
-    public val decision: SamplingDecision,
-    public val attributes: List<KeyValue> = emptyList(),
-    public val traceState: TraceState = TraceState.DEFAULT,
-)
+import io.github.kotlinmania.opentelemetry.trace.TraceState
 
 /**
  * The [ShouldSample] interface allows implementations to provide samplers
@@ -51,7 +47,7 @@ public sealed class Sampler : ShouldSample {
         ): SamplingResult =
             SamplingResult(
                 decision = SamplingDecision.RecordAndSample,
-                traceState = parentContext?.traceState ?: TraceState.DEFAULT,
+                traceState = parentContext?.traceState ?: TraceState.NONE,
             )
     }
 
@@ -69,7 +65,7 @@ public sealed class Sampler : ShouldSample {
         ): SamplingResult =
             SamplingResult(
                 decision = SamplingDecision.Drop,
-                traceState = parentContext?.traceState ?: TraceState.DEFAULT,
+                traceState = parentContext?.traceState ?: TraceState.NONE,
             )
     }
 
@@ -87,9 +83,9 @@ public sealed class Sampler : ShouldSample {
             attributes: List<KeyValue>,
             links: List<Link>,
         ): SamplingResult {
-            if (parentContext != null && parentContext.isValid) {
+            if (parentContext != null && parentContext.isValid()) {
                 val decision =
-                    if (parentContext.traceFlags.isSampled) {
+                    if (parentContext.traceFlags.isSampled()) {
                         SamplingDecision.RecordAndSample
                     } else {
                         SamplingDecision.Drop
@@ -120,7 +116,7 @@ public sealed class Sampler : ShouldSample {
             val decision = sampleBasedOnProbability(ratio, traceId)
             return SamplingResult(
                 decision = decision,
-                traceState = parentContext?.traceState ?: TraceState.DEFAULT,
+                traceState = parentContext?.traceState ?: TraceState.NONE,
             )
         }
 
@@ -136,7 +132,11 @@ public sealed class Sampler : ShouldSample {
                     return SamplingDecision.Drop
                 }
                 val probUpperBound = (prob * 9223372036854775807.0).toLong().toULong()
-                val traceIdLow = traceId.low
+                val bytes = traceId.toBytes()
+                var traceIdLow = 0uL
+                for (i in 8 until 16) {
+                    traceIdLow = (traceIdLow shl 8) or (bytes[i].toInt() and 0xFF).toULong()
+                }
                 val rnd = traceIdLow shr 1
                 return if (rnd < probUpperBound) {
                     SamplingDecision.RecordAndSample

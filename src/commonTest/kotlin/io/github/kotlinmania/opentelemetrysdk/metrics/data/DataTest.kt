@@ -1,6 +1,6 @@
 package io.github.kotlinmania.opentelemetrysdk.metrics.data
 
-import io.github.kotlinmania.opentelemetrysdk.resource.KeyValue
+import io.github.kotlinmania.opentelemetry.KeyValue
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.time.Clock

@@ -1,12 +1,12 @@
 // port-lint: source metrics/internal/precomputed_sum.rs
 package io.github.kotlinmania.opentelemetrysdk.metrics.internal
 
+import io.github.kotlinmania.opentelemetry.KeyValue
 import io.github.kotlinmania.opentelemetrysdk.metrics.Temporality
 import io.github.kotlinmania.opentelemetrysdk.metrics.data.AggregatedMetrics
 import io.github.kotlinmania.opentelemetrysdk.metrics.data.MetricData
 import io.github.kotlinmania.opentelemetrysdk.metrics.data.Sum
 import io.github.kotlinmania.opentelemetrysdk.metrics.data.SumDataPoint
-import io.github.kotlinmania.opentelemetrysdk.resource.KeyValue
 import kotlinx.collections.immutable.PersistentMap
 import kotlinx.collections.immutable.persistentMapOf
 import kotlin.concurrent.atomics.AtomicReference

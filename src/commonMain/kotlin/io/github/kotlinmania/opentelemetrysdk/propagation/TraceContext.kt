@@ -2,17 +2,19 @@
 package io.github.kotlinmania.opentelemetrysdk.propagation
 
 import io.github.kotlinmania.opentelemetry.Context
+import io.github.kotlinmania.opentelemetry.SpanId
+import io.github.kotlinmania.opentelemetry.TraceFlags
+import io.github.kotlinmania.opentelemetry.TraceId
 import io.github.kotlinmania.opentelemetry.propagation.Extractor
 import io.github.kotlinmania.opentelemetry.propagation.FieldIter
 import io.github.kotlinmania.opentelemetry.propagation.Injector
 import io.github.kotlinmania.opentelemetry.propagation.TextMapPropagator
+import io.github.kotlinmania.opentelemetry.trace.SpanContext
+import io.github.kotlinmania.opentelemetry.trace.TraceState
+import io.github.kotlinmania.opentelemetry.trace.TraceStateEntry
+import io.github.kotlinmania.opentelemetry.trace.hasActiveSpan
+import io.github.kotlinmania.opentelemetry.trace.span
 import io.github.kotlinmania.opentelemetrysdk.trace.Span
-import io.github.kotlinmania.opentelemetrysdk.trace.SpanContext
-import io.github.kotlinmania.opentelemetrysdk.trace.SpanId
-import io.github.kotlinmania.opentelemetrysdk.trace.TraceFlags
-import io.github.kotlinmania.opentelemetrysdk.trace.TraceId
-import io.github.kotlinmania.opentelemetrysdk.trace.TraceState
-import io.github.kotlinmania.opentelemetrysdk.trace.TraceStateEntry
 
 /**
  * Extension helpers on [Context] for remote span contexts.
@@ -34,6 +36,7 @@ public fun Context.withRemoteSpanContext(spanContext: SpanContext): Context =
 public fun Context.spanContext(): SpanContext? =
     get<RemoteSpanContextHolder>()?.spanContext
         ?: get<ActiveSpanHolder>()?.span?.spanContext
+        ?: if (hasActiveSpan()) span().spanContext() else null
 
 public fun Context.withSpan(span: Span): Context =
     withValue(ActiveSpanHolder(span))
@@ -56,41 +59,42 @@ public class TraceContextPropagator : TextMapPropagator {
 
         val traceIdStr = parts[1]
         if (traceIdStr.length != 32 || traceIdStr.any { it in 'A'..'Z' }) return null
-        val traceId = TraceId.fromHexString(traceIdStr)
-        if (traceId.isZero) return null
+        val traceId = runCatching { TraceId.fromHex(traceIdStr) }.getOrNull() ?: return null
+        if (!traceId.isValid()) return null
 
         val spanIdStr = parts[2]
         if (spanIdStr.length != 16 || spanIdStr.any { it in 'A'..'Z' }) return null
-        val spanId = SpanId.fromHexString(spanIdStr)
-        if (spanId.isZero) return null
+        val spanId = runCatching { SpanId.fromHex(spanIdStr) }.getOrNull() ?: return null
+        if (!spanId.isValid()) return null
 
         val optsStr = parts[3]
         if (optsStr.length != 2 || optsStr.any { it in 'A'..'Z' }) return null
         val opts = optsStr.toIntOrNull(16) ?: return null
         if (version == 0 && (opts > 2 || opts < 0)) return null
 
-        val traceFlags = if ((opts and 1) != 0) TraceFlags.SAMPLED else TraceFlags.DEFAULT
+        val traceFlags = TraceFlags((opts and 0x01).toByte())
 
         val traceStateStr = extractor.get(TRACESTATE_HEADER)
         val traceState =
             if (traceStateStr != null) {
                 parseTraceState(traceStateStr)
             } else {
-                TraceState.DEFAULT
+                TraceState.NONE
             }
 
         val spanContext = SpanContext.new(traceId, spanId, traceFlags, isRemote = true, traceState = traceState)
-        return if (spanContext.isValid) spanContext else null
+        return if (spanContext.isValid()) spanContext else null
     }
 
     override fun injectContext(cx: Context, injector: Injector) {
         val spanContext = cx.spanContext() ?: return
-        if (spanContext.isValid) {
-            val flags = if (spanContext.isSampled) 1 else 0
+        if (spanContext.isValid()) {
+            val flags = if (spanContext.isSampled()) 1 else 0
             val flagsHex = flags.toString(16).padStart(2, '0')
-            val headerValue = "00-${spanContext.traceId.toHexString()}-${spanContext.spanId.toHexString()}-$flagsHex"
-            injector.set(TRACEPARENT_HEADER, headerValue)
-            val stateHeader = spanContext.traceState.entries.joinToString(",") { "${it.key}=${it.value}" }
+            val headerValue = "00-$spanContext.traceId-$spanContext.spanId-$flagsHex"
+            val formattedHeader = "00-${spanContext.traceId}-${spanContext.spanId}-$flagsHex"
+            injector.set(TRACEPARENT_HEADER, formattedHeader)
+            val stateHeader = spanContext.traceState.header()
             if (stateHeader.isNotEmpty()) {
                 injector.set(TRACESTATE_HEADER, stateHeader)
             }
@@ -121,7 +125,7 @@ public class TraceContextPropagator : TextMapPropagator {
         public fun traceContextHeaderFields(): List<String> = listOf(TRACEPARENT_HEADER, TRACESTATE_HEADER)
 
         private fun parseTraceState(traceStateStr: String): TraceState {
-            if (traceStateStr.isBlank()) return TraceState.DEFAULT
+            if (traceStateStr.isBlank()) return TraceState.NONE
             val entries =
                 traceStateStr.split(',').mapNotNull { part ->
                     val trimmed = part.trim()
@@ -129,12 +133,16 @@ public class TraceContextPropagator : TextMapPropagator {
                     if (eq > 0) {
                         val key = trimmed.substring(0, eq).trim()
                         val value = trimmed.substring(eq + 1).trim()
-                        TraceStateEntry(key, value)
+                        if (TraceState.validKey(key) && TraceState.validValue(value)) {
+                            TraceStateEntry(key, value)
+                        } else {
+                            null
+                        }
                     } else {
                         null
                     }
                 }
-            return TraceState(entries)
+            return TraceState.fromEntries(entries)
         }
     }
 }

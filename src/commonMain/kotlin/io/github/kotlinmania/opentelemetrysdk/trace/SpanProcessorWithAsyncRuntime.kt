@@ -1,6 +1,7 @@
 // port-lint: source trace/span_processor_with_async_runtime.rs
 package io.github.kotlinmania.opentelemetrysdk.trace
 
+import io.github.kotlinmania.opentelemetry.trace.SpanContext
 import io.github.kotlinmania.opentelemetrysdk.OTelSdkResult
 import io.github.kotlinmania.opentelemetrysdk.RuntimeChannel
 import io.github.kotlinmania.opentelemetrysdk.Sender
@@ -119,7 +120,7 @@ public class AsyncBatchSpanProcessor<R : RuntimeChannel>(
     }
 
     override fun onEnd(span: SpanData) {
-        if (!span.spanContext.traceFlags.isSampled) {
+        if (!span.spanContext.traceFlags.isSampled()) {
             return
         }
         val res = sender.trySend(AsyncBatchSpanMessage.ExportSpan(span))

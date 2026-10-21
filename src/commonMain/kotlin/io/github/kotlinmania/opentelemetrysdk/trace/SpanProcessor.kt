@@ -1,6 +1,7 @@
 // port-lint: source trace/span_processor.rs
 package io.github.kotlinmania.opentelemetrysdk.trace
 
+import io.github.kotlinmania.opentelemetry.trace.SpanContext
 import io.github.kotlinmania.opentelemetrysdk.OTelSdkResult
 import io.github.kotlinmania.opentelemetrysdk.resource.Resource
 import kotlin.concurrent.atomics.AtomicBoolean
@@ -44,7 +45,7 @@ public class SimpleSpanProcessor(
     }
 
     override fun onEnd(span: SpanData) {
-        if (!span.spanContext.traceFlags.isSampled) {
+        if (!span.spanContext.traceFlags.isSampled()) {
             return
         }
         exporter.export(listOf(span))
@@ -132,7 +133,7 @@ public class BatchSpanProcessor(
     }
 
     override fun onEnd(span: SpanData) {
-        if (isShutdownRef.load() || !span.spanContext.traceFlags.isSampled) {
+        if (isShutdownRef.load() || !span.spanContext.traceFlags.isSampled()) {
             return
         }
         while (true) {

@@ -2,11 +2,12 @@
 package io.github.kotlinmania.opentelemetrysdk.trace
 
 import io.github.kotlinmania.opentelemetry.Context
-import io.github.kotlinmania.opentelemetry.trace.SpanKind
-import io.github.kotlinmania.opentelemetry.trace.Status
-import io.github.kotlinmania.opentelemetrysdk.InstrumentationScope
-import io.github.kotlinmania.opentelemetrysdk.resource.KeyValue
-import kotlin.time.Instant
+import io.github.kotlinmania.opentelemetry.InstrumentationScope
+import io.github.kotlinmania.opentelemetry.KeyValue
+import io.github.kotlinmania.opentelemetry.trace.SpanBuilder
+import io.github.kotlinmania.opentelemetry.trace.SpanContext
+import io.github.kotlinmania.opentelemetry.trace.Tracer
+import io.github.kotlinmania.opentelemetry.trace.withSpan
 
 /**
  * Tracer implementation to create and manage spans.
@@ -14,38 +15,47 @@ import kotlin.time.Instant
 public class SdkTracer internal constructor(
     public val instrumentationScope: InstrumentationScope,
     internal val provider: SdkTracerProvider,
-) {
+) : Tracer {
     public fun provider(): SdkTracerProvider = provider
 
     public fun idGenerator(): IdGenerator = provider.config().idGenerator
 
     public fun shouldSample(): ShouldSample = provider.config().sampler
 
-    public fun spanBuilder(name: String): SpanBuilder = SpanBuilder(name, this)
+    override fun spanBuilder(name: String): SpanBuilder = SpanBuilder.fromName(name)
 
-    public fun start(name: String): Span = spanBuilder(name).start()
+    override fun start(name: String): Span = Context.mapCurrent { cx -> startWithContext(name, cx) }
 
-    public fun buildWithContext(
+    override fun startWithContext(name: String, parentCx: Context): Span =
+        buildWithContext(SpanBuilder.fromName(name), parentCx)
+
+    override fun build(builder: SpanBuilder): Span =
+        Context.mapCurrent { cx -> buildWithContext(builder, cx) }
+
+    override fun buildWithContext(
         builder: SpanBuilder,
-        parentContext: Context,
+        parentCx: Context,
     ): Span {
-        if (parentContext.isTelemetrySuppressed()) {
+        if (parentCx.isTelemetrySuppressed()) {
             return Span(
-                spanContext = SpanContext.EMPTY,
+                spanContext = SpanContext.NONE,
                 initialData = null,
                 tracer = this,
                 spanLimits = provider.config().spanLimits,
             )
         }
-        return provider.startSpanFromBuilder(builder, this)
+        return provider.startSpanFromBuilder(builder, this, parentCx)
     }
 
-    public inline fun <T> inSpan(name: String, block: (Span) -> T): T {
+    override fun <T> inSpan(name: String, f: (Context) -> T): T {
         val span = start(name)
-        try {
-            return block(span)
+        val cx = Context.current().withSpan(span)
+        val guard = cx.attach()
+        return try {
+            f(cx)
         } finally {
             span.end()
+            guard.close()
         }
     }
 
@@ -55,63 +65,5 @@ public class SdkTracer internal constructor(
     }
 }
 
-/**
- * Builder for creating and starting a [Span].
- */
-public class SpanBuilder(
-    public var name: String,
-    private val tracer: SdkTracer,
-) {
-    public var parentContext: SpanContext? = null
-    public var spanKind: SpanKind = SpanKind.Internal
-    public var startTime: Instant? = null
-    private val attributesList: MutableList<KeyValue> = mutableListOf()
-    private val eventsList: MutableList<Event> = mutableListOf()
-    private val linksList: MutableList<Link> = mutableListOf()
-    public val attributes: List<KeyValue> get() = attributesList
-    public val events: List<Event> get() = eventsList
-    public val links: List<Link> get() = linksList
-    public var status: Status = Status.Unset
-
-    public fun withParent(parentContext: SpanContext): SpanBuilder {
-        this.parentContext = parentContext
-        return this
-    }
-
-    public fun withKind(kind: SpanKind): SpanBuilder {
-        this.spanKind = kind
-        return this
-    }
-
-    public fun withStartTime(startTime: Instant): SpanBuilder {
-        this.startTime = startTime
-        return this
-    }
-
-    public fun withAttribute(attribute: KeyValue): SpanBuilder {
-        this.attributesList.add(attribute)
-        return this
-    }
-
-    public fun withAttributes(attributes: Iterable<KeyValue>): SpanBuilder {
-        this.attributesList.addAll(attributes)
-        return this
-    }
-
-    public fun withEvents(events: Iterable<Event>): SpanBuilder {
-        this.eventsList.addAll(events)
-        return this
-    }
-
-    public fun withLinks(links: Iterable<Link>): SpanBuilder {
-        this.linksList.addAll(links)
-        return this
-    }
-
-    public fun withStatus(status: Status): SpanBuilder {
-        this.status = status
-        return this
-    }
-
-    public fun start(): Span = tracer.provider.startSpanFromBuilder(this, tracer)
-}
+public fun SpanBuilder.withAttribute(attribute: KeyValue): SpanBuilder =
+    withAttributes(listOf(attribute))

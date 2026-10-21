@@ -1,90 +1,8 @@
 package io.github.kotlinmania.opentelemetrysdk.resource
 
-/**
- * An immutable key identifying a telemetry resource attribute.
- */
-public data class Key(
-    public val name: String,
-) {
-    override fun toString(): String = name
-
-    public companion object {
-        /**
-         * Creates a [Key] from a string.
-         */
-        public fun fromStaticStr(name: String): Key = Key(name)
-    }
-}
-
-/**
- * An OpenTelemetry resource attribute value.
- */
-public sealed interface Value {
-    /** String value. */
-    public data class StringValue(
-        public val value: String,
-    ) : Value {
-        override fun toString(): String = value
-    }
-
-    /** Integer / Long value. */
-    public data class IntValue(
-        public val value: Long,
-    ) : Value {
-        override fun toString(): String = value.toString()
-    }
-
-    /** Floating-point / Double value. */
-    public data class DoubleValue(
-        public val value: Double,
-    ) : Value {
-        override fun toString(): String = value.toString()
-    }
-
-    /** Boolean value. */
-    public data class BooleanValue(
-        public val value: Boolean,
-    ) : Value {
-        override fun toString(): String = value.toString()
-    }
-
-    /** Array value. */
-    public data class ArrayValue(
-        public val value: List<Value>,
-    ) : Value
-
-    public companion object {
-        /** Creates a [StringValue]. */
-        public fun of(value: String): Value = StringValue(value)
-
-        /** Creates an [IntValue]. */
-        public fun of(value: Long): Value = IntValue(value)
-
-        /** Creates an [IntValue] from Int. */
-        public fun of(value: Int): Value = IntValue(value.toLong())
-
-        /** Creates a [DoubleValue]. */
-        public fun of(value: Double): Value = DoubleValue(value)
-
-        /** Creates a [BooleanValue]. */
-        public fun of(value: Boolean): Value = BooleanValue(value)
-    }
-}
-
-/**
- * An OpenTelemetry key-value attribute pair.
- */
-public data class KeyValue(
-    public val key: Key,
-    public val value: Value,
-) {
-    public constructor(key: String, value: String) : this(Key(key), Value.of(value))
-    public constructor(key: String, value: Long) : this(Key(key), Value.of(value))
-    public constructor(key: String, value: Int) : this(Key(key), Value.of(value.toLong()))
-    public constructor(key: String, value: Double) : this(Key(key), Value.of(value))
-    public constructor(key: String, value: Boolean) : this(Key(key), Value.of(value))
-    public constructor(key: String, value: Value) : this(Key(key), value)
-}
+import io.github.kotlinmania.opentelemetry.Key
+import io.github.kotlinmania.opentelemetry.KeyValue
+import io.github.kotlinmania.opentelemetry.Value
 
 /**
  * ResourceDetector detects OpenTelemetry resource information.
@@ -164,7 +82,7 @@ public data class Resource(
      * Gets the service name from attributes if set.
      */
     public fun serviceName(): String? =
-        (get(SERVICE_NAME) as? Value.StringValue)?.value
+        (get(SERVICE_NAME) as? Value.StringVal)?.value?.value
 
     public companion object {
         /**

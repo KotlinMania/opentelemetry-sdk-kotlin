@@ -1,12 +1,12 @@
 // port-lint: source metrics/internal/last_value.rs
 package io.github.kotlinmania.opentelemetrysdk.metrics.internal
 
+import io.github.kotlinmania.opentelemetry.KeyValue
 import io.github.kotlinmania.opentelemetrysdk.metrics.Temporality
 import io.github.kotlinmania.opentelemetrysdk.metrics.data.AggregatedMetrics
 import io.github.kotlinmania.opentelemetrysdk.metrics.data.Gauge
 import io.github.kotlinmania.opentelemetrysdk.metrics.data.GaugeDataPoint
 import io.github.kotlinmania.opentelemetrysdk.metrics.data.MetricData
-import io.github.kotlinmania.opentelemetrysdk.resource.KeyValue
 import kotlin.time.Clock
 
 internal class Assign<T> internal constructor(
