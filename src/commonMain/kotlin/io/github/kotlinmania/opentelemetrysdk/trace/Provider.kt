@@ -1,6 +1,7 @@
 // port-lint: source trace/provider.rs
 package io.github.kotlinmania.opentelemetrysdk.trace
 
+import io.github.kotlinmania.opentelemetry.trace.SamplingDecision
 import io.github.kotlinmania.opentelemetrysdk.InstrumentationScope
 import io.github.kotlinmania.opentelemetrysdk.OTelSdkResult
 import io.github.kotlinmania.opentelemetrysdk.resource.Resource
@@ -66,7 +67,7 @@ public class SdkTracerProvider internal constructor(
                 links = builder.links,
             )
 
-        if (samplingResult.decision == SamplingDecision.DROP) {
+        if (samplingResult.decision == SamplingDecision.Drop) {
             val sc =
                 SpanContext(
                     traceId = traceId,
@@ -84,7 +85,7 @@ public class SdkTracerProvider internal constructor(
         }
 
         val traceFlags =
-            if (samplingResult.decision == SamplingDecision.RECORD_AND_SAMPLE) {
+            if (samplingResult.decision == SamplingDecision.RecordAndSample) {
                 TraceFlags.SAMPLED
             } else {
                 TraceFlags.DEFAULT

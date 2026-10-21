@@ -1,6 +1,7 @@
 // port-lint: source trace/span.rs
 package io.github.kotlinmania.opentelemetrysdk.trace
 
+import io.github.kotlinmania.opentelemetry.trace.Status
 import io.github.kotlinmania.opentelemetrysdk.resource.KeyValue
 import kotlin.concurrent.atomics.AtomicReference
 import kotlin.concurrent.atomics.ExperimentalAtomicApi

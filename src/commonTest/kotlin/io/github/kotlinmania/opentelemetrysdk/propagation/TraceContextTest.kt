@@ -1,7 +1,9 @@
 // port-lint: tests propagation/trace_context.rs
 package io.github.kotlinmania.opentelemetrysdk.propagation
 
-import io.github.kotlinmania.opentelemetrysdk.Context
+import io.github.kotlinmania.opentelemetry.Context
+import io.github.kotlinmania.opentelemetry.propagation.Extractor
+import io.github.kotlinmania.opentelemetry.propagation.Injector
 import io.github.kotlinmania.opentelemetrysdk.trace.SpanContext
 import io.github.kotlinmania.opentelemetrysdk.trace.SpanId
 import io.github.kotlinmania.opentelemetrysdk.trace.TraceFlags
@@ -233,7 +235,7 @@ class TraceContextTest {
         val propagator = TraceContextPropagator()
 
         for ((expectedTraceParent, expectedTraceState, spanContext) in injectData()) {
-            val context = Context().withRemoteSpanContext(spanContext)
+            val context = Context.new().withRemoteSpanContext(spanContext)
             val carrier = MapCarrier()
             propagator.injectContext(context, carrier)
 
@@ -247,7 +249,7 @@ class TraceContextTest {
         val propagator = TraceContextPropagator()
         val state = "foo=bar"
         val carrier = MapCarrier(mutableMapOf(TraceContextPropagator.TRACESTATE_HEADER to state))
-        val context = Context()
+        val context = Context.new()
         propagator.injectContext(context, carrier)
         assertEquals(state, carrier.get(TraceContextPropagator.TRACESTATE_HEADER))
     }

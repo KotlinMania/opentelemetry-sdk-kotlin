@@ -1,6 +1,7 @@
-// port-lint: tests trace/mod.rs
 package io.github.kotlinmania.opentelemetrysdk.trace
 
+import io.github.kotlinmania.opentelemetry.trace.SpanKind
+import io.github.kotlinmania.opentelemetry.trace.Status
 import io.github.kotlinmania.opentelemetrysdk.resource.Key
 import io.github.kotlinmania.opentelemetrysdk.resource.KeyValue
 import io.github.kotlinmania.opentelemetrysdk.resource.Value
@@ -107,7 +108,7 @@ class TracePipelineTest {
         val span =
             tracer
                 .spanBuilder("server_span")
-                .withKind(SpanKind.SERVER)
+                .withKind(SpanKind.Server)
                 .withParent(parentContext)
                 .withAttribute(KeyValue(Key("k"), Value.of("v")))
                 .start()
@@ -117,7 +118,7 @@ class TracePipelineTest {
         val spans = exporter.getFinishedSpans().getOrThrow()
         assertEquals(1, spans.size)
         val s = spans[0]
-        assertEquals(SpanKind.SERVER, s.spanKind)
+        assertEquals(SpanKind.Server, s.spanKind)
         assertEquals(parentContext.traceId, s.spanContext.traceId)
         assertEquals(parentContext.spanId, s.parentSpanId)
     }

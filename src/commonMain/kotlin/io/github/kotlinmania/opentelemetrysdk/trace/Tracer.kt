@@ -1,6 +1,9 @@
 // port-lint: source trace/tracer.rs
 package io.github.kotlinmania.opentelemetrysdk.trace
 
+import io.github.kotlinmania.opentelemetry.Context
+import io.github.kotlinmania.opentelemetry.trace.SpanKind
+import io.github.kotlinmania.opentelemetry.trace.Status
 import io.github.kotlinmania.opentelemetrysdk.InstrumentationScope
 import io.github.kotlinmania.opentelemetrysdk.resource.KeyValue
 import kotlin.time.Instant
@@ -24,9 +27,9 @@ public class SdkTracer internal constructor(
 
     public fun buildWithContext(
         builder: SpanBuilder,
-        parentContext: io.github.kotlinmania.opentelemetrysdk.Context,
+        parentContext: Context,
     ): Span {
-        if (parentContext.suppressTelemetry) {
+        if (parentContext.isTelemetrySuppressed()) {
             return Span(
                 spanContext = SpanContext.EMPTY,
                 initialData = null,
@@ -60,7 +63,7 @@ public class SpanBuilder(
     private val tracer: SdkTracer,
 ) {
     public var parentContext: SpanContext? = null
-    public var spanKind: SpanKind = SpanKind.INTERNAL
+    public var spanKind: SpanKind = SpanKind.Internal
     public var startTime: Instant? = null
     private val attributesList: MutableList<KeyValue> = mutableListOf()
     private val eventsList: MutableList<Event> = mutableListOf()

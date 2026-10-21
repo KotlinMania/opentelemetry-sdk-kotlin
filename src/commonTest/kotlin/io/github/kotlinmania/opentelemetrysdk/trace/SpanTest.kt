@@ -1,6 +1,8 @@
 // port-lint: tests trace/span.rs
 package io.github.kotlinmania.opentelemetrysdk.trace
 
+import io.github.kotlinmania.opentelemetry.trace.SpanKind
+import io.github.kotlinmania.opentelemetry.trace.Status
 import io.github.kotlinmania.opentelemetrysdk.InstrumentationScope
 import io.github.kotlinmania.opentelemetrysdk.resource.KeyValue
 import kotlin.test.Test
@@ -21,7 +23,7 @@ class SpanTest {
                 spanContext = SpanContext.EMPTY,
                 parentSpanId = SpanId.INVALID,
                 parentSpanIsRemote = false,
-                spanKind = SpanKind.INTERNAL,
+                spanKind = SpanKind.Internal,
                 name = "opentelemetry",
                 startTime = now,
                 endTime = now,

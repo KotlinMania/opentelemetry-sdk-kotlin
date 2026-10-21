@@ -1,8 +1,8 @@
 // port-lint: source trace/sampler/jaeger_remote/sampling_strategy.rs
 package io.github.kotlinmania.opentelemetrysdk.trace.sampler.jaegerremote
 
+import io.github.kotlinmania.opentelemetry.trace.SamplingDecision
 import io.github.kotlinmania.opentelemetrysdk.trace.Sampler
-import io.github.kotlinmania.opentelemetrysdk.trace.SamplingDecision
 import io.github.kotlinmania.opentelemetrysdk.trace.SamplingResult
 import io.github.kotlinmania.opentelemetrysdk.trace.SpanContext
 import io.github.kotlinmania.opentelemetrysdk.trace.TraceId
@@ -97,9 +97,9 @@ internal class Inner(
             when (currentStrategy) {
                 is Strategy.RateLimiting -> {
                     if (currentStrategy.leakyBucket.shouldSample()) {
-                        SamplingDecision.RECORD_AND_SAMPLE
+                        SamplingDecision.RecordAndSample
                     } else {
-                        SamplingDecision.DROP
+                        SamplingDecision.Drop
                     }
                 }
                 is Strategy.Probabilistic -> {

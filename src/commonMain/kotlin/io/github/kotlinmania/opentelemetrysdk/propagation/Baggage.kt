@@ -1,43 +1,41 @@
 // port-lint: source propagation/baggage.rs
 package io.github.kotlinmania.opentelemetrysdk.propagation
 
-import io.github.kotlinmania.opentelemetrysdk.Context
-import io.github.kotlinmania.opentelemetrysdk.resource.Key
+import io.github.kotlinmania.opentelemetry.BaggageMetadata
+import io.github.kotlinmania.opentelemetry.Context
+import io.github.kotlinmania.opentelemetry.KeyValueMetadata
+import io.github.kotlinmania.opentelemetry.propagation.Extractor
+import io.github.kotlinmania.opentelemetry.propagation.FieldIter
+import io.github.kotlinmania.opentelemetry.propagation.Injector
+import io.github.kotlinmania.opentelemetry.propagation.TextMapPropagator
 import io.github.kotlinmania.opentelemetrysdk.resource.KeyValue
-import io.github.kotlinmania.opentelemetrysdk.resource.Value
 
-/**
- * Metadata associated with a baggage entry.
- */
-public data class BaggageMetadata(
-    public val value: String = "",
-) {
-    public companion object {
-        public val DEFAULT: BaggageMetadata = BaggageMetadata("")
-    }
-}
+private data class SdkBaggageHolder(
+    val entries: List<KeyValue>,
+)
 
-/**
- * Baggage key-value entry with optional metadata properties.
- */
-public data class KeyValueMetadata(
-    public val key: Key,
-    public val value: Value,
-    public val metadata: BaggageMetadata = BaggageMetadata.DEFAULT,
-) {
-    public constructor(key: String, value: String, metadata: String = "") : this(
-        Key(key),
-        Value.of(value),
-        BaggageMetadata(metadata),
-    )
-}
+public val Context.baggage: List<KeyValue>
+    get() = get<SdkBaggageHolder>()?.entries ?: emptyList()
+
+public fun Context.withBaggage(baggage: Iterable<KeyValue>): Context =
+    withValue(SdkBaggageHolder(this.baggage + baggage))
+
+public fun Context.Companion.currentWithBaggage(baggage: Iterable<KeyValue>): Context =
+    current().withBaggage(baggage)
+
+public fun keyValueMetadataWithDefault(
+    key: String,
+    value: String,
+    metadata: String = "",
+): KeyValueMetadata =
+    KeyValueMetadata.new(key, value, BaggageMetadata.from(metadata).asStr())
 
 /**
  * Propagates name-value pairs in W3C Baggage format under `baggage` header.
  */
 public class BaggagePropagator : TextMapPropagator {
-    override fun injectContext(context: Context, injector: Injector) {
-        val baggage = context.baggage
+    override fun injectContext(cx: Context, injector: Injector) {
+        val baggage = cx.baggage
         if (baggage.isNotEmpty()) {
             val headerValue =
                 baggage.joinToString(",") { kv ->
@@ -49,8 +47,8 @@ public class BaggagePropagator : TextMapPropagator {
         }
     }
 
-    override fun extractWithContext(context: Context, extractor: Extractor): Context {
-        val headerValue = extractor.get(BAGGAGE_HEADER) ?: return context
+    override fun extractWithContext(cx: Context, extractor: Extractor): Context {
+        val headerValue = extractor.get(BAGGAGE_HEADER) ?: return cx
         val entries = mutableListOf<KeyValue>()
 
         for (item in headerValue.split(',')) {
@@ -71,10 +69,10 @@ public class BaggagePropagator : TextMapPropagator {
             entries.add(KeyValue(key, value))
         }
 
-        return context.withBaggage(entries)
+        return cx.withBaggage(entries)
     }
 
-    override fun fields(): List<String> = listOf(BAGGAGE_HEADER)
+    override fun fields(): FieldIter = FieldIter.new(listOf(BAGGAGE_HEADER))
 
     public companion object {
         public const val BAGGAGE_HEADER: String = "baggage"

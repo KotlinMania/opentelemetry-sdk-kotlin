@@ -22,6 +22,7 @@ import org.jetbrains.kotlin.gradle.targets.js.yarn.YarnRootExtension
 import org.jetbrains.kotlin.gradle.targets.wasm.nodejs.WasmNodeJsEnvSpec
 import org.jetbrains.kotlin.gradle.targets.wasm.yarn.WasmYarnRootEnvSpec
 import java.io.ByteArrayInputStream
+import java.io.ByteArrayOutputStream
 import java.net.URI
 import java.net.http.HttpClient
 import java.net.http.HttpRequest
@@ -317,14 +318,15 @@ if (gradle.startParameter.taskNames.any(::requestedTaskWantsAndroid)) {
     installProjectAndroidSdk(serviceOf())
 }
 
-val ensureAndroidSdk by tasks.registering {
-    group = "setup"
-    description = "Ensures the project-local Android SDK is installed (idempotent)."
-    onlyIf("Android SDK already installed at $projectAndroidSdkDir") { !isProjectAndroidSdkInstalled() }
-    doLast {
-        installProjectAndroidSdk(serviceOf())
+val ensureAndroidSdk =
+    tasks.register("ensureAndroidSdk") {
+        group = "setup"
+        description = "Ensures the project-local Android SDK is installed (idempotent)."
+        onlyIf("Android SDK already installed at $projectAndroidSdkDir") { !isProjectAndroidSdkInstalled() }
+        doLast {
+            installProjectAndroidSdk(serviceOf())
+        }
     }
-}
 
 // Secondary net: order every AGP Android task after the installer (a no-op on
 // warm runs). Excludes androidNative* (Kotlin/Native) and the installer itself.
@@ -337,15 +339,6 @@ tasks
     }.configureEach {
         dependsOn(ensureAndroidSdk)
     }
-
-// Gap #9b: KGP-generated bridge boilerplate and KotlinCoroutineSupport runtime
-// produce warnings (unchecked casts, unused expressions, opt-in requirements)
-// that cannot be fixed in source — they are regenerated every build.
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask<*>>().configureEach {
-    if (name.startsWith("compileSwiftExport")) {
-        compilerOptions.allWarningsAsErrors.set(false)
-    }
-}
 
 val jvmToolchainVersion = providers.gradleProperty("jvm.toolchain").getOrElse("21").toInt()
 
@@ -489,6 +482,7 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             implementation(commonMainDependencyBundle)
+            api(libs.opentelemetry.core)
         }
         commonTest.dependencies {
             implementation(kotlin("test"))
@@ -643,11 +637,11 @@ rootProject.extensions.configure<WasmYarnRootEnvSpec>("kotlinWasmYarnSpec") {
 }
 
 rootProject.extensions.configure<YarnRootExtension>("kotlinYarn") {
-    project.properties
-        .filterKeys { it.startsWith("yarn.resolution.") }
-        .forEach { (key, value) ->
+    providers
+        .gradlePropertiesPrefixedBy("yarn.resolution.")
+        .getOrElse(emptyMap())
+        .forEach { (key, ver) ->
             val pkg = key.removePrefix("yarn.resolution.")
-            val ver = value as? String ?: return@forEach
             resolution(pkg, ver)
             resolution("**/$pkg", ver)
         }
@@ -731,9 +725,10 @@ val publishProjectName = providers.gradleProperty("project.name").getOrElse("unn
 
 // Central requires a Javadoc jar per publication; KMP produces none, so attach
 // an empty one to every Maven publication.
-val emptyJavadocJar by tasks.registering(Jar::class) {
-    archiveClassifier.set("javadoc")
-}
+val emptyJavadocJar =
+    tasks.register<Jar>("emptyJavadocJar") {
+        archiveClassifier.set("javadoc")
+    }
 
 publishing {
     publications.withType<MavenPublication>().configureEach {
@@ -802,128 +797,130 @@ centralPortalPublishTasks.configureEach {
 }
 
 // Zip the staged Maven layout into a single Central Portal deployment bundle.
-val centralPortalBundle by tasks.registering(Zip::class) {
-    group = "publishing"
-    description = "Bundles the staged Maven artifacts into a Central Portal deployment zip."
-    dependsOn(centralPortalPublishTasks)
-    from(layout.buildDirectory.dir("staging-deploy"))
-    archiveFileName.set("$publishProjectName-$version-bundle.zip")
-    destinationDirectory.set(layout.buildDirectory.dir("central-portal"))
-}
+val centralPortalBundle =
+    tasks.register<Zip>("centralPortalBundle") {
+        group = "publishing"
+        description = "Bundles the staged Maven artifacts into a Central Portal deployment zip."
+        dependsOn(centralPortalPublishTasks)
+        from(layout.buildDirectory.dir("staging-deploy"))
+        archiveFileName.set("$publishProjectName-$version-bundle.zip")
+        destinationDirectory.set(layout.buildDirectory.dir("central-portal"))
+    }
 
 // Upload the bundle to the Sonatype Central Portal Publisher API.
 // publishingType: USER_MANAGED (default, safe — validates then waits for a
 // manual release in the Portal UI) or AUTOMATIC (publishes after validation).
-val publishToCentralPortal by tasks.registering {
-    group = "publishing"
-    description = "Uploads the deployment bundle to the Sonatype Central Portal."
-    dependsOn(centralPortalBundle)
-    doLast {
-        val user =
-            providers.gradleProperty("mavenCentralUsername").orNull
-                ?: error("mavenCentralUsername is required to publish to the Central Portal.")
-        val password =
-            providers.gradleProperty("mavenCentralPassword").orNull
-                ?: error("mavenCentralPassword is required to publish to the Central Portal.")
-        val publishingType = providers.gradleProperty("centralPublishingType").getOrElse("USER_MANAGED")
-        val token = Base64.getEncoder().encodeToString("$user:$password".toByteArray(Charsets.UTF_8))
+val publishToCentralPortal =
+    tasks.register("publishToCentralPortal") {
+        group = "publishing"
+        description = "Uploads the deployment bundle to the Sonatype Central Portal."
+        dependsOn(centralPortalBundle)
+        doLast {
+            val user =
+                providers.gradleProperty("mavenCentralUsername").orNull
+                    ?: error("mavenCentralUsername is required to publish to the Central Portal.")
+            val password =
+                providers.gradleProperty("mavenCentralPassword").orNull
+                    ?: error("mavenCentralPassword is required to publish to the Central Portal.")
+            val publishingType = providers.gradleProperty("centralPublishingType").getOrElse("USER_MANAGED")
+            val token = Base64.getEncoder().encodeToString("$user:$password".toByteArray(Charsets.UTF_8))
 
-        val bundle =
-            centralPortalBundle
-                .get()
-                .archiveFile
-                .get()
-                .asFile
-        require(bundle.exists()) { "Deployment bundle not found: $bundle" }
+            val bundle =
+                centralPortalBundle
+                    .get()
+                    .archiveFile
+                    .get()
+                    .asFile
+            require(bundle.exists()) { "Deployment bundle not found: $bundle" }
 
-        val boundary = "CentralPortalBoundary" + UUID.randomUUID().toString().replace("-", "")
-        val crlf = "\r\n"
-        val preamble =
-            (
-                "--$boundary$crlf" +
-                    "Content-Disposition: form-data; name=\"bundle\"; filename=\"${bundle.name}\"$crlf" +
-                    "Content-Type: application/octet-stream$crlf$crlf"
-            ).toByteArray(Charsets.UTF_8)
-        val epilogue = "$crlf--$boundary--$crlf".toByteArray(Charsets.UTF_8)
-        val body = preamble + bundle.readBytes() + epilogue
+            val boundary = "CentralPortalBoundary" + UUID.randomUUID().toString().replace("-", "")
+            val crlf = "\r\n"
+            val preamble =
+                (
+                    "--$boundary$crlf" +
+                        "Content-Disposition: form-data; name=\"bundle\"; filename=\"${bundle.name}\"$crlf" +
+                        "Content-Type: application/octet-stream$crlf$crlf"
+                ).toByteArray(Charsets.UTF_8)
+            val epilogue = "$crlf--$boundary--$crlf".toByteArray(Charsets.UTF_8)
+            val body = preamble + bundle.readBytes() + epilogue
 
-        val deploymentName = "$publishProjectName-$version"
-        val uploadUri =
-            URI(
-                "https://central.sonatype.com/api/v1/publisher/upload" +
-                    "?name=$deploymentName&publishingType=$publishingType",
-            )
-        val request =
-            HttpRequest
-                .newBuilder()
-                .uri(uploadUri)
-                .header("Authorization", "Bearer $token")
-                .header("Content-Type", "multipart/form-data; boundary=$boundary")
-                .POST(HttpRequest.BodyPublishers.ofByteArray(body))
-                .build()
-
-        val client = HttpClient.newHttpClient()
-        val response = client.send(request, HttpResponse.BodyHandlers.ofString())
-        if (response.statusCode() !in 200..299) {
-            error("Central Portal upload failed: HTTP ${response.statusCode()} — ${response.body()}")
-        }
-        val deploymentId = response.body().trim()
-        logger.lifecycle(
-            "Central Portal upload accepted (deployment id: $deploymentId). " +
-                "publishingType=$publishingType.",
-        )
-        val automaticPublishing = publishingType.equals("AUTOMATIC", ignoreCase = true)
-        val terminalStates =
-            if (automaticPublishing) {
-                setOf("PUBLISHED")
-            } else {
-                setOf("VALIDATED", "PUBLISHED")
-            }
-        val statusUri = URI("https://central.sonatype.com/api/v1/publisher/status?id=$deploymentId")
-        val statusAttempts =
-            providers.gradleProperty("centralPublishStatusAttempts").map(String::toInt).getOrElse(120)
-        val statusDelayMillis =
-            providers.gradleProperty("centralPublishStatusDelayMillis").map(String::toLong).getOrElse(10_000L)
-        repeat(statusAttempts) { attempt ->
-            val statusRequest =
+            val deploymentName = "$publishProjectName-$version"
+            val uploadUri =
+                URI(
+                    "https://central.sonatype.com/api/v1/publisher/upload" +
+                        "?name=$deploymentName&publishingType=$publishingType",
+                )
+            val request =
                 HttpRequest
                     .newBuilder()
-                    .uri(statusUri)
+                    .uri(uploadUri)
                     .header("Authorization", "Bearer $token")
-                    .POST(HttpRequest.BodyPublishers.noBody())
+                    .header("Content-Type", "multipart/form-data; boundary=$boundary")
+                    .POST(HttpRequest.BodyPublishers.ofByteArray(body))
                     .build()
-            val statusResponse = client.send(statusRequest, HttpResponse.BodyHandlers.ofString())
-            if (statusResponse.statusCode() !in 200..299) {
-                error("Central Portal status check failed: HTTP ${statusResponse.statusCode()} — ${statusResponse.body()}")
-            }
-            val statusBody = JsonSlurper().parseText(statusResponse.body()) as Map<*, *>
-            val deploymentState =
-                statusBody["deploymentState"]?.toString()
-                    ?: error("Central Portal status response did not contain deploymentState: ${statusResponse.body()}")
-            when (deploymentState) {
-                "FAILED" -> {
-                    error("Central Portal deployment failed: ${statusBody["errors"] ?: statusResponse.body()}")
-                }
 
-                in terminalStates -> {
-                    logger.lifecycle("Central Portal deployment $deploymentId reached $deploymentState.")
-                    return@doLast
+            val client = HttpClient.newHttpClient()
+            val response = client.send(request, HttpResponse.BodyHandlers.ofString())
+            if (response.statusCode() !in 200..299) {
+                error("Central Portal upload failed: HTTP ${response.statusCode()} — ${response.body()}")
+            }
+            val deploymentId = response.body().trim()
+            logger.lifecycle(
+                "Central Portal upload accepted (deployment id: $deploymentId). " +
+                    "publishingType=$publishingType.",
+            )
+            val automaticPublishing = publishingType.equals("AUTOMATIC", ignoreCase = true)
+            val terminalStates =
+                if (automaticPublishing) {
+                    setOf("PUBLISHED")
+                } else {
+                    setOf("VALIDATED", "PUBLISHED")
+                }
+            val statusUri = URI("https://central.sonatype.com/api/v1/publisher/status?id=$deploymentId")
+            val statusAttempts =
+                providers.gradleProperty("centralPublishStatusAttempts").map(String::toInt).getOrElse(120)
+            val statusDelayMillis =
+                providers.gradleProperty("centralPublishStatusDelayMillis").map(String::toLong).getOrElse(10_000L)
+            repeat(statusAttempts) { attempt ->
+                val statusRequest =
+                    HttpRequest
+                        .newBuilder()
+                        .uri(statusUri)
+                        .header("Authorization", "Bearer $token")
+                        .POST(HttpRequest.BodyPublishers.noBody())
+                        .build()
+                val statusResponse = client.send(statusRequest, HttpResponse.BodyHandlers.ofString())
+                if (statusResponse.statusCode() !in 200..299) {
+                    error("Central Portal status check failed: HTTP ${statusResponse.statusCode()} — ${statusResponse.body()}")
+                }
+                val statusBody = JsonSlurper().parseText(statusResponse.body()) as Map<*, *>
+                val deploymentState =
+                    statusBody["deploymentState"]?.toString()
+                        ?: error("Central Portal status response did not contain deploymentState: ${statusResponse.body()}")
+                when (deploymentState) {
+                    "FAILED" -> {
+                        error("Central Portal deployment failed: ${statusBody["errors"] ?: statusResponse.body()}")
+                    }
+
+                    in terminalStates -> {
+                        logger.lifecycle("Central Portal deployment $deploymentId reached $deploymentState.")
+                        return@doLast
+                    }
+                }
+                logger.lifecycle(
+                    "Central Portal deployment $deploymentId is $deploymentState " +
+                        "(${attempt + 1}/$statusAttempts).",
+                )
+                if (attempt + 1 < statusAttempts) {
+                    Thread.sleep(statusDelayMillis)
                 }
             }
-            logger.lifecycle(
-                "Central Portal deployment $deploymentId is $deploymentState " +
-                    "(${attempt + 1}/$statusAttempts).",
+            error(
+                "Central Portal deployment $deploymentId did not reach " +
+                    "${terminalStates.joinToString("/")} after $statusAttempts checks.",
             )
-            if (attempt + 1 < statusAttempts) {
-                Thread.sleep(statusDelayMillis)
-            }
         }
-        error(
-            "Central Portal deployment $deploymentId did not reach " +
-                "${terminalStates.joinToString("/")} after $statusAttempts checks.",
-        )
     }
-}
 
 // ============================================================================
 // Tasks
@@ -963,42 +960,41 @@ tasks.register("hostTests") {
     )
 }
 
-// Patch generated SPM Package.swift to include minimum macOS platform for Swift Concurrency
-tasks.matching { it.name.contains("GenerateSPMPackage") }.configureEach {
+// KGP generates separate Swift modules for project and dependency APIs. Set the
+// package language mode explicitly; do not rewrite their generated Swift sources.
+val strictSwiftConfiguration = layout.projectDirectory.file("verification/strict-swift.xcconfig")
+tasks.matching { it.name.endsWith("generateSPMPackage", ignoreCase = true) }.configureEach {
     doLast {
-        val spmDir =
+        val manifests =
             layout.buildDirectory
                 .dir("SPMPackage")
-                .orNull
-                ?.asFile
-        if (spmDir != null && spmDir.exists()) {
-            spmDir.walkTopDown().filter { it.name == "Package.swift" }.forEach { file ->
-                var text = file.readText()
-                if (text.contains("swift-tools-version: 6.0")) {
-                    text = text.replace("swift-tools-version: 6.0", "swift-tools-version: 5.9")
-                }
-                if (!text.contains("platforms:")) {
-                    text =
-                        text.replaceFirst(
-                            Regex("""(let package = Package\s*\(\s*name:\s*"[^"]*",)"""),
-                            "$1\n    platforms: [.macOS(\"15.0\")],",
-                        )
-                } else if (text.contains(".macOS(.v15)") || text.contains(".macOS(.v14)")) {
-                    text = text.replace(".macOS(.v15)", ".macOS(\"15.0\")").replace(".macOS(.v14)", ".macOS(\"15.0\")")
-                }
-                file.writeText(text)
-            }
-            spmDir.walkTopDown().filter { it.name == "OrgJetbrainsKotlinxKotlinxSerializationCore.swift" }.forEach { file ->
-                val text = file.readText()
-                val cleaned =
-                    text.replace(
-                        Regex("""@_spi\([^)]+\)\s+public func (?:decodeSequentially|shouldEncodeElementDefault|encodeNotNullMark)\([^)]*\)(?:\s*->\s*[^\n{]+)?\s*\{\s*fatalError\([^)]+\)\s*\}"""),
-                        "",
+                .get()
+                .asFile
+                .walkTopDown()
+                .filter { it.isFile && it.name == "Package.swift" }
+                .toList()
+        check(manifests.isNotEmpty()) { "No generated Swift package manifests" }
+        val execOperations = serviceOf<ExecOperations>()
+        manifests.forEach { manifest ->
+            execOperations
+                .exec {
+                    commandLine(
+                        "python3",
+                        layout.projectDirectory.file("verification/enforce_swift6.py").asFile,
+                        manifest,
+                        "--receipt",
+                        manifest.parentFile.resolve("swift6-manifest-receipt.json"),
                     )
-                if (cleaned != text) {
-                    file.writeText(cleaned)
-                }
-            }
+                }.assertNormalExitValue()
+        }
+    }
+}
+tasks.matching { it.name.endsWith("buildSPMPackage", ignoreCase = true) }.configureEach {
+    inputs.file(strictSwiftConfiguration)
+    doFirst {
+        val actual = providers.environmentVariable("XCODE_XCCONFIG_FILE").orNull
+        check(actual != null && file(actual).canonicalFile == strictSwiftConfiguration.asFile.canonicalFile) {
+            "Set XCODE_XCCONFIG_FILE=${strictSwiftConfiguration.asFile} for strict Swift 6 dependency compilation"
         }
     }
 }
@@ -1046,6 +1042,7 @@ tasks.register("swiftExportSmokeTest") {
                         "FRAMEWORKS_FOLDER_PATH" to "Frameworks",
                         "MACOSX_DEPLOYMENT_TARGET" to "15.0",
                         "DEPLOYMENT_TARGET_SETTING_NAME" to "MACOSX_DEPLOYMENT_TARGET",
+                        "XCODE_XCCONFIG_FILE" to strictSwiftConfiguration.asFile.absolutePath,
                     ),
                 )
             }.assertNormalExitValue()
@@ -1056,11 +1053,33 @@ tasks.register("swiftExportSmokeTest") {
                 commandLine("swift", "package", "reset")
             }.assertNormalExitValue()
 
-        execOperations
-            .exec {
-                workingDir = layout.projectDirectory.dir("swift-test-harness").asFile
-                commandLine("swift", "test")
-            }.assertNormalExitValue()
+        val swiftTestOutput = ByteArrayOutputStream()
+        try {
+            execOperations
+                .exec {
+                    workingDir = layout.projectDirectory.dir("swift-test-harness").asFile
+                    commandLine(
+                        "swift",
+                        "test",
+                        "-v",
+                        "-Xswiftc",
+                        "-swift-version",
+                        "-Xswiftc",
+                        "6",
+                        "-Xswiftc",
+                        "-warnings-as-errors",
+                    )
+                    standardOutput = swiftTestOutput
+                    errorOutput = swiftTestOutput
+                }.assertNormalExitValue()
+        } finally {
+            val swiftTestLog = swiftTestOutput.toString()
+            println(swiftTestLog)
+            layout.buildDirectory.file("reports/swift/swift-test.log").get().asFile.apply {
+                parentFile.mkdirs()
+                writeText(swiftTestLog)
+            }
+        }
     }
 }
 
@@ -1123,3 +1142,105 @@ val fullTargetBuildTaskNames =
 tasks.named("build") {
     dependsOn(fullTargetBuildTaskNames)
 }
+
+// kotlinmania:android-publication:v1 begin
+// The Android KMP plugin owns the single Android Maven publication.
+// Verify its real staged payload; never attach a second AAR publication.
+val androidPublicationRoot =
+    providers.provider {
+        publishing.publications.getByName("kotlinMultiplatform") as MavenPublication
+    }
+val androidPublicationBundle =
+    tasks.register<Zip>("androidPublicationBundle") {
+        group = "verification"
+        // A root publication can require shared Native/cinterop metadata. Never initiate
+        // its Apple compilation from the Linux Android job.
+        val externalRoot = providers.gradleProperty("project.publication.android.rootStagingDirectory").orNull
+        val root = androidPublicationRoot.get()
+        val coordinatePath = "${root.groupId.replace('.', '/')}/${root.artifactId}"
+        dependsOn(tasks.named<PublishToMavenRepository>("publishAndroidPublicationToCentralPortalStagingRepository"))
+        from(layout.buildDirectory.dir("staging-deploy")) {
+            include("$coordinatePath-android/${root.version}/**")
+        }
+        if (externalRoot == null) {
+            val hasAppleTargets =
+                kotlin.targets
+                    .withType<org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget>()
+                    .any { it.konanTarget.family.isAppleFamily }
+            check(!hasAppleTargets || providers.systemProperty("os.name").get().startsWith("Mac")) {
+                "Stage the real KMP root on macOS, then set project.publication.android.rootStagingDirectory and expectedRootHead"
+            }
+            dependsOn(tasks.named<PublishToMavenRepository>("publishKotlinMultiplatformPublicationToCentralPortalStagingRepository"))
+            from(layout.buildDirectory.dir("staging-deploy")) {
+                include("$coordinatePath/${root.version}/**")
+            }
+        } else {
+            val rootDirectory = file(externalRoot)
+            val sourceReceipt = file("$externalRoot.source-head")
+            val expectedHead = providers.gradleProperty("project.publication.android.expectedRootHead")
+            inputs.file(sourceReceipt)
+            inputs.property("expectedRootHead", expectedHead)
+            from(rootDirectory) { include("$coordinatePath/${root.version}/**") }
+            doFirst {
+                val head = expectedHead.orNull
+                check(head != null && head.matches(Regex("[0-9a-f]{40}"))) { "Set expectedRootHead to the exact source commit" }
+                check(rootDirectory.isDirectory && sourceReceipt.isFile && sourceReceipt.readText().trim() == head) {
+                    "Missing or stale same-head KMP root staging receipt: $sourceReceipt"
+                }
+                check(file("$externalRoot/$coordinatePath/${root.version}/${root.artifactId}-${root.version}.module").isFile) {
+                    "Missing real KMP root module metadata in $rootDirectory"
+                }
+            }
+        }
+        duplicatesStrategy = DuplicatesStrategy.FAIL
+        archiveFileName.set("android-publication.zip")
+        destinationDirectory.set(layout.buildDirectory.dir("verification"))
+    }
+val verifyAndroidPublication =
+    tasks.register<Exec>("verifyAndroidPublication") {
+        group = "verification"
+        description = "Checks Android AAR bytecode, root redirects, POM and API/runtime metadata."
+        dependsOn(androidPublicationBundle)
+        val script = rootProject.layout.projectDirectory.file("verification/verify_android_publication.py")
+        val bundle = androidPublicationBundle.flatMap { it.archiveFile }
+        val receipt = layout.buildDirectory.file("reports/publication/android.json")
+        inputs.files(script, bundle)
+        val classes = providers.gradleProperty("project.publication.android.publicClasses").orElse("")
+        val edges = providers.gradleProperty("project.publication.android.apiDependencies").orElse("")
+        inputs.property("publicClasses", classes)
+        inputs.property("apiDependencies", edges)
+        outputs.file(receipt)
+        doFirst {
+            val publicClasses =
+                classes
+                    .get()
+                    .split(',')
+                    .map { it.trim() }
+                    .filter { it.isNotEmpty() }
+            check(publicClasses.isNotEmpty()) { "Set project.publication.android.publicClasses to actual public .class paths" }
+            val root = androidPublicationRoot.get()
+            commandLine(
+                listOf(
+                    "python3",
+                    script.asFile.absolutePath,
+                    bundle.get().asFile.absolutePath,
+                    "--group",
+                    root.groupId,
+                    "--module",
+                    root.artifactId,
+                    "--version",
+                    root.version,
+                    "--receipt",
+                    receipt.get().asFile.absolutePath,
+                ) + publicClasses.flatMap { listOf("--public-class", it) } +
+                    edges
+                        .get()
+                        .split(',')
+                        .map { it.trim() }
+                        .filter { it.isNotEmpty() }
+                        .flatMap { listOf("--api-dependency", it) },
+            )
+        }
+    }
+tasks.named("publishToCentralPortal") { dependsOn(verifyAndroidPublication) }
+// kotlinmania:android-publication:v1 end

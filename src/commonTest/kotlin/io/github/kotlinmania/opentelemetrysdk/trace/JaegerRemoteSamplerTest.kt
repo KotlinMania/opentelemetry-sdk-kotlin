@@ -1,5 +1,6 @@
 package io.github.kotlinmania.opentelemetrysdk.trace
 
+import io.github.kotlinmania.opentelemetry.trace.SamplingDecision
 import io.github.kotlinmania.opentelemetrysdk.Tokio
 import io.github.kotlinmania.opentelemetrysdk.trace.sampler.jaegerremote.Inner
 import io.github.kotlinmania.opentelemetrysdk.trace.sampler.jaegerremote.JaegerRemoteSampler
@@ -85,7 +86,7 @@ class JaegerRemoteSamplerTest {
         )
         val res = inner.shouldSample(null, traceId, "test")
         assertNotNull(res)
-        assertEquals(SamplingDecision.RECORD_AND_SAMPLE, res.decision)
+        assertEquals(SamplingDecision.RecordAndSample, res.decision)
     }
 
     @Test

@@ -1,6 +1,8 @@
 // port-lint: source testing/trace/span_exporters.rs
 package io.github.kotlinmania.opentelemetrysdk.testing.trace
 
+import io.github.kotlinmania.opentelemetry.trace.SpanKind
+import io.github.kotlinmania.opentelemetry.trace.Status
 import io.github.kotlinmania.opentelemetrysdk.InstrumentationScope
 import io.github.kotlinmania.opentelemetrysdk.OTelSdkResult
 import io.github.kotlinmania.opentelemetrysdk.trace.SpanContext
@@ -8,9 +10,7 @@ import io.github.kotlinmania.opentelemetrysdk.trace.SpanData
 import io.github.kotlinmania.opentelemetrysdk.trace.SpanEvents
 import io.github.kotlinmania.opentelemetrysdk.trace.SpanExporter
 import io.github.kotlinmania.opentelemetrysdk.trace.SpanId
-import io.github.kotlinmania.opentelemetrysdk.trace.SpanKind
 import io.github.kotlinmania.opentelemetrysdk.trace.SpanLinks
-import io.github.kotlinmania.opentelemetrysdk.trace.Status
 import io.github.kotlinmania.opentelemetrysdk.trace.TraceFlags
 import io.github.kotlinmania.opentelemetrysdk.trace.TraceId
 import io.github.kotlinmania.opentelemetrysdk.trace.TraceState
@@ -36,7 +36,7 @@ public fun newTestExportSpanData(): SpanData {
             ),
         parentSpanId = SpanId.INVALID,
         parentSpanIsRemote = false,
-        spanKind = SpanKind.INTERNAL,
+        spanKind = SpanKind.Internal,
         name = "opentelemetry",
         startTime = now,
         endTime = now,

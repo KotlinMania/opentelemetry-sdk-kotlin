@@ -1,47 +1,12 @@
 package io.github.kotlinmania.opentelemetrysdk.logs
 
+import io.github.kotlinmania.opentelemetry.logs.Severity
 import io.github.kotlinmania.opentelemetrysdk.InstrumentationScope
 import io.github.kotlinmania.opentelemetrysdk.resource.Key
 import io.github.kotlinmania.opentelemetrysdk.trace.SpanId
 import io.github.kotlinmania.opentelemetrysdk.trace.TraceFlags
 import io.github.kotlinmania.opentelemetrysdk.trace.TraceId
 import kotlin.time.Instant
-
-/**
- * Severity levels for a log record.
- */
-public enum class Severity(
-    public val severityNumber: Int,
-    public val severityName: String,
-) {
-    Trace(1, "TRACE"),
-    Trace2(2, "TRACE2"),
-    Trace3(3, "TRACE3"),
-    Trace4(4, "TRACE4"),
-    Debug(5, "DEBUG"),
-    Debug2(6, "DEBUG2"),
-    Debug3(7, "DEBUG3"),
-    Debug4(8, "DEBUG4"),
-    Info(9, "INFO"),
-    Info2(10, "INFO2"),
-    Info3(11, "INFO3"),
-    Info4(12, "INFO4"),
-    Warn(13, "WARN"),
-    Warn2(14, "WARN2"),
-    Warn3(15, "WARN3"),
-    Warn4(16, "WARN4"),
-    Error(17, "ERROR"),
-    Error2(18, "ERROR2"),
-    Error3(19, "ERROR3"),
-    Error4(20, "ERROR4"),
-    Fatal(21, "FATAL"),
-    Fatal2(22, "FATAL2"),
-    Fatal3(23, "FATAL3"),
-    Fatal4(24, "FATAL4"),
-    ;
-
-    public fun shortName(): String = severityName
-}
 
 /**
  * Value types for representing arbitrary values in a log record.
